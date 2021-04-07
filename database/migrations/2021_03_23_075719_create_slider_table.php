@@ -15,13 +15,12 @@ class CreateSliderTable extends Migration
     {
         Schema::create('slider', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('status');
             $table->string('name');
+            $table->string('status');
             $table->string('description');
             $table->string('link');
             $table->string('thumb');
             $table->string('sort')->default(1);
-
             $table->string('created')->nullable();
             $table->string('created_by')->nullable();
             $table->string('modified')->nullable();

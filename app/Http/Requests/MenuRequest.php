@@ -38,7 +38,6 @@ class MenuRequest extends FormRequest
 
         return [
             'name'      => $condName,
-            'link'      => 'bail|required',
             'status'    => 'bail|in:active,inactive',
             'type_menu' => $condTypeMenu,
             'type_link' => $condTypeLink

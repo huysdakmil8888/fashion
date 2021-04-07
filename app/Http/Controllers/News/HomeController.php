@@ -21,35 +21,37 @@ class HomeController extends NewsController
     public function __construct()
     {
         view()->share('controllerName', $this->controllerName);
+        parent::__construct();
     }
 
     public function index(Request $request)
     {
 
-        /*================================= lay category ==========================*/
-        $categoryModel = new CategoryModel();
-        $itemsCategory = $categoryModel->listItems(null, ['task' => 'news-list-items']);
+//        //lay category
+//        $categoryModel = new CategoryModel();
+//        $itemsCategory = $categoryModel->listItems(null, ['task' => 'news-list-items']);
 
         /*================================= lay slider ==========================*/
-        $sliderModel = new SliderModel();
-        $itemsSlider = $sliderModel->listItems(null, ['task' => 'news-list-items']);
-
+            $sliderModel = new SliderModel();
+            $itemsSlider = $sliderModel->listItems(null, ['task' => 'news-list-items']);
+//
         /*================================= lay testimonial ==========================*/
         $testimonialModel = new TestimonialModel();
         $itemsTestimonial = $testimonialModel->listItems(null, ['task' => 'news-list-items']);
 
         /*================================= lay recent product ==========================*/
-        $productModel  = new ProductModel();
-        $items         = $productModel->listItems(null, ['task' => 'news-list-items']);
-        $itemsBestDeal = $productModel->listItems(null, ['task' => 'news-list-items-best-deal']);
+//        $productModel  = new ProductModel();
+//        $items         = $productModel->listItems(null, ['task' => 'news-list-items']);
+//        $itemsBestDeal = $productModel->listItems(null, ['task' => 'news-list-items-best-deal']);
+//
+//        /*================================= lay recent article ==========================*/
+//        $articleModel = new ArticleModel();
+//        $itemsArticle = $articleModel->listItems(null, ['task' => 'news-list-items']);
 
-        /*================================= lay recent article ==========================*/
-        $articleModel = new ArticleModel();
-        $itemsArticle = $articleModel->listItems(null, ['task' => 'news-list-items']);
 
-
-        return view($this->pathViewController . 'index', compact('itemsCategory', 'itemsSlider', 'items', 'itemsArticle',
-                'itemsTestimonial', 'itemsBestDeal'
+        return view($this->pathViewController . 'index',compact(
+            'itemsSlider',
+        'itemsTestimonial'
         ));
     }
 

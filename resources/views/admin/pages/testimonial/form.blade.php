@@ -6,8 +6,11 @@
 
     $formInputAttr = config('zvn.template.form_input');
     $formLabelAttr = config('zvn.template.form_label');
+    $formCkeditor  = config('zvn.template.form_ckeditor');
+
 
     $statusValue      = ['default' => 'Select status', 'active' => config('zvn.template.status.active.name'), 'inactive' => config('zvn.template.status.inactive.name')];
+
 
     $inputHiddenID    = Form::hidden('id', @$item['id']);
     $inputHiddenThumb = Form::hidden('thumb_current', @$item['thumb']);
@@ -18,11 +21,13 @@
             'element' => Form::text('name', @$item['name'], $formInputAttr )
         ],[
             'label'   => Form::label('content', 'Content', $formLabelAttr),
-            'element' => Form::text('content', @$item['content'],  $formInputAttr )
-        ],[
+            'element' => Form::textarea('content', @$item['content'],  $formCkeditor )
+        ],
+        [
             'label'   => Form::label('status', 'Status', $formLabelAttr),
             'element' => Form::select('status', $statusValue, @$item['status'], $formInputAttr)
-        ],[
+        ],
+        [
             'label'   => Form::label('job', 'Job', $formLabelAttr),
             'element' => Form::text('job', @$item['job'],  $formInputAttr )
         ],[

@@ -33,6 +33,10 @@
             'label'     => Form::label('link', 'Link', $formLabelAttributes),
             'element'   => Form::text('link', $item['link'] ?? '#', $formInputAttributes)
         ],
+         [
+            'label'     => Form::label('controllerName', 'ControllerName', $formLabelAttributes),
+            'element'   => Form::text('controllerName', $item['controllerName'] ?? '#', $formInputAttributes)
+        ],
         [
             'element'   => $inputHiddenID . Form::submit('Save', ['class' => 'btn btn-success']),
             'type'      => 'btn-submit'

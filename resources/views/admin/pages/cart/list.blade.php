@@ -8,7 +8,7 @@
         <table class="table table-striped jambo_table bulk_action">
             <thead>
                 <tr class="headings">
-                    <th class="column-title">#</th>
+                    <th class="column-title">STT</th>
                     <th class="column-title">Mã Đơn Hàng</th>
                     <th class="column-title">Thông tin Khách Hàng</th>
                     <th class="column-title">Tên Sản Phẩm</th>

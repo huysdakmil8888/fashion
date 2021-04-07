@@ -18,13 +18,12 @@ class CreateProductTable extends Migration
             $table->string('status')->default('active');
             $table->string('name');
             $table->text('description')->nullable();
-            $table->text('short_description')->nullable();
+            $table->text('content')->nullable();
             $table->integer('ordering')->nullable();
 
             $table->string('slug')->nullable();
             $table->bigInteger('category_id');
             $table->integer('price');
-            $table->integer('price_sale')->default(0);
             $table->integer('sale')->nullable();
             $table->string('thumb');
             $table->string('product_code')->nullable();

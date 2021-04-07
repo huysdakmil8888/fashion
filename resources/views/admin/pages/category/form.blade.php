@@ -28,10 +28,6 @@
             'element' => Form::select('status', $statusValue, @$item['status'], $formInputAttr)
         ],
         [
-            'label'   => Form::label('thumb', 'thumb', $formLabelAttr),
-            'element'   => Template::showFileManager($item['thumb'] ?? '')
-        ],
-        [
             'element' => $inputHiddenID . Form::submit('Save', ['class'=>'btn btn-success']),
             'type'    => "btn-submit"
         ]
@@ -48,7 +44,7 @@
                 @include('admin.templates.x_title', ['title' => 'Form'])
                 <div class="x_content">
                     {{ Form::open([
-                        'method'         => 'POST', 
+                        'method'         => 'POST',
                         'url'            => route("$controllerName/save"),
                         'accept-charset' => 'UTF-8',
                         'enctype'        => 'multipart/form-data',

@@ -6,6 +6,8 @@
 
     $formInputAttr = config('zvn.template.form_input');
     $formLabelAttr = config('zvn.template.form_label');
+    $formCkeditor  = config('zvn.template.form_ckeditor');
+
 
     $statusValue      = ['default' => 'Select status', 'active' => config('zvn.template.status.active.name'), 'inactive' => config('zvn.template.status.inactive.name')];
 
@@ -19,7 +21,7 @@
         ],
         [
             'label'   => Form::label('description', 'Description', $formLabelAttr),
-            'element' => Form::text('description', @$item['description'],  $formInputAttr )
+            'element' => Form::textarea('description', @$item['description'],  $formCkeditor )
         ],
         [
             'label'   => Form::label('status', 'Status', $formLabelAttr),

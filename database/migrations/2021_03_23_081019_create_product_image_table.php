@@ -18,7 +18,6 @@ class CreateProductImageTable extends Migration
             $table->string('name');
             $table->string('alt')->nullable();
             $table->bigInteger('product_id');
-
             $table->string('created')->nullable();
             $table->string('created_by')->nullable();
             $table->string('modified')->nullable();

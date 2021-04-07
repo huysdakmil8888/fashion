@@ -14,6 +14,7 @@ class FrontendController extends NewsController
     public function __construct()
     {
         view()->share('controllerName', $this->controllerName);
+parent::__construct();
         $this->params["pagination"]["totalItemsPerPage"] = 6;
     }
 

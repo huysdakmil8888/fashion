@@ -20,7 +20,7 @@ class MenuModel extends AdminModel
         $result = null;
 
         if ($options['task'] == 'admin-list-items') {
-            $query = $this->select('id', 'name', 'link', 'status', 'ordering', 'type_menu', 'type_link');
+            $query = $this->select('id', 'name', 'link','controllerName', 'status', 'ordering', 'type_menu', 'type_link');
 
             if (isset($params['filter']['status']) && $params['filter']['status'] != 'all') $query->where('status', $params['filter']['status']);
 
@@ -40,7 +40,7 @@ class MenuModel extends AdminModel
         }
 
         if ($options['task'] == 'news-list-items') {
-            $query = $this->select('id', 'name', 'link', 'type_menu', 'type_link')->where('status', 'active')->orderBy('ordering', 'asc');
+            $query = $this->select('id','controllerName', 'name', 'link', 'type_menu', 'type_link')->where('status', 'active')->orderBy('ordering', 'asc');
 
             $result = $query->get();
         }
@@ -159,7 +159,7 @@ class MenuModel extends AdminModel
     {
         $result = null;
         if ($options['task'] == 'get-item') {
-            $result = $this->select('id', 'name', 'link', 'ordering', 'type_menu', 'type_link', 'status')->where('id', $params['id'])->first();
+            $result = $this->select('id', 'name', 'link','controllerName', 'ordering', 'type_menu', 'type_link', 'status')->where('id', $params['id'])->first();
         }
 
         return $result;

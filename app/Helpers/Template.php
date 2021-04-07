@@ -279,8 +279,8 @@ class Template
 
     public static function showNestedSetName($name, $level)
     {
-        $xhtml = str_repeat('|------ ', $level);
-        $xhtml .= sprintf('<span class="badge badge-danger p-1">%s</span> <strong>%s</strong>', $level + 1, $name);
+        $xhtml = str_repeat('|------ ', $level-1);
+        $xhtml .= sprintf('<span class="badge badge-danger p-1">%s</span> <strong>%s</strong>', $level, $name);
         return $xhtml;
     }
 

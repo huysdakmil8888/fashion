@@ -1,63 +1,67 @@
 <!doctype html>
-<html class="no-js" lang="zxx">
-    <head>
-        @include('news.elements.head')
-    </head>
-    <body>
+<html class="no-js" lang="en">
 
-        @php
-            $login    = false;
-            $userInfo = null;
-            if ( !empty(session()->get('userInfo')) ) {
-                $login    = true;
-                $userInfo = session()->get('userInfo');
-            }
+<head>
+    @include("news.elements.head")
+</head>
 
-            $cartCheck = false;
-            $cart      = null;
-            if ( !empty(session()->get('cart')) ) {
-                $cartCheck = true;
-                $cart      = session()->get('cart');
-            }
-            
-            if ( !isset($setting_price) ) {
-                $setting_price = '';
-            }
-            
-        @endphp
+<body>
 
-    	@include('news.elements.header', [
-            'login'     => $login,
-            'userInfo'  => $userInfo,
-            'cartCheck' => $cartCheck,
-            'cart'      => $cart,
-        ])
+<div class="main-wrapper">
+
+    <div class="header-section section">
+        @include("news.elements.top-bar")
+        @include("news.elements.menu")
+        @include("news.elements.slider")
+    </div>
 
 
-        @yield('content')
+    <!-- Banner Section Start -->
+@include("news.elements.banner")
+<!-- Banner Section End -->
+
+    <!-- Product Section Start -->
+@include("news.elements.all-product")
+
+<!-- Product Section End -->
+@include("news.elements.banner-second")
+
+<!-- Banner Section Start -->
+    <!-- Banner Section End -->
+
+    <!-- Product Section Start -->
+@include("news.elements.sale-product")
+
+<!-- Product Section End -->
+
+    <!-- Feature Section Start -->
+@include("news.elements.banner-bottom")
+
+<!-- Feature Section End -->
+
+    <!-- Blog Section Start -->
+@include("news.elements.blog")
+
+<!-- Blog Section End -->
+
+    <!-- Brand Section Start -->
+@include("news.elements.brand")
+
+<!-- Brand Section End -->
+
+    <!-- Footer Top Section Start -->
+    <!-- Footer Top Section End -->
+@include("news.elements.footer-top")
+@include("news.elements.footer-bottom")
+
+<!-- Footer Bottom Section Start -->
+    <!-- Footer Bottom Section End -->
+
+</div>
+
+@include("news.elements.scripts")
 
 
-    	@include('news.elements.footer')
+</body>
 
-		<!-- all js here -->
-        <script type="text/javascript">
-
-            var controllerName = "{{ $controllerName }}";
-            var login          = "{{ $login }}";
-            var cartCheck      = "{{ $cartCheck }}";
-            if (login) {
-                var userInfo       = JSON.parse(`<?= json_encode($userInfo) ?>`);
-            }
-
-            if (cartCheck) {
-                var cart           = JSON.parse(`<?= json_encode($cart) ?>`);
-            }
-
-            var setting_price   = JSON.parse(`<?= json_encode($setting_price) ?>`);
-
-        </script>
-
-        @include('news.elements.script')
-
-    </body>
 </html>

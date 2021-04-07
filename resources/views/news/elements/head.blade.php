@@ -1,28 +1,29 @@
+
 <meta charset="utf-8">
 <meta http-equiv="x-ua-compatible" content="ie=edge">
-<title>Marten - Pet Shop Food</title>
-{{-- <title>@yield('title') - Laravel News</title> --}}
+<title>Jadusona - eCommerce Baby shop Bootstrap4 Template</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-@yield('meta')
 <!-- Favicon -->
-<link rel="shortcut icon" type="image/x-icon" href="{{asset('news/images/favicon.png')}}">
+<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
 
-<!-- all css here -->
-<link rel="stylesheet" href="{{asset('news/css/bootstrap.min.css')}}">
-<link rel="stylesheet" href="{{asset('news/css/animate.css')}}">
-<link rel="stylesheet" href="{{asset('news/css/simple-line-icons.css')}}">
-<link rel="stylesheet" href="{{asset('news/css/themify-icons.css')}}">
-<link rel="stylesheet" href="{{asset('news/css/owl.carousel.min.css')}}">
+<!-- CSS
+============================================ -->
 
-@if ($controllerName == 'category')
-    <link rel="stylesheet" href="{{asset('news/css/jquery-ui.css')}}">
-@else
-    <link rel="stylesheet" href="{{asset('news/css/slick.css')}}">
-@endif
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="assets/css/bootstrap.min.css">
 
-<link rel="stylesheet" href="{{asset('news/css/meanmenu.min.css')}}">
-<link rel="stylesheet" href="{{asset('news/css/style.css')}}">
-<link rel="stylesheet" href="{{asset('news/css/responsive.css')}}">
-<script src="{{asset('news/js/vendor/modernizr-2.8.3.min.js')}}"></script>
-@yield('css')
+<!-- Icon Font CSS -->
+<link rel="stylesheet" href="assets/css/icon-font.min.css">
+
+<!-- Plugins CSS -->
+<link rel="stylesheet" href="assets/css/plugins.css">
+
+<!-- Helper CSS -->
+<link rel="stylesheet" href="assets/css/helper.css">
+
+<!-- Main Style CSS -->
+<link rel="stylesheet" href="assets/css/style.css">
+
+<!-- Modernizer JS -->
+<script src="assets/js/vendor/modernizr-3.7.1.min.js"></script>

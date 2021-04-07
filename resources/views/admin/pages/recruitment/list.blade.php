@@ -7,7 +7,7 @@
         <table class="table table-striped jambo_table bulk_action">
             <thead>
                 <tr class="headings">
-                    <th class="column-title">#</th>
+                    <th class="column-title">STT</th>
                     <th class="column-title">Recruitment Info</th>
                     <th class="column-title">Hình ảnh</th>
 {{--                    <th class="column-title">Category</th>--}}

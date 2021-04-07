@@ -67,7 +67,7 @@ class AdminModel extends Model
     {
         if($options['task'] == 'change-status') {
             $status = ($params['currentStatus'] == "active") ? "inactive" : "active";
-            self::where('id', $params['id'])->update(['status' => $status ]);
+            self::where('id', $params['id'])->update(['status' => $status ,'modified'=>now(),'modified_by'=>session()->get('userInfo')['username']]);
             $result = [
                 'id' => $params['id'],
                 'status' => ['name' => config("zvn.template.status.$status.name"), 'class' => config("zvn.template.status.$status.class")],

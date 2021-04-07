@@ -19,12 +19,7 @@ class CreateCategoryTable extends Migration
             $table->string('status');
             $table->string('slug');
             $table->string('name');
-            $table->string('thumb')->nullable();
-            $table->string('is_home')->nullable();
-            $table->string('display')->nullable();
-
             NestedSet::columns($table);
-
             $table->string('created')->nullable();
             $table->string('created_by')->nullable();
             $table->string('modified')->nullable();

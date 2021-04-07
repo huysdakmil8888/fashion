@@ -7,7 +7,7 @@
         <table class="table table-striped jambo_table bulk_action">
             <thead>
                 <tr class="headings">
-                    <th class="column-title">#</th>
+                    <th class="column-title">STT</th>
                     <th class="column-title">{{$controllerName}} Name</th>
                     <th class="column-title">Slug</th>
                     <th class="column-title">Content</th>

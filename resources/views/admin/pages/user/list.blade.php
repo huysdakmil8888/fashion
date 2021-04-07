@@ -7,7 +7,7 @@
         <table class="table table-striped jambo_table bulk_action">
             <thead>
                 <tr class="headings">
-                    <th class="column-title">#</th>
+                    <th class="column-title">STT</th>
                     <th class="column-title">Username</th>
                     <th class="column-title">Email</th>
                     <th class="column-title">Fullname</th>

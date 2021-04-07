@@ -46,7 +46,7 @@ return [
     // You should create routes to serve images if it is not set to public.
     'base_directory' => 'public',
 
-    'images_folder_name' => 'images',
+    'images_folder_name' => 'assets/images',
     'files_folder_name'  => 'images',
 
     'shared_folder_name' => 'shares',

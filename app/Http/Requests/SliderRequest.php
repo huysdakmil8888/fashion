@@ -36,7 +36,6 @@ class SliderRequest extends FormRequest
         return [
             'name'        => $condName,
             'description' => 'bail|required|min:5',
-            'link'        => 'bail|required|min:5|url',
             'status'      => 'bail|in:active,inactive',
             'thumb'       => $condThumb
         ];
