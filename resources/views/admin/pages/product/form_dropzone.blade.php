@@ -88,7 +88,7 @@
                     $.each(JSON.parse((data)), function (i, mockFile) {
                         var name = mockFile.name;
                         var val = mockFile.alt ? mockFile.alt : "";
-                        var url = '{{ asset("/images/product") }}' + '/' + name
+                        var url = '{{ asset("assets/images/product") }}' + '/' + name
 
                         myDropzone.options.addedfile.call(myDropzone, mockFile);
                         myDropzone.options.thumbnail.call(myDropzone, mockFile, url);

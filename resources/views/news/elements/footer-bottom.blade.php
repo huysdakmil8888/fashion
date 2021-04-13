@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col text-center">
-                <p class="footer-copyright">Copyright &copy; All rights reserved</p>
+                <p class="footer-copyright">{!! $setting_general['copyright'] !!}</p>
             </div>
         </div>
     </div>

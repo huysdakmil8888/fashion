@@ -3,6 +3,7 @@
 
 <head>
     @include("news.elements.head")
+    @yield('css')
 </head>
 
 <body>
@@ -12,40 +13,13 @@
     <div class="header-section section">
         @include("news.elements.top-bar")
         @include("news.elements.menu")
-        @include("news.elements.slider")
+        @yield('slider')
     </div>
+@yield('content')
 
 
-    <!-- Banner Section Start -->
-@include("news.elements.banner")
-<!-- Banner Section End -->
-
-    <!-- Product Section Start -->
-@include("news.elements.all-product")
-
-<!-- Product Section End -->
-@include("news.elements.banner-second")
-
-<!-- Banner Section Start -->
-    <!-- Banner Section End -->
-
-    <!-- Product Section Start -->
-@include("news.elements.sale-product")
-
-<!-- Product Section End -->
-
-    <!-- Feature Section Start -->
-@include("news.elements.banner-bottom")
-
-<!-- Feature Section End -->
-
-    <!-- Blog Section Start -->
-@include("news.elements.blog")
-
-<!-- Blog Section End -->
-
-    <!-- Brand Section Start -->
 @include("news.elements.brand")
+
 
 <!-- Brand Section End -->
 
@@ -60,6 +34,7 @@
 </div>
 
 @include("news.elements.scripts")
+@yield('script')
 
 
 </body>

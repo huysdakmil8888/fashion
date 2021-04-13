@@ -1,24 +1,29 @@
+@php
+    use App\Helpers\Template;
+    use App\Helpers\URL;
+
+@endphp
 @extends('news.main')
 @section('content')
+    @include("news.templates.breadcumb",['name'=>$breadItem->name,'itemsBread'=>$breadItems,'type'=>'categoryArticle'])
 
-    <!-- breadcumb -->
-    @include('news.templates.breadcumb', ['name' => 'Blog'])
-
-    <!-- list blog -->
-    <div class="blog-area pt-100 pb-100 clearfix">
+    <div class="blog-section section section-padding">
         <div class="container">
             <div class="row">
-                @include('news.pages.article.child-index.list')
-            </div>
+                @forelse($items as $item)
+                <div class="col-lg-6 col-12 mb-50">
+                    @include("news.partials.article.blog")
+                </div>
+                @empty
+                    <p>Chưa có bài viết trong chuyên mục này</p>
+                @endforelse
 
-            <!-- paginate -->
-            <div class="pagination-style text-center mt-20">
-                <ul>
-                    @include('news.templates.pagination')
-                </ul>
-            </div>
 
+
+            @include('news.templates.pagination')
+            </div>
         </div>
-    </div>
-    
-@endsection
+    </div><!-- Blog Section End -->
+
+
+@stop

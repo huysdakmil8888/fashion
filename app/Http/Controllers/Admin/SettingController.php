@@ -21,7 +21,8 @@ class SettingController extends Controller
 
     public function index(Request $request){
         $params['type'] = $request->input('type', 'general');
-        $item = $this->model->getItem($params, null);
+        $item = $this->model->getItem($params, ['task'=>$params['type']]);
+
         return view($this->pathViewController . 'index', compact('item'));
     }
 

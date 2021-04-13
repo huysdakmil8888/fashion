@@ -19,7 +19,6 @@ $prefixNews  = config('zvn.url.prefix_news');
 Route::get('', [ 'as' => 'HomeController', 'uses' => 'News\HomeController@' . 'index' ]);
 
 Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
-
     // ============================== HOMEPAGE ==============================
     $prefix         = '';
     $controllerName = 'home';
@@ -29,25 +28,40 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
         Route::get('/not-found',                    [ 'as' => $controllerName. '/not-found',                  'uses' => $controller . 'notFound' ]);
     });
 
+    // ============================== CUSTOMER PAGE ==============================
+    $prefix         = 'customer';
+    $controllerName = 'customer';
+    Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
+        $controller = ucfirst($controllerName)  . 'Controller@';
+        Route::get('/my-account',                    [ 'as' => $controllerName. '/my-account',                  'uses' => $controller . 'myAccount' ]);
+        Route::get('/register-login',                    [ 'as' => $controllerName. '/register-login',                  'uses' => $controller . 'registerLogin' ]);
+        Route::post('/register',                    [ 'as' => $controllerName. '/register',                  'uses' => $controller . 'register' ]);
+        Route::post('/login',                    [ 'as' => $controllerName. '/login',                  'uses' => $controller . 'login' ]);
+        Route::get('/logout',                    [ 'as' => $controllerName. '/logout',                  'uses' => $controller . 'logout' ]);
+    });
     // ====================== ARTICLE ========================
     $prefix         = 'bai-viet';
     $controllerName = 'article';
     Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
         $controller = ucfirst($controllerName)  . 'Controller@';
 
-        Route::get('/list-blog.html',  
-        [ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ]);
+        Route::get('{article_slug}-{id}.html', [ 'as' => $controllerName . '/detail', 'uses' => $controller . 'detail' ])->where('article_slug', '[0-9a-zA-Z_-]+');
+        Route::get('{id}.html', [ 'as' => $controllerName . '/increaseLike', 'uses' => $controller . 'increaseLike' ]);
+        Route::get('archive/{archive}.html', [ 'as' => $controllerName . '/archive', 'uses' => $controller . 'archive' ]);
+        Route::post('comment', [ 'as' => $controllerName . '/comment', 'uses' => $controller . 'comment' ]);
+        Route::get('tag/{slug}-{tag}.html', [ 'as' => $controllerName . '/tag', 'uses' => $controller . 'tag' ]);
 
-         Route::get('{article_slug}.html',
-         [ 'as' => $controllerName . '/detail', 'uses' => $controller . 'detail' ])
-         ->where('article_slug', '[0-9a-zA-Z_-]+');
+    });
+    // ====================== Category ARTICLE ========================
+    $prefix         = 'chuyen-muc';
+    $controllerName = 'article';
+    Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
+        $controller = ucfirst($controllerName)  . 'Controller@';
 
-        Route::post('list-blog.html',
-            [ 'as' => $controllerName . '/postComment', 'uses' => $controller . 'postComment' ])
-            ->where('article_slug', '[0-9a-zA-Z_-]+');
+        Route::get('{category_article_slug}-{category_article_id}.html', [ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ])
+            ->where('category_article_slug', '[0-9a-zA-Z_-]+');
 
-        /* Route::get('/blog.html',
-        [ 'as' => $controllerName . '/detail', 'uses' => $controller . 'detail' ]);*/
+
 
     });
 
@@ -61,27 +75,25 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
 
         Route::get('/search_price', [ 'as' => $controllerName . '/search_price', 'uses' => $controller . 'search_price' ]);
 
-        Route::get('{category_slug}.html', [ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ]);
+        Route::get('{category_slug}-{id}.html', [ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ])
+            ->where('category_slug', '[0-9a-zA-Z_-]+');
+        ;
     });
-    
+
+
     // ====================== Product page ========================
-    $prefix         = 'food';
+    $prefix         = 'san-pham';
     $controllerName = 'product';
     Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
         $controller = ucfirst($controllerName)  . 'Controller@';
 
-        Route::get('{product_slug}-food-{product_id}.html',
-        [ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ])
-        ->where('product_slug', '[0-9a-zA-Z_-]+');
+        Route::get('{product_slug}-{product_id}.html', [ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ])->where('product_slug', '[0-9a-zA-Z_-]+');
+        Route::post('{product_slug}-{product_id}.html', [ 'as' => $controllerName . '/rating', 'uses' => $controller . 'rating' ])->where('product_slug', '[0-9a-zA-Z_-]+');
 
-        Route::get('modal-image/{product_id}', 
-        ['as' => $controllerName . '/modal', 'uses' => $controller . 'get_image_modal'])->where('id', '[0-9]+');
 
-        Route::get('addToCart/{product_id}-{quantity}-{price}-{total_price}-{attribute_id}-{attribute_value}', 
-        ['as' => $controllerName . '/addToCart', 'uses' => $controller . 'addToCart'])->where('id', '[0-9]+');
 
     });
-    
+
 
     // ============================== NOTIFY ==============================
     $prefix         = '';
@@ -95,7 +107,7 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
     // news69/login
     $prefix         = '';
     $controllerName = 'auth';
-    
+
     Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
         $controller = ucfirst($controllerName)  . 'Controller@';
         Route::get('/login',        ['as' => $controllerName.'/login',      'uses' => $controller . 'login'])->middleware('check.login');;
@@ -105,16 +117,15 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
         Route::get('/logout',       ['as' => $controllerName.'/logout',     'uses' => $controller . 'logout']);
     });
 
-    // // ============================== CONTACT ============================== //
+     // ============================== CONTACT ============================== //
     $prefix = 'lien-he';
     $controllerName = 'contact';
     Route::group(['prefix' => $prefix], function () use ($controllerName) {
         $controller = ucfirst($controllerName) . 'Controller@';
-        // Route::get('/', [ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ]);
-        Route::get('/', [ 'as' => $controllerName, 'uses' => $controller . 'index' ]);
+        Route::get('', [ 'as' => $controllerName, 'uses' => $controller . 'index' ]);
 
-        Route::post('/post-contact',                 [ 'as' => $controllerName . '/post_contact',                  'uses' => $controller . 'postContact' ]);
-        Route::get('/thank-you.html',                 [ 'as' => $controllerName . '/thankyou',                  'uses' => $controller . 'thankyou' ]);
+        Route::post('/contact',                 [ 'as' => $controllerName . '/contact',                  'uses' => $controller . 'contact' ]);
+        Route::get('/thank-you.html',                 [ 'as' => $controllerName . '/thank_you',                  'uses' => $controller . 'thank_you' ]);
     });
 
     // ====================== ABOUT US ========================
@@ -126,34 +137,33 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
         Route::get('/about-us',[ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ]);
     });
 
-    // ============================== COMMENT ==============================
-    $prefix         = 'comment';
-    $controllerName = 'comment';
+
+    /*============================================== Cart  =======================================================*/ $prefix         = 'cart';
+    $prefix         = 'check-out';
+    $controllerName = 'checkout';
     Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
-        $controller = ucfirst($controllerName)  . 'Controller@';
-        Route::post('addComment/{product_id}',      [ 'as' => $controllerName . '/addComment',  'uses' => $controller . 'addComment'])->where('product_id', '[0-9]+');
+        $controller = ucfirst($controllerName) . 'Controller@';
+
+        Route:: get('/',                ['as' => $controllerName             ,'uses' => $controller . 'index' ]);
+        Route:: get('/shipping',                ['as' => $controllerName ."/shipping"            ,'uses' => $controller . 'shipping' ]);
+        Route:: post('/',                ['as' => $controllerName ."/order"            ,'uses' => $controller . 'order' ]);
+
     });
-    
-    // ============================== CART ==============================
-    $prefix         = 'cart';
+    /*============================================== Cart  =======================================================*/ $prefix         = 'cart';
     $controllerName = 'cart';
     Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
         $controller = ucfirst($controllerName) . 'Controller@';
 
-        Route:: get('/', ['as' => $controllerName . 'Front', 'uses' => $controller . 'index' ]);
+        Route:: get('/',                ['as' => $controllerName                ,'uses' => $controller . 'index' ]);
+        Route:: get('/add-cart',        ['as' => $controllerName . '/add-cart'  ,'uses' => $controller . 'add' ]);
+        Route:: get('/remove-cart',        ['as' => $controllerName . '/remove-cart'  ,'uses' => $controller . 'remove' ]);
+        Route:: get('/update-cart',        ['as' => $controllerName . '/update-cart'  ,'uses' => $controller . 'update' ]);
+        Route:: get('/coupon',        ['as' => $controllerName . '/coupon'  ,'uses' => $controller . 'coupon' ]);
         Route:: post('/post-order',     ['as' => $controllerName . '/order',    'uses' => $controller . 'postOrder' ]);
         Route:: get('/thank-you.html',  ['as' => $controllerName . '/thankyou', 'uses' => $controller . 'thankyou' ]);
 
     });
 
-    // ============================== CART ==============================
-    $prefix         = 'checkout';
-    $controllerName = 'checkout';
-    Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
-        $controller = ucfirst($controllerName) . 'Controller@';
-
-        Route::get('/', [ 'as' => $controllerName, 'uses' => $controller . 'index' ]);
-    });
 
 });
 

@@ -11,12 +11,12 @@
         [
             'label'     => Form::label('facebook', 'Select app', $formLabelAttributes),
             'element'   => Form::checkbox('app[]','facebook',@in_array('facebook',@$item['app']))
-                        .sprintf("  <img width=15 src='%s' /> facebook <br />",asset('images/logo/facebook.png'))
+                        .sprintf("  <img width=15 src='%s' /> facebook <br />",asset('admin/images/logo/facebook.png'))
                         .Form::checkbox('app[]','twitter',@in_array('twitter',@$item['app']))
-                        .sprintf("  <img width=25 src='%s' /> twitter <br />",asset('images/logo/twitter.png'))
+                        .sprintf("  <img width=25 src='%s' /> twitter <br />",asset('admin/images/logo/twitter.png'))
 
                         .Form::checkbox('app[]','pinterest',@in_array('pinterest',@$item['app']))
-                        .sprintf("  <img width=25 src='%s' /> pinterest",asset('images/logo/pinterest.png'))
+                        .sprintf("  <img width=25 src='%s' /> pinterest",asset('admin/images/logo/pinterest.png'))
         ],
         [
             'label'     => Form::label('page', 'Select page', $formLabelAttributes),

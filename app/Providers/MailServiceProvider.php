@@ -25,12 +25,12 @@ class MailServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-/*            $mail = json_decode(SettingModel::where('key_value', 'setting-email')->first()->value, true);
+            $mail = json_decode(SettingModel::where('key_value', 'setting-email')->first()->value, true);
             if (empty($mail))
                 return false;
             else {
-                Config::set('mail.username', $mail['username']);
+                Config::set('mail.username', $mail['email']);
                 Config::set('mail.password', $mail['password']);
-            }*/
+            }
     }
 }

@@ -4,9 +4,7 @@
 
             <div class="footer-widget col-lg-3 col-md-6 col-12 mb-40">
                 <h4 class="title">CONTACT US</h4>
-                <p>You address will be here<br/> Lorem Ipsum text</p>
-                <p><a href="tel:01234567890">01234 567 890</a><a href="tel:01234567891">01234 567 891</a></p>
-                <p><a href="mailto:info@example.com">info@example.com</a><a href="#">www.example.com</a></p>
+                {!! $setting_general['contact_us'] !!}
             </div>
 
             <div class="footer-widget col-lg-3 col-md-6 col-12 mb-40">
@@ -50,8 +48,11 @@
                 </div><!-- mailchimp-alerts end -->
 
                 <h5>FOLLOW US</h5>
-                <p class="footer-social"><a href="#">Facebook</a> - <a href="#">Twitter</a> - <a
-                            href="#">Google+</a></p>
+                <p class="footer-social">
+                    <a href="{{$setting_general['facebook']}}" target="_blank">Facebook</a> -
+                    <a href="{{$setting_general['twitter']}}"  target="_blank">Twitter</a> -
+                    <a href="{{$setting_general['google']}}"  target="_blank">Google+</a>
+                </p>
 
             </div>
 

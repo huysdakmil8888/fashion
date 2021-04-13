@@ -32,13 +32,6 @@ class MenuController extends AdminController
         }
     }
 
-    public function ordering(Request $request)
-    {
-        $this->params['ordering'] = $request->ordering;
-        $this->params['id'] = $request->id;
-        $result = $this->model->saveItem($this->params, ['task' => 'change-ordering']);
-        echo json_encode($result);
-    }
 
     public function typeMenu(Request $request)
     {

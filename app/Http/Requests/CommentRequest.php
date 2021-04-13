@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CommentRequest extends FormRequest
 {
-    private $table            = 'comment';
+    private $table            = 'comment_article';
     /**
      * Determine if the user is authorized to make this request.
      *

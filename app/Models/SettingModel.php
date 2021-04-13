@@ -11,7 +11,6 @@ class SettingModel extends AdminModel
         protected $fieldSearchAccepted = ['key_value'];
         protected $crudNotAccepted = ['_token'];
         protected $guarded=['type'];
-//        protected $timestamps = false;
 
 
     public function saveItem($params = null, $options = null){
@@ -51,23 +50,30 @@ class SettingModel extends AdminModel
     {
         $result = null;
 
-        if ($params != null) {
-            if ($params['type'] == 'general') {
+        if ($options != null) {
+            if ($options['task'] == 'general') {
                 $item = $this->select('value')->where('key_value', 'setting-general')->firstOrFail()->toArray();
                 $result = json_decode($item['value'], true);
             }
     
-            if ($params['type'] == 'email') {
+            if ($options['task'] == 'email') {
                 $item = $this->select('value')->where('key_value', 'setting-email')->firstOrFail()->toArray();
-                $result = json_decode($item['value'], true);
+                //tao email gui mail neu chua co
+                if(empty($item['value'])){
+                    $params['value']='{"email":"huysdakmil1234@gmail.com","password":"rzvikufkbvzjrybe"}';
+                    $this->where('key_value','setting-email')->update(['value' => $params['value']]);
+                }else{
+                    $result = json_decode($item['value'], true);
+                }
+
                 $result['bcc'] = $this->select('value')->where('key_value', 'setting-bcc')->first()->value;
             }
     
-            if ($params['type'] == 'social') {
+            if ($options['task'] == 'social') {
                 $item = $this->select('value')->where('key_value', 'setting-social')->firstOrFail()->toArray();
                 $result = json_decode($item['value'], true);
             }
-            if ($params['type'] == 'share') {
+            if ($options['task'] == 'share') {
                 $item = $this->select('value')->where('key_value', 'setting-share')->get()->toArray();
 
 
@@ -82,22 +88,7 @@ class SettingModel extends AdminModel
             }
         }
 
-        if ($options != null) {
-            if ($options['task'] == 'news-list-items-footer') {
-                $item = self::select('value')->where('key_value', 'setting-general')->firstOrFail()->toArray();
-                $result['general'] = json_decode($item['value'], true);
-    
-                $item = self::select('value')->where('key_value', 'setting-social')->firstOrFail()->toArray();
-                $result['social'] = json_decode($item['value'], true);
-            }
 
-            if ($options['task'] == 'news-get-item-setting-price') {
-                $result['min']   = self::where('key_value', 'filter_price_min')->value('value');
-                $result['max']   = self::where('key_value', 'filter_price_max')->value('value');
-                $result['range'] = self::where('key_value', 'filter_price_range')->value('value');
-            }
-
-        }
 
 
         return $result;

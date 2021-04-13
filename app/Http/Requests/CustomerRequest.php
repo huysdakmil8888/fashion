@@ -25,19 +25,28 @@ class CustomerRequest extends FormRequest
     public function rules()
     {
         $id = $this->id;
+        $login=$this->login;
 
-        $condThumb = 'bail|required|max:500';
-        $condName  = "bail|required|between:3,100|unique:$this->table,name";
+        $condName = 'required';
 
-        if(!empty($id)){ // edit
-            $condThumb = 'required';
-            $condName  .= ",$id";
+        $condEmail  = "bail|required|email|unique:$this->table,email";
+        $condPhone  = "bail|required|between:3,100|unique:$this->table,phone";
+        $condPass = "bail|required|between:1,100|confirmed";
+        $condAccount="";
+
+
+        if(!empty($login)){ // login
+            $condAccount = 'required';
+            $condPass  .= "required";
+            $condName =$condEmail=$condPhone='';
         }
         return [
             'name' => $condName,
-            'phone'=>'required',
-            'email'=>'required',
-            'status'      => 'bail|in:active,inactive',
+            'phone'=>$condPhone,
+            'email'=>$condEmail,
+            'password'=>$condPass,
+            'account'=>$condAccount
+//            'status'      => 'bail|in:active,inactive',
         ];
     }
 

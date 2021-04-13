@@ -6,6 +6,9 @@
     $formInputAttr = config('zvn.template.form_input_no_padding');
     $formLabelAttr = config('zvn.template.form_label_no_padding');
     $formCkeditor  = config('zvn.template.form_ckeditor');
+    //for tag
+    $form_tag      = config('zvn.template.form_tag');
+    $tag            = $item?implode(',',$item->tags()->pluck('name')->toArray()):'';
 
 
     $statusValue      = ['default' => 'Select status', 'active' => config('zvn.template.status.active.name'), 'inactive' => config('zvn.template.status.inactive.name')];
@@ -25,17 +28,17 @@
             'type'=>'full'
 
         ],
-/*         [
-            'label'     => Form::label('logo', 'Ảnh đại diện', $formLabelAttr),
-            'element'   => Template::showFileManager($item['thumb'] ?? ''),
-            'type'=>'full'
 
-        ],
-*/        [
+         [
             'label'   => Form::label('description', 'Description', $formLabelAttr),
             'element' => Form::textArea('description', @$item['description'],  $formCkeditor ),
             'type'=>'full'
 
+        ],
+         [
+            'label'   => Form::label('tag', 'Tag', $formLabelAttr),
+            'element'   => Form::text("tag",@$tag , $form_tag),
+            'type'=>'full'
         ],
 
 

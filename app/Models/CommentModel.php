@@ -2,56 +2,98 @@
 
 namespace App\Models;
 
+use App\Helpers\Template;
 use App\Models\AdminModel;
-use App\Models\CustomerModel;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use App\Models\SettingModel;
 use Illuminate\Support\Facades\DB; 
+use Kalnoy\Nestedset\NodeTrait;
 class CommentModel extends AdminModel
 {
-        protected $table               = 'comment';
-        protected $folderUpload        = 'comment' ;
-        protected $fieldSearchAccepted = ['id', 'name', 'description', 'link'];
-        protected $crudNotAccepted     = ['_token','thumb_current', 'username'];
+    use NodeTrait;
 
+    protected $table = 'comment';
+    protected $guarded = [];
 
+    public function product()
+    {
+        return $this->hasMany(ProductModel::class,'comment_id');
+    }
     public function listItems($params = null, $options = null) {
      
         $result = null;
 
         if($options['task'] == "admin-list-items") {
-            $query = $this->select('id', 'name', 'email', 'status', 'star','message','created', 'created_by', 'modified', 'modified_by');
-               
-            if ($params['filter']['status'] !== "all")  {
-                $query->where('status', '=', $params['filter']['status'] );
-            }
-
-            if ($params['search']['value'] !== "")  {
-                if($params['search']['field'] == "all") {
-                    $query->where(function($query) use ($params){
-                        foreach($this->fieldSearchAccepted as $column){
-                            $query->orWhere($column, 'LIKE',  "%{$params['search']['value']}%" );
-                        }
-                    });
-                } else if(in_array($params['search']['field'], $this->fieldSearchAccepted)) { 
-                    $query->where($params['search']['field'], 'LIKE',  "%{$params['search']['value']}%" );
-                } 
-            }
-
-            $result =  $query->orderBy('id', 'desc')
-                            ->paginate($params['pagination']['totalItemsPerPage']);
+            $result = self::withDepth()
+//                ->having('depth', '>', 0)
+                ->defaultOrder()
+                ->get()
+                ->toFlatTree();
+        }
+        /*================================= lay comment da cap o frontend =============================*/
+        if($options['task'] == 'news-list-items') {
+            $result = self::withDepth()
+//                ->having('depth', '>', 0)
+                ->defaultOrder()
+                ->where('status', 'active')
+                ->get()
+                ->toTree();
 
         }
 
-        if($options['task'] == 'news-list-items') {
-            $query = $this->select('id', 'name', 'description', 'link', 'thumb')
-                        ->where('status', '=', 'active' )
-                        ->limit(5);
+        if($options['task'] == 'news-list-items-comment') {
+            $result = self::withDepth()
+                ->having('depth', '>', 0)
+                ->defaultOrder()
+                ->where('status', 'active')
+                ->get()
+                ->toTree()
+                ->toArray();
+        }
+
+
+        if($options['task'] == 'news-list-items-is-home') {
+            $query = $this->select('id', 'name')
+                ->where('status', '=', 'active' )
+                ->where('is_home', '=', 'yes' );
 
             $result = $query->get();
+          
         }
 
+        if ($options['task'] == 'admin-list-items-in-select-box-for-article') {
+            $nodes = self::select('id', 'name')
+                ->withDepth()
+                ->having('depth', '>', 0)
+                ->defaultOrder()
+                ->get()
+                ->toFlatTree()
+                ->toArray();
 
+            foreach ($nodes as $value) {
+                $result[$value['id']] = str_repeat('|---- ', $value['depth'] - 1) . $value['name'];
+            }
+        }
+
+        if($options['task'] == "admin-list-items-in-select-box") {
+            $query = self::select('id', 'name')->withDepth()->defaultOrder();
+       
+           
+            /*================================= truong hop edit =============================*/
+            if (isset($params['id'])) {
+                $node = self::find($params['id']);
+                $query->where('_lft', '<', $node->_lft)->orWhere('_lft', '>', $node->_rgt);
+            }
+            
+            $nodes = $query->get();
+
+            foreach ($nodes as $value) {
+                $result[$value['id']] = str_repeat('|---- ', $value['depth']) . $value['name'];
+            }
+        }
+
+        if ($options['task'] == 'news-breadcrumbs') {
+            $result = self::withDepth()->having('depth', '>', 0)->defaultOrder()->ancestorsAndSelf($params['comment_id'])->toArray();
+        }
 
         return $result;
     }
@@ -89,77 +131,99 @@ class CommentModel extends AdminModel
         $result = null;
         
         if($options['task'] == 'get-item') {
-            $result = self::select('id', 'name', 'message', 'status')->where('id', $params['id'])->first();
+            $result = self::select('id','thumb','slug', 'name', 'parent_id', 'status')->where('id', $params['id'])->first();
+        }
+        //for breadcrumb
+        if($options['task'] == 'breadcrumbs') {
+            $result = self::defaultOrder()->ancestorsAndSelf($params['comment_id']);
+            unset($result[0]);
         }
 
-        if($options['task'] == 'get-thumb') {
-            $result = self::select('id', 'thumb')->where('id', $params['id'])->first();
-        }
+        if($options['task'] == 'news-get-item') {
+            $result = self::select('id','slug', 'name')
+            ->where('id', $params['comment_id'])
+            ->first();
 
-        if($options['task'] == 'in-product-detail') {
-            $result = self::select('id', 'product_id', 'customer_id', 'star', 'message', 'name', 'created')
-            ->where('product_id', $params['product_id'])
-            ->where('status', 'active')
-            // ->get();
-            ->get()->toArray();
         }
 
 
+
+        
         return $result;
     }
 
     public function saveItem($params = null, $options = null) { 
         if($options['task'] == 'change-status') {
             $status = ($params['currentStatus'] == "active") ? "inactive" : "active";
-            self::where('id', $params['id'])->update(['status' => $status ]);
-            return  [
+            $modifiedBy = session('userInfo')['username'];
+            $modified   = date('Y-m-d H:i:s');
+            self::where('id', $params['id'])->update(['status' => $status, 'modified' => $modified, 'modified_by' => $modifiedBy]);
+
+            $result = [
                 'id' => $params['id'],
+                'modified' => Template::showItemHistory($modifiedBy, $modified),
                 'status' => ['name' => config("zvn.template.status.$status.name"), 'class' => config("zvn.template.status.$status.class")],
                 'link' => route($params['controllerName'] . '/status', ['status' => $status, 'id' => $params['id']]),
                 'message' => config('zvn.notify.success.update')
             ];
+
+            return $result;
         }
+
 
         if($options['task'] == 'add-item') {
+            if ($options['task'] == 'add-item') {
+             $params['created_by'] = session('userInfo')['username'];
+             $params['created'] = date('Y-m-d H:i:s');
+                $parent=null;
+                if(isset($params['parent_id'])){
+                    $parent = self::find($params['parent_id']);
+                }
+                self::create($this->prepareParams($params), $parent);
+            }
+        }
+
+        if ($options['task'] == 'edit-item') {
             $params['created_by'] = session('userInfo')['username'];
-            $params['created']    = date('Y-m-d');
-            self::insert($this->prepareParams($params));
+            $parent = self::find($params['parent_id']);
+
+            $query = $current = self::find($params['id']);
+            $query->update($this->prepareParams($params));
+            if($current->parent_id != $params['parent_id']) $query->prependToNode($parent)->save();
         }
 
-        if($options['task'] == 'add-item-news') {
-            // echo '<pre style="color:red";>$params === '; print_r($params);echo '</pre>';
-            $customerModel = new CustomerModel();
-            $params['customer_id'] = $customerModel->getItem($params, ['task' => 'frontend-get-customer-id']);
-            $params['created']     = date('Y-m-d H:i:s');
-            $params['status']      = 'inactive';
+        if ($options['task'] == 'change-ordering') {
+            $ordering   = $params['ordering'];
+            $modifiedBy = session('userInfo')['username'];
+            $modified   = date('Y-m-d H:i:s');
 
-            $preparam = $this->prepareParams($params);
-            echo '<pre style="color:red";>$preparam === '; print_r($preparam);echo '</pre>';
+            self::where('id', $params['id'])->update(['ordering' => $ordering, 'modified' => $modified, 'modified_by' => $modifiedBy]);
 
-            // echo '<h3>Die is Called Model Comemnrt</h3>';die;
-            self::insert($preparam);
-        }
+            $result = [
+                'id' => $params['id'],
+                'modified' => Template::showItemHistory($modifiedBy, $modified),
+                'message' => config('zvn.notify.success.update')
+            ];
 
-
-        if($options['task'] == 'edit-item') {
-
-            /* if(!empty($params['thumb'])){
-                $this->deleteThumb($params['thumb_current']);
-                $params['thumb'] = $this->uploadThumb($params['thumb']);
-            }*/
-            $params['modified_by'] = session('userInfo')['username'];
-            $params['modified']    = date('Y-m-d');
-            self::where('id', $params['id'])->update($this->prepareParams($params));
+            return $result;
         }
     }
 
     public function deleteItem($params = null, $options = null) 
     { 
-        if($options['task'] == 'delete-item') {
-            $item   = self::getItem($params, ['task'=>'get-thumb']); // 
-            $this->deleteThumb($item['thumb']);
-            self::where('id', $params['id'])->delete();
+        if ($options['task'] == 'delete-item') {
+            $node = self::find($params['id']);
+            $node->delete();
         }
+    }
+
+    public function move($params = null, $options = null)
+    {
+        $node = self::find($params['id']);
+        $historyBy = session('userInfo')['username'];
+        $this->where('id', $params['id'])->update(['modified_by' => $historyBy]);
+        if ($params['type'] == 'down') $node->down();
+        if ($params['type'] == 'up') $node->up();
     }
 
 }

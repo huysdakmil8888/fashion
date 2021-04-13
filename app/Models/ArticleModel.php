@@ -4,25 +4,44 @@ namespace App\Models;
 
 use App\Helpers\Template;
 use App\Models\AdminModel;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use DB; 
 class ArticleModel extends AdminModel
 {
-/*    public function __construct() {
-        $this->table               = 'article';
-        $this->folderUpload        = 'article' ; 
-        $this->fieldSearchAccepted = ['name', 'content']; 
-        $this->crudNotAccepted     = ['_token','thumb_current'];
-    }*/
     protected $table='article';
     protected $folderUpload='article';
     protected $fieldSearchAccepted=['name','content'];
-    protected $crudNotAccepted=['_token','thumb_current'];
+    protected $crudNotAccepted=['_token','thumb_current','tag'];
+    protected $guarded=[];
 
+    public function tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
+    }
+    public function category_article()
+    {
+        return $this->belongsTo(CategoryArticleModel::class,'category_article_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(UserModel::class,'user_id');
+    }
     public function comments()
     {
         return $this->hasMany(CommentArticleModel::class,'article_id','id');
+    }
+
+    public function increaseView($params)
+    {
+        $this->where('id',$params['id'])->update($params);
+
+    }
+    public function increaseLike($params)
+    {
+        $this->where('id',$params['id'])->update($params);
+
     }
     public function listItems($params = null, $options = null) {
      
@@ -64,9 +83,9 @@ class ArticleModel extends AdminModel
         }
 
         if($options['task'] == 'news-list-items') {
-            $query = $this->select('id','slug', 'name', 'thumb','created','created_by')
+            $query = $this->with('user')->select('id','user_id','slug', 'name', 'thumb','created','like','view','content')
                         ->where('status', '=', 'active' )
-                        ->limit(3);
+                        ->limit(2);
 
             $result = $query->get();
         }
@@ -150,31 +169,43 @@ class ArticleModel extends AdminModel
 
     public function getItem($params = null, $options = null) { 
         $result = null;
-        
+
+        //form article
         if($options['task'] == 'get-item') {
-            $result = self::select('id', 'slug','name', 'content', 'status', 'thumb', 'category_id')->where('id', $params['id'])->first();
+            $result = self::with('user','tags')
+                ->select('id', 'slug','name','like','view','user_id', 'content', 'status', 'thumb', 'category_article_id','created')->where('id', $params['id'])
+                ->first();
+
         }
 
-        if($options['task'] == 'get-thumb') {
-            $result = self::select('id', 'thumb')->where('id', $params['id'])->first();
-        }
-
-/*        if($options['task'] == 'news-get-item') {
-            $result = self::select('a.id', 'a.name','a.slug', 'content', 'a.category_id', 'c.name as category_name', 'a.thumb', 'a.created', 'c.display')
-                         ->leftJoin('category as c', 'a.category_id', '=', 'c.id')
-                         ->where('a.id', '=', $params['article_id'])
-                         ->where('a.status', '=', 'active')->first();
-            if($result) $result = $result->toArray();
-        }*/
         if($options['task']=='news-get-item'){
-            $result=self::select('id','name','slug','content','created_by','created','thumb')->paginate(6);
+            $result=self::with(['user','category_article'])->where('category_article_id',$params['category_article_id'])->select('id','like','view','user_id','category_article_id','name','slug','content','created_by','created','thumb')->paginate(2);
         }
+        if($options['task']=='news-get-item-by-tag'){
+            $result=Tag::find($params['tag'])->articles()
+                ->paginate(2);
+        }
+        //get article same category
         if($options['task']=='news-get-item-recent'){
-            $result=self::select('id','name','slug','content','created_by','created','thumb')->take(3)->orderBy('id','desc')->get();
+            $result=self::select('id','name','slug','thumb','created','thumb')
+                ->where("id","<>",$params['id'])
+                ->where("category_article_id",$params['category_article_id'])
+                ->take(3)->orderBy('id','desc')
+                ->get();
         }
-        if($options['task']=='news-get-item-by-slug'){
-            $result=self::with('comments')->where('slug',$params['slug'])->first();
+        //get archives
+        if($options['task']=='news-get-item-archive'){
+           $result= self::all()->groupBy(function($date) {
+                return Carbon::parse($date->created)->format('M Y');
+            });
+           if(isset($params['archive'])){
+                return $result[$params['archive']];
+           }else{
+               return $result->take(5);
+
+           }
         }
+
 
         return $result;
     }
@@ -189,34 +220,26 @@ class ArticleModel extends AdminModel
                 'message' => config('zvn.notify.success.update')
             ];
         }
-        
 
         if($options['task'] == 'add-item') {
 
-
-
             $params['created_by'] = "hailan";
             $params['created']    = date('Y-m-d');
-//            $params['thumb']      = $this->uploadThumb($params['thumb']);
+            $article=self::create($this->prepareParams($params));
 
-
-
-            self::insert($this->prepareParams($params));        
+            //luu tag
+            $this->saveTag($params,$article);
         }
 
         if($options['task'] == 'edit-item') {
-            /*if(!empty($params['thumb'])){
-                // Xóa hình cũ
-                $this->deleteThumb($params['thumb_current']);
-
-                // Up hình mới
-                $params['thumb']      = $this->uploadThumb($params['thumb']);
-            }*/
 
             $params['modified_by']   = "hailan";
             $params['modified']      = date('Y-m-d');
 
-            self::where(['id' => $params['id'] ] )->update($this->prepareParams($params));
+            $article=self::find( $params['id']);
+            $article->update($this->prepareParams($params));
+            //luu tag
+            $this->saveTag($params,$article);
         }
 
         if ($options['task'] == 'change-category') {

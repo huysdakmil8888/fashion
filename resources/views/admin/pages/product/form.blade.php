@@ -12,9 +12,10 @@
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <ul id="settingTab" class="nav nav-tabs bar_tabs" role="tablist">
-                    <li @if ($type == 'general') class="active" @endif><a href="{{ route('product/form', ['id'=>$item['id'],'type' => 'general']) }}" role="tab">Cấu hình chung</a></li>
+                    <li @if ($type == 'general') class="active" @endif><a href="{{ route('product/form', ['id'=>$item['id'],'type' => 'general']) }}" role="tab">Thông tin cơ bản</a></li>
                     <li @if ($type == 'attribute') class="active" @endif><a href="{{ route('product/form', ['id'=>$item['id'],'type' => 'attribute']) }}" role="tab">Thuộc tính</a></li>
                     <li @if ($type == 'seo') class="active" @endif><a href="{{ route('product/form', ['id'=>$item['id'],'type' => 'seo']) }}" role="tab">SEO</a></li>
+                    <li @if ($type == 'content') class="active" @endif><a href="{{ route('product/form', ['id'=>$item['id'],'type' => 'content']) }}" role="tab">More info</a></li>
                 </ul>
                 <div id="settingTabContent" class="tab-content">
                     <div role="tabpanel" class="tab-pane fade active in">
@@ -33,7 +34,7 @@
                                 @include('admin.pages.product.form_seo')
                             @break
                             @default
-                                @include('admin.pages.product.form_seo')
+                                @include('admin.pages.product.form_content')
                             @break
                         @endswitch
                     </div>

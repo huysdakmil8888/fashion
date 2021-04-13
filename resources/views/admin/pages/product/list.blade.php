@@ -29,7 +29,7 @@
                             $code           = HightLight::show($item['product_code'], $params['search'], 'product_code');
                             $name           = HightLight::show($item['name'], $params['search'], 'name');
                             $price           = HightLight::show($item['price'], $params['search'], 'price');
-                            $price_sale           = HightLight::show($item['price_sale'], $params['search'], 'price_sale');
+                            $sale           = HightLight::show($item['sale'], $params['search'], 'sale');
                             $category        = Form::select('category_id', $itemsCategory, $item['category_id'], ['class' => 'form-control select-ajax', 'data-url' => route("$controllerName/change-category", ['id' => $item->id, 'category_id' => 'value_new'])]);
 
                             $status          = Template::showItemStatus($controllerName, $item->id, $item['status']);
@@ -41,19 +41,29 @@
                         <tr>
                             <td>{{$index}}</td>
                             <td>
-                                <p>{!! $name !!}</p>
+                                <p>{!! $name !!}
+
+                                </p>
+
                                 <p><i>Mã Code:</i> {!! $code !!}</p>
                             </td>
                             <td>
 
-                                    <img width="120" height="" src="{{$item->thumb}}" alt="">
+                                    <img width="120" height="" src="{{asset($item->thumb)}}" alt="">
                             </td>
                             <td>
-                                @if($price_sale!=0)
-                                {!! Template::format_price($price_sale,'vietnamese dong') !!}<br>
-                                <s>{!! Template::format_price($price,'vietnamese dong') !!}</s>
+                                @if($item['sale']>0)
+
+
+                                    {!! Template::format_price($sale) !!}
+                                    <img width="40px"  src="{{asset('/assets/images/icons/sale.png')}}" alt="">
+
+                                    <br>
+
+
+                                    <s>{!! Template::format_price($price) !!}</s>
                                 @else
-                                    {!! Template::format_price($price,'vietnamese dong') !!}
+                                    {!! Template::format_price($price) !!}
                                 @endif
                             </td>
                             <td>{!! $category !!}</td>

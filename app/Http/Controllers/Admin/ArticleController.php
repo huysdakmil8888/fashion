@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
+use App\Models\CategoryArticleModel;
 use Illuminate\Http\Request;
 use App\Models\ArticleModel as MainModel;
 use App\Models\CategoryModel;
@@ -20,28 +21,32 @@ class ArticleController extends AdminController
 
     public function form(Request $request)
     {
+        $categoryModel=new CategoryArticleModel();
+        $itemsCategoryArticle  = $categoryModel->listItems(null, ['task' => 'admin-list-items-in-select-box']);
+
+
         $item = null;
         if($request->id !== null ) {
             $params["id"] = $request->id;
             $item = $this->model->getItem( $params, ['task' => 'get-item']);
         }
 
-        $categoryModel  = new CategoryModel();
-        $itemsCategory  = $categoryModel->listItems(null, ['task' => 'admin-list-items-in-select-box']);
 
         return view($this->pathViewController .  'form', [
             'item'        => $item,
-            'itemsCategory'=>$itemsCategory
+            'itemsCategoryArticle'=>$itemsCategoryArticle
         ]);
     }
 
-    public function save(MainRequest $request)
+    public function save(Request $request)
     {
         if ($request->method() == 'POST') {
             $params = $request->all();
+
             if(empty($params['slug'])){
                 $params['slug']=Str::slug($params['name']);
             }
+            $params['user_id']=session('userInfo')['id'];
 
             
             $task   = "add-item";
@@ -63,13 +68,6 @@ class ArticleController extends AdminController
         $result=$this->model->saveItem($params, ['task' => 'change-type']);
         echo json_encode($result);
 
-//        return redirect()->route($this->controllerName)->with("zvn_notify", "Cập nhật kiểu bài viết thành công!");
     }
 
-/*    public function changeCategory(Request $request) {
-        $params['category_id'] = $request->category_id;
-        $params['id'] = $request->id;
-        $result = $this->model->saveItem($params, ['task' => 'change-category']);
-        return response()->json($result);
-    }*/
 }

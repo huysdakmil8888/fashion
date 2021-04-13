@@ -7,9 +7,13 @@
     $formInputAttr = config('zvn.template.form_input');
     $formLabelAttr = config('zvn.template.form_label');
     $formCkeditor  = config('zvn.template.form_ckeditor');
+    $formDatePicker= config('zvn.template.form_date_picker');
+    if(isset($item['expire_date'])) $item['expire_date']=date("d/m/Y",@$item['expire_date']);
+
 
 
     $statusValue      = ['default' => 'Select status', 'active' => config('zvn.template.status.active.name'), 'inactive' => config('zvn.template.status.inactive.name')];
+    $type      = ['percent'=>'percent','price'=>'price'];
 
     $inputHiddenID    = Form::hidden('id', @$item['id']);
     $inputHiddenThumb = Form::hidden('thumb_current', @$item['thumb']);
@@ -20,12 +24,20 @@
             'element' => Form::text('code', @$item['code'],  $formInputAttr )
         ],
         [
-            'label'   => Form::label('date_start', 'Date_start', $formLabelAttr),
-            'element' => Form::text('date_start', @$item['date_start'],  $formInputAttr )
+            'label'   => Form::label('type', 'Type', $formLabelAttr),
+            'element' => Form::select('type', $type, @$item['type'], $formInputAttr)
+        ],
+         [
+            'label'   => Form::label('amount', 'Amount', $formLabelAttr),
+            'element' => Form::text('amount', @$item['amount'],  $formInputAttr )
         ],
         [
-            'label'   => Form::label('date_end', 'Date_end', $formLabelAttr),
-            'element' => Form::text('date_end', @$item['date_end'],  $formInputAttr )
+            'label'   => Form::label('limit', 'Số lần sử dụng', $formLabelAttr),
+            'element' => Form::text('limit', @$item['limit'],  $formInputAttr )
+        ],
+        [
+            'label'   => Form::label('expire_date', 'Ngày hết hạn', $formLabelAttr),
+            'element' => Form::text('expire_date', @$item['expire_date'],  $formDatePicker )
         ],
         [
             'label'   => Form::label('status', 'Status', $formLabelAttr),
@@ -37,7 +49,9 @@
         ]
     ];
 @endphp
-
+@section('css')
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+@stop
 @section('content')
     @include ('admin.templates.page_header', ['pageIndex' => false])
     @include ('admin.templates.error')
@@ -61,3 +75,17 @@
         </div>
     </div>
 @endsection
+@section('script')
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+
+        $(document).ready(function() {
+
+
+            $( ".datepicker" ).datepicker({
+                dateFormat: "dd-mm-yy"
+            });
+        } );
+    </script>
+@stop

@@ -2,99 +2,70 @@
 
 namespace App\Http\Controllers\News;
 
+use App\Models\CategoryModel;
+use App\Models\RatingModel;
 use App\Models\SettingModel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Helpers\Functions;
 use App\Models\ProductModel as MainModel;
 
-class ProductController extends FrontendController
+class ProductController extends NewsController
 {
+    private $pathViewController = 'news.pages.product.';  // slider
+    private $controllerName     = 'product';
     public function __construct()
     {
-        $this->pathViewController = 'news.pages.product.';
+        view()->share('controllerName', $this->controllerName);
         $this->controllerName     = 'product';
         $this->model              = new MainModel();
         parent::__construct();
     }
 
+
     public function index(Request $request)
     {
-        $params["product_slug"] = $request->product_slug;
-        $params["product_id"]   = $request->product_id;
+        $params["id"]   = $request->product_id;
+        //lay thong tin chi tiet san pham
+        $item = $this->model->getItem($params, ['task' => 'news-get-item-product-detail']);
+        $params['category_id']=$item->category_id;
 
-        $items = $this->model->getItem($params, ['task' => 'news-get-item-product-detail']);
-        if(empty($items))  return redirect()->route('home');
+        //lay related product
+        $itemsRelated = $this->model->getItem($params, ['task' => 'news-get-item-product-related']);
 
-        $items['list_images'] = $this->model->getItem($params, ['task' => 'get-list-thumb-product-detail']);
-        $items['attribute']   = $this->model->getItem(null, ['task' => 'get-list-thumb-product-id-modal']);
-        foreach ($items['attribute'] as $key => $value) $params['attribute_id'][] = $value['id'];
-        $items['list_attribute'] = $this->model->getItem($params, ['task' => 'get-list-thumb-product-id-modal-array']);
+        //get breadcrumbs
+        $cat=new CategoryModel();
+        $params['category_id']=$item->category_id;
+        $breadItems = $cat->getItem($params,['task'=>'breadcrumbs']);
 
-        // Merge Attribute
-        $merge_attribute = Functions::fixArray_01($items['list_attribute'], 'value');
-        $allAttribute    = Functions::merge_Multidi_Array_02($items['attribute'], $merge_attribute, 'id');
-        foreach ($allAttribute as $key => $value) {
-            if (!array_key_exists("detail", $value) ) {
-                unset($allAttribute[$key]);
-            }
-        }
-        $items['all_attribute'] = Functions::implode_01($allAttribute, 'detail', ', ');
-        $items['comment']       = $this->model->getComment($params, ['task' => 'in-product-detail']);
-        $items['related']       = $this->model->listItems($params, ['task' => 'news-list-items-related-in-product']);
-
-        // $cart = $request->session()->get('cart');
-        // echo '<pre style="color:red";>$cart === '; print_r($cart);echo '</pre>';
-        // echo '<h3>Die is Called </h3>';die;
-        // $request->session()->pull('cart');
+        //lay share button facebook,twitter
         $setting=new SettingModel();
-        $share_setting=$setting->getItem(['type'=>'share']);
+        $share_setting=$setting->getItem(null,['task'=>'share']);
 
-        return view($this->pathViewController . 'index', compact('items','share_setting'));
+
+
+        return view($this->pathViewController . 'index',compact(
+            'item','breadItems','itemsRelated','share_setting'
+
+        ));
     }
 
-
-    public function addToCart(Request $request)
+    public function rating(Request $request)
     {
-        $cart = $request->session()->get('cart');
+        $params=$request->all();
+        $params['product_id']=$request->product_id;
+        if($params['rating']==null){
+            $params['rating']=4;
+        }
 
-        // echo '<pre style="color:red";>$cart === '; print_r($cart);echo '</pre>';
-        // echo '<h3>Die is Called </h3>';die;
-
-        $product_id      = $request->product_id;
-        $quantity        = $request->quantity;
-        $price           = $request->price;
-        $total_price     = $request->total_price;
-        $attribute_id    = explode(',', $request->attribute_id);
-        $attribute_value = explode(',', $request->attribute_value);
-
-        $arr = [
-            'product_id'      => $product_id,
-            'quantity'        => $quantity,
-            'price'           => $price,
-            'total_price'     => $total_price,
-            'attribute_id'    => $attribute_id,
-            'attribute_value' => $attribute_value
-        ];
-
-        if(!$cart){
-            $cart[] = $arr;
-        }else{
-            array_push($cart, $arr);
-		}
-
-        $request->session()->put('cart', $cart);
-
-        return response()->json($quantity);
+        $ratingModel=new RatingModel();
+        $ratingModel->saveItem($params, ['task' => 'add-item']);
+        return redirect(url()->previous() .'#reviews')->with(
+            ['notify'=>'comment đang chờ duyệt,xin vui lòng đợi']
+        );
 
     }
 
-    public function get_image_modal(Request $request)
-    {
-        $params["product_id"]  = $request->product_id;
-        $result  = $this->model->getItem($params, ['task' => 'news-get-items-modal']);
 
-        return response()->json($result);
-
-    }
 
 }

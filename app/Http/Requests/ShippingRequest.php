@@ -35,7 +35,6 @@ class ShippingRequest extends FormRequest
         }
         return [
             'name' => $condName,
-            'zip_postal_code'=>'required',
             'fee'=>'required',
             'status'      => 'bail|in:active,inactive',
         ];

@@ -8,11 +8,12 @@
             <thead>
                 <tr class="headings">
                     <th class="column-title">STT</th>
-                    <th class="column-title">{{$controllerName}} Name</th>
-                    <th class="column-title">Date start</th>
-                    <th class="column-title">Date end</th>
+                    <th class="column-title">Mã Code</th>
+                    <th class="column-title">Loại</th>
+                    <th class="column-title">Số lượng</th>
+                    <th class="column-title">Ngày hết hạn</th>
+                    <th class="column-title">Số lần sử dụng còn lại</th>
                     <th class="column-title">Trạng thái</th>
-                    <th class="column-title">Tạo mới</th>
                     <th class="column-title">Hành động</th>
                 </tr>
             </thead>
@@ -23,11 +24,13 @@
                             $index           = $key + 1;
                             $class           = ($index % 2 == 0) ? "even" : "odd";
                             $id              = $val['id'];
-                            $code            = Hightlight::show($val['code'], $params['search'], 'type');
-                            $date_start     = Hightlight::show($val['date_start'], $params['search'], 'date_start');
-                            $date_end            = Hightlight::show($val['date_end'], $params['search'], 'date_end');
-                            $star=$val['star'];
-                            $status          = Template::showItemStatus($controllerName, $id, $val['status']); ;
+                            $code            = Hightlight::show($val['code'], $params['search'], 'code');
+                            $type            = Hightlight::show($val['type'], $params['search'], 'type');
+                            $amount            = Hightlight::show($val['amount'], $params['search'], 'amount');
+                            $limit            = Hightlight::show($val['limit'], $params['search'], 'limit');
+                            $expire_date     = date("d/m/Y",$val['expire_date']);
+                            $status          = Template::showItemStatus($controllerName, $id, $val['status']);
+
                             $createdHistory  = Template::showItemHistory($val['created_by'], $val['created']);
                             $modifiedHistory = Template::showItemHistory($val['modified_by'], $val['modified']);
                             $listBtnAction   = Template::showButtonAction($controllerName, $id);
@@ -39,11 +42,13 @@
                                  {!! $code !!}
                                 
                             </td>
-                            <td>{{$date_start}}</td>
-                            <td>{{$date_end}}</td>
+                            <td>{!! $type !!}</td>
+                            <td>{!! $amount !!}</td>
+                            <td>{{$expire_date}}</td>
+                            <td>{!! $limit !!}</td>
 
                             <td>{!! $status !!}</td>
-                            <td>{!! $createdHistory !!}</td>
+
 
                             <td class="last">{!! $listBtnAction !!}</td>
                         </tr>

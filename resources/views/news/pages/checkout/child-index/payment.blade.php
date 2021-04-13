@@ -1,42 +1,26 @@
-<div class="ship-wrapper">
+<div class="col-12 mb-40">
 
-    <div>
-        <label>
-            <div class="single-ship">
-                <input id="cash" type="radio" checked="" value="cash" name="address">
-                Tiền Mặt
-            </div>
-        </label>
-    </div>
+    <h4 class="checkout-title">Phương thức thanh toán</h4>
 
-    <div>
-        <label>
-            <div class="single-ship">
-                <input id="creadit_card" type="radio" value="creadit_card" name="address">
-                Thẻ Tín Dụng
+    <div class="checkout-payment-method">
+        @foreach($payment as $item)
+            @php
+                $id=$item->id;
+            @endphp
+            <div class="single-method">
+                <input type="radio" id="payment_bank{{$id}}" name="payment_id" value="{{$id}}">
+                <label for="payment_bank{{$id}}">{{$item->type}}</label>
+                <p data-method="bank">Please send a Check to Store name with Store Street, Store Town, Store State, Store Postcode, Store Country.</p>
             </div>
-        </label>
+        @endforeach
     </div>
+    <div class="single-method" style="margin-top: 40px">
+        <input type="checkbox" id="accept_terms" name="accept">
+        <label for="accept_terms">Tôi đã đọc và đồng ý với tất cả điều khoản trên</label>
+        <span class="color-red">{{$errors->first('accept')}}</span>
+
+    </div>
+    <button class="place-order">Đặt hàng</button>
+    </form>
 
 </div>
-
-<div class="payment-info toHide" style="display: none">
-    <div class="row">
-        <div class="col-lg-12 col-md-12">
-            <div class="billing-info">
-                <label>Số Thẻ Tín Dụng : </label>
-                <input type="text">
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="billing-back-btn">
-    <div class="billing-back">
-        <a id="payment-5" href=""><i class="ti-arrow-up"></i> back</a>
-    </div>
-    <div class="billing-btn">
-        <button id="payment-5" type="submit">Continue</button>
-    </div>
-</div>
-

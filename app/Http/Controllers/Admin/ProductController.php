@@ -8,6 +8,7 @@ use App\Models\ProductModel as MainModel;
 use App\Http\Requests\ProductRequest as MainRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 
 class ProductController extends AdminController
 {
@@ -78,8 +79,11 @@ class ProductController extends AdminController
         if ($request->method() == 'POST') {
 
             $params = $request->all();
+            //luu hinh tu tmp -> product
             $params['dropzone'] = $this->model->dropzone($params);
-            $params['thumb']='/images/product/'.array_column($params['dropzone'],'name')[0];
+            //them ten
+            $params['thumb']='assets/images/product/product-small/'.array_column($params['dropzone'],'name')[0];
+
 
 
             if(empty($params['slug']) && isset($params['name'])){
@@ -110,6 +114,15 @@ class ProductController extends AdminController
         }
     }
     public function changeInfo(MainRequest $request)
+    {
+        if ($request->method() == 'POST') {
+            $params = $request->all();
+
+            $this->model->saveItem($params, ['task' => 'change-info-product']);
+            return redirect()->back()->with("zvn_notify", "Cập nhật thông tin sản phẩm thành công!");
+        }
+    }
+    public function changeContent(Request $request)
     {
         if ($request->method() == 'POST') {
             $params = $request->all();

@@ -10,6 +10,9 @@ $(document).ready(function() {
 	let $inputSearchValue     = $("input[name  = search_value]");
 	let $selectChangeAttr     = $("select[name = select_change_attr]");
 
+	//date picker
+	// alert(1)
+	// $( "#datepicker" ).datepicker();
 	//format price
 	$("#price,#price_sale").val(function(index, value) {
 		return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -46,9 +49,12 @@ $(document).ready(function() {
 
 	// Ajax Change Status
 	$btnStatus.click(function (e) {
+
+		
 		e.preventDefault();
 		let $currentElement = $(this);
 		let $url = $currentElement.attr("href");
+
 
 		callAjax($currentElement, $url, 'status');
 
@@ -153,8 +159,7 @@ $(document).ready(function() {
 	$('form').find('input[type=text]').filter(':visible:first').focus().select();
 
 	// Slug
-	$.slugify("Ätschi Bätschi"); // "aetschi-baetschi"
-	$('#slug').slugify('#name'); // Type as you slug
+	// $.slugify("Ätschi Bätschi"); // "aetschi-baetschi"
 
 	// Modal
 	$('#myModal').on('shown.bs.modal', function () {
@@ -223,9 +228,12 @@ $(document).ready(function() {
 
 	allStorage();
 
-	// $('.tags').tagsInput({
-	// 	'defaultText': '',
-	// 	'width': '100%'
-	// });
+
+	document.getElementById("main-form").onkeypress = function(e) {
+		var key = e.charCode || e.keyCode || 0;
+		if (key == 13) {
+			e.preventDefault();
+		}
+	}
 });
 

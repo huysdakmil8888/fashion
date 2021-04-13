@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "79da79e8d180ca4873e8c3d1fdad30c7",
+    "content-hash": "6e11fbbea86dfa0be96539b1ae6bc074",
     "packages": [
         {
             "name": "arcanedev/log-viewer",
@@ -136,68 +136,6 @@
                 "source": "https://github.com/ARCANEDEV/Support/tree/master"
             },
             "time": "2019-02-27T18:33:30+00:00"
-        },
-        {
-            "name": "buihuycuong/vnfaker",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/BuiHuyCuong/VNFaker.git",
-                "reference": "9427dc74f00d3734d1894e6069adc2bb43c8c026"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/BuiHuyCuong/VNFaker/zipball/9427dc74f00d3734d1894e6069adc2bb43c8c026",
-                "reference": "9427dc74f00d3734d1894e6069adc2bb43c8c026",
-                "shasum": ""
-            },
-            "default-branch": true,
-            "type": "package",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Buihuycuong\\Vnfaker\\VNFakerServiceProvider"
-                    ],
-                    "aliases": {
-                        "VNFaker": "Buihuycuong\\Vnfaker\\Facades\\VNFaker"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Buihuycuong\\Vnfaker\\": "src"
-                },
-                "files": [
-                    "src/helpers.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Bui Huy Cuong",
-                    "email": "buihuycuong1510@gmail.com"
-                }
-            ],
-            "description": "VNFaker is a Laravel package that generates fake data about name, city, address, phone,... in Viet Nam",
-            "homepage": "https://github.com/BuiHuyCuong/VNFaker",
-            "keywords": [
-                "Bui Huy Cuong",
-                "Richard Bui",
-                "data",
-                "laravel",
-                "laravel faker",
-                "php",
-                "viet nam",
-                "vnfaker"
-            ],
-            "support": {
-                "issues": "https://github.com/BuiHuyCuong/VNFaker/issues",
-                "source": "https://github.com/BuiHuyCuong/VNFaker/tree/master"
-            },
-            "time": "2018-12-27T06:51:21+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1105,6 +1043,69 @@
                 "source": "https://github.com/guzzle/psr7/tree/1.8.1"
             },
             "time": "2021-03-21T16:25:00+00:00"
+        },
+        {
+            "name": "hardevine/shoppingcart",
+            "version": "2.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hardevine/LaravelShoppingcart.git",
+                "reference": "2fc6eff895ae6d94978125f6bc65aceadc4873c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hardevine/LaravelShoppingcart/zipball/2fc6eff895ae6d94978125f6bc65aceadc4873c5",
+                "reference": "2fc6eff895ae6d94978125f6bc65aceadc4873c5",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/events": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6|^7|^8",
+                "illuminate/session": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6|^7|^8",
+                "illuminate/support": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6|^7|^8"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9.0",
+                "orchestra/testbench": "~3.1",
+                "phpunit/phpunit": "~5.0 || ~6.0 || ~7.0"
+            },
+            "suggest": {
+                "gloudemans/notify": "Simple flash notifications for Laravel"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Gloudemans\\Shoppingcart\\ShoppingcartServiceProvider"
+                    ],
+                    "aliases": {
+                        "Cart": "Gloudemans\\Shoppingcart\\Facades\\Cart"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Gloudemans\\Shoppingcart\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rob Gloudemans",
+                    "email": "info@robgloudemans.nl"
+                }
+            ],
+            "description": "Laravel Shoppingcart",
+            "keywords": [
+                "laravel",
+                "shoppingcart"
+            ],
+            "support": {
+                "source": "https://github.com/hardevine/LaravelShoppingcart/tree/2.9"
+            },
+            "time": "2020-09-06T07:46:29+00:00"
         },
         {
             "name": "intervention/image",
@@ -7385,9 +7386,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "buihuycuong/vnfaker": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

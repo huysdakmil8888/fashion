@@ -9,18 +9,21 @@ return [
         'long_time'  => 'H:m:s d/m/Y',
         'short_time' => 'd/m/Y',
         // 'count_down' => "+10 hours" 
-        'count_down' => "+2 day" 
+        'count_down' => "+2 day"
     ],
     'template'         => [
         'form_input' => [
             'class' => 'form-control col-md-6 col-xs-12'
         ],
+        'form_date_picker' => [
+            'class' => 'form-control col-md-6 col-xs-12 datepicker',
+        ],
         'form_input_no_padding' => [
             'class' => 'form-control col-md-10 col-xs-12'
         ],
         'form_tag' => [
-            'class' => 'form-control col-md-6 col-xs-12',
-            'data-role' => 'tagsinput'
+            'class' => 'form-control col-md-6 col-xs-12 tags',
+            'data-role' => 'tagsinput',
         ],
         'form_input_tags' => [
             'class' => 'tags form-control col-md-6 col-xs-12'
@@ -120,23 +123,27 @@ return [
             'contact'     => ['all', 'email'],
             'product'     => ['all','product_code','name'],
             'attribute'   => ['all','name'],
-            'comment'     => ['all','product_code','product_name','email','ip']
+            'rating'     => ['all','product_code','product_name','email','ip']
         ],
         'button' => [
             'default'        => ['edit', 'delete'],
             'slider'         => ['edit', 'delete'],
             'category'       => ['edit', 'delete'],
             'article'        => ['edit', 'delete'],
-            'commentArticle' => ['edit', 'delete'],
+            'tag'            => ['edit', 'delete'],
+            'categoryArticle'        => ['edit', 'delete'],
+            'comment'       => ['edit', 'delete'],
+            'rating'        => ['edit', 'delete'],
             'user'           => ['edit'],
             'menu'           => ['edit', 'delete'],
             'testimonial'    => ['edit', 'delete'],
             'recruitment'    => ['edit', 'delete'],
-            'comment'        => ['edit', 'delete'],
             'payment'        => ['edit', 'delete'],
             'page'           => ['edit', 'delete'],
             'customer'       => ['edit', 'delete'],
             'discount'       => ['edit', 'delete'],
+            'order'       => ['info', 'delete'],
+            'ad'       => ['edit', 'delete'],
             'cart'           => [ 'info'],
             // 'cart'           => [],
             'shipping'       => ['edit', 'delete'],

@@ -1,8 +1,17 @@
 <?php
 namespace App\Http\Controllers\News;
 
+use App\Helpers\Template;
+use App\Http\Requests\CheckoutRequest;
+use App\Mail\MailService;
+use App\Models\CustomerModel;
+use App\Models\OrderModel;
+use App\Models\PaymentModel;
+use App\Models\ShippingModel;
+use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use App\Models\CartModel;
+use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends FrontendController
 {
@@ -11,45 +20,75 @@ class CheckoutController extends FrontendController
     {
         $this->pathViewController = 'news.pages.checkout.';
         $this->controllerName = 'checkout';
-        // $this->model = new MainModel();
         parent::__construct();
     }
 
-    public function index(Request $request)
-    {   
-        $cart  = $request->session()->get('cart');
-        $items = null;
+    public function shipping(Request $request)
+    {
+        //ajax gia ship
+        $data=$request->data;
+        $shippingModel=new ShippingModel();
+        $shipping=$shippingModel->getItem(['id'=>$data['id']],['task'=>'get-fee']);
+        $fee=$shipping->fee;
+        $total=Cart::subTotal()+$fee-session('coupon');
+        return response()->json([
+            'fee'=>$fee,
+            'total'=>$total,
+            'method'=>$shipping->name
+        ]);
+    }
 
-        if ( !empty($cart) ) {
-            $items = [];
-            foreach ($cart as $value) {
-                $params['product_id'][]      = $value['product_id'];
-                $params['attribute_id'][]    = $value['attribute_id'];
-                $params['attribute_value'][] = $value['attribute_value'];
-            }
-            $cartModel = new CartModel();
-            $info      = $cartModel->getItem($params, ['task' => 'news-list-items-get-product-info-in-cart']);
-            $attribute = $cartModel->getItem($params, ['task' => 'news-list-items-get-product-attribute-in-cart']);
-            // $items['attribute_value'] = $this->model->getItem($params, ['task' => 'news-list-items-get-product-attribute-value-in-cart']);
+
+    public function index(Request $request)
+    {
+
+        $cart=Cart::content();
+
+        //phuong thuc van chuyen
+        $shipping=DB::table("shipping")->pluck('name','id');
+
+
+        //phuong thuc thanh toan
+        $paymentModel=new PaymentModel();
+        $payment=$paymentModel->getItem(null,['task'=>'news-get-items']);
         
-            foreach ($info as $key => $value) {
-                $items[$key]                    = $value;
-                $items[$key]['quantity']        = $cart[$key]['quantity'];
-                $items[$key]['price']           = $cart[$key]['price'];
-                $items[$key]['total_price']     = $cart[$key]['total_price'];
-                $items[$key]['attribute']       = $attribute[$key];
-                $items[$key]['attribute_value'] = $cart[$key]['attribute_value'];
-            }
-    
+        return view($this->pathViewController . 'index',compact(
+            'payment','cart','shipping'
+
+        ));
+
+    }
+    public function order(CheckoutRequest $request)
+    {
+        $cart=Cart::content();
+        $params = $request->all();
+        //luu vao bang customer neu khach chon them tai khoan
+        if(isset($params['create_account'])){
+            $customerModel=new CustomerModel();
+            $customerModel->saveItem($params,['task'=>'add-item']);
+            $params['customer_id']=DB::getPdo()->lastInsertId();
+            //$params=array_diff_key($params,array_flip(['name','email','phone','address','create_account','password','password_confirmation']));
+        }
+        //luu vao bang order
+        $params['quantity']=Cart::count();
+        $params['status']='pending';
+        $params['order_code']=Template::generate_string(5);
+        $orderModel=new OrderModel();
+        $order=$orderModel->saveItem($params,['task'=>'add-item']);
+
+        //luu vao bang trung gian order_product
+        foreach ($cart as $item) {
+            $order->products()->attach($item->id, ['qty' => $item->qty,'price'=>$item->price]);
         }
 
 
-        // echo '<pre style="color:red";>$params === '; print_r($params);echo '</pre>';
-        // echo '<pre style="color:red";>$attribute === '; print_r($attribute);echo '</pre>';
-        // echo '<pre style="color:red";>$items === '; print_r($items);echo '</pre>';
-        
-        // echo '<h3>Die is Called Checkout Controller</h3>';die;
-        // $breadcrumbs = $categoryModel->listItems($params, ['task' => 'news-breadcrumbs']);
-        return view($this->pathViewController . 'index', compact('items'));
+
+
+
+
+       return redirect()->back()->with('notify','Bạn đã đặt hàng thành công,chúng tôi sẽ liên hệ lại với bạn
+       trong thời gian sớm nhất!,xin cảm ơn bạn');
     }
+
+
 }

@@ -5,7 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use DB; 
+use DB;
+use Intervention\Image\Facades\Image;
 
 class AdminModel extends Model
 {
@@ -39,8 +40,22 @@ class AdminModel extends Model
     public function dropzone($params)
     {
         foreach ($params['nameImage'] as $value) {
-            if(file_exists(public_path('images/tmp/'.$value))){
-                rename(public_path('images/tmp/'.$value),public_path('images/product/'.$value));
+            if(file_exists(public_path('assets/images/tmp/'.$value))){
+                rename(public_path('assets/images/tmp/'.$value),public_path('assets/images/product/'.$value));
+
+            // resize image
+            $img = Image::make(public_path('assets/images/product/'.$value));
+            $smallPath = public_path('assets/images/product/product-small/'.$value);
+            $mediumPath = public_path('assets/images/product/product-medium/'.$value);
+
+            $img->resize(270,320);
+            $img->save($smallPath);
+
+            $img->resize(700,700);
+            $img->save($mediumPath);
+
+
+
             }
         }
         $res = array_map(null, $params['nameImage'], $params['alt']);
@@ -63,11 +78,14 @@ class AdminModel extends Model
         return self::count();
     }
 
+
     public function status($params,$options)
     {
         if($options['task'] == 'change-status') {
             $status = ($params['currentStatus'] == "active") ? "inactive" : "active";
-            self::where('id', $params['id'])->update(['status' => $status ,'modified'=>now(),'modified_by'=>session()->get('userInfo')['username']]);
+            self::where('id', $params['id'])->update(['status' => $status
+//                ,'modified'=>now(),'modified_by'=>session()->get('userInfo')['username']
+            ]);
             $result = [
                 'id' => $params['id'],
                 'status' => ['name' => config("zvn.template.status.$status.name"), 'class' => config("zvn.template.status.$status.class")],
@@ -78,6 +96,28 @@ class AdminModel extends Model
             return $result;
         }
     }
+
+    public function ordering($params,$options)
+    {
+        if ($options['task'] == 'change-ordering') {
+            $ordering = $params['ordering'];
+            $this->where('id', $params['id'])->update(['ordering' => $ordering]);
+            return [
+                'id' => $params['id'],
+                'message' => config('zvn.notify.success.update')
+            ];
+        }
+    }
+
+    public function saveTag($params,$article)
+    {
+        //luu tags
+        foreach (explode(",",$params['tag']) as $name) {
+            $tag[]=Tag::firstOrCreate(['name'=>$name])->id;
+        }
+        $article->tags()->sync($tag);
+    }
+
 
 }
 

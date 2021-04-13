@@ -14,7 +14,7 @@ class CreateCommentTable extends Migration
      */
     public function up()
     {
-        Schema::create('comment', function (Blueprint $table) {
+        Schema::create('rating', function (Blueprint $table) {
 
             $table->bigIncrements('id');
             $table->bigInteger('article_id')->nullable();
@@ -38,6 +38,6 @@ class CreateCommentTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comment');
+        Schema::dropIfExists('rating');
     }
 }

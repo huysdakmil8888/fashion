@@ -1,6 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\News;
+use App\Models\ArticleModel;
+use App\Models\CategoryModel;
+use App\Models\ProductModel;
+use App\Models\Tag;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Models\CategoryModel as MainModel;
 
@@ -16,69 +21,39 @@ class CategoryController extends FrontendController
     }
 
     public function index(Request $request)
-    {   
-        $display      = 'grid';
-        $search       = $request->search;
-        $search_price = null;
+    {
+        $params['id']=$params['category_id']=$request->id;
+        $params['price']['price_min'] = $request->input('price_min' ) ;
+        $params['price']['price_max'] = $request->input('price_max' ) ;
 
-        $setting_price = $this->model->getItem(null, ['task' => 'news-get-item-setting-price']);
 
-        if ( $search == null ) {
+        //lay danh sach san pham
+        $productModel= new ProductModel();
+        $items = $productModel->getItem($params, ['task' => 'news-get-item-category-id']);
 
-            $params['slug']   = $request->category_slug;
-                    $all_slug = $this->model->getItem(null, ['task' => 'news-get-item-all-slug']);
-            if (!in_array($params['slug'], $all_slug)) {
-                return redirect()->route('home');
-            }
+        //lay breadcrumb
+        $cat=new CategoryModel();
+        $breadItem= $cat->getItem($params,['task'=>'news-get-item']);
+        $breadItems = $cat->getItem($params,['task'=>'breadcrumbs']);
 
-            // All Food
-            if( $params['slug'] == 'all-food') {
-                $items = $this->model->getItem($this->params, ['task' => 'news-get-item-all-food']);
-            // Food in Category
-            } else {
-                $this->params['category_id'] = $this->model->getItem($params, ['task' => 'get-category-id-form-slug']);
+        //get all category with number article sidebar
+        $params['parent_id']=$breadItem->parent_id;
+        $cats=$cat->listItems($params,['task'=>'news-list-items-for-count']);
 
-                $items   = $this->model->getItem($this->params, ['task' => 'news-get-item-category-id']);
-                $display = $this->model->getItem($this->params['category_id'], ['task' => 'news-get-item-category-display']);
-            }
+        //get product ban chay
+        $itemsBestBuy=$productModel->getItem($params,['task'=>'news-get-item-buy']);
 
-            // $breadcrumbs = $categoryModel->listItems($params, ['task' => 'news-breadcrumbs']);
-            return view($this->pathViewController . 'index', compact('items', 'search', 'display', 'setting_price', 'search_price'));
+        //lay het cac tag cua product
+        $tagModel=new Tag();
+        $tags=$tagModel->getItem(null,['task'=>'get-list-items-for-product']);
 
-        }else{
-            $this->params['search']  = $search;
-            $items     = $this->model->getItem($this->params, ['task' => 'news-get-item-search-all-food']);
-            return view($this->pathViewController . 'index', compact('items', 'search', 'display', 'setting_price', 'search_price'));
-        }
+
+        return view($this->pathViewController .  'index', compact(
+            'items','breadItem',
+            'breadItems','cats','itemsBestBuy','tags'
+
+        ));
     }
  
-    public function search_price(Request $request)
-    {
-        $price_min     = $request->min;
-        $price_max     = $request->max;
-        $display       = 'grid';
-        $search        = null;
-        $setting_price = $this->model->getItem(null, ['task' => 'news-get-item-setting-price']);
-
-        if ( !empty($price_min) && !empty($price_max) ) {
-            $search_price['min'] = $price_min;
-            $search_price['max'] = $price_max;
-
-            $this->params['min']  = $price_min;
-            $this->params['max']  = $price_max;
-
-            $items     = $this->model->getItem($this->params, ['task' => 'news-get-item-search-price-all-food']);
-
-            // echo '<pre style="color:red";>$search_price === '; print_r($search_price);echo '</pre>';
-            // echo '<h3>Die is Called </h3>';die;
-
-            return view($this->pathViewController . 'index', compact(
-                'items', 'search', 'display', 'setting_price', 'search_price'
-            ));
-        }else{
-            return redirect()->back();
-        }
-
-    }
 
 }

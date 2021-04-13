@@ -8,8 +8,7 @@
             <thead>
                 <tr class="headings">
                     <th class="column-title">STT</th>
-                    <th class="column-title">{{$controllerName}} Name</th>
-                    <th class="column-title">Zip postal code</th>
+                    <th class="column-title">Phương thức vận chuyển</th>
                     <th class="column-title">phí</th>
                     <th class="column-title">Trạng thái</th>
                     <th class="column-title">Tạo mới</th>
@@ -39,7 +38,6 @@
                                  {!! $name !!}
                                 
                             </td>
-                            <td>{{$zip_postal_code}}</td>
                             <td>{{$fee}}</td>
 
                             <td>{!! $status !!}</td>

@@ -16,7 +16,7 @@ class AuthController extends NewsController
     public function __construct()
     {
         view()->share('controllerName', $this->controllerName);
-parent::__construct();
+        parent::__construct();
     }
 
     public function login(Request $request)

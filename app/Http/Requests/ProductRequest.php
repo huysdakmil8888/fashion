@@ -75,7 +75,7 @@ class ProductRequest extends FormRequest
             'thumb'=>$condThumb,
             'price'=>$condPrice,
             'category_id'=>$condCategory,
-            'price_sale'=>$condPriceSale
+//            'sale'=>$condPriceSale
 
         ];
     }

@@ -1,56 +1,54 @@
+@php
+    use App\Helpers\Template;
+    use App\Helpers\URL;
+@endphp
 @extends('news.main')
 @section('content')
-
-    <!-- breadcumb -->
-    @include('news.templates.breadcumb', ['name' => 'Shop Page'])
-
-    <div class="shop-area pt-100 pb-100 gray-bg">
+    @include("news.templates.breadcumb",['name'=>$breadItem->name,'itemsBread'=>$breadItems,'type'=>'category'])
+    <div class="page-section section section-padding">
         <div class="container">
-            <div class="row flex-row-reverse">
-                <div class="col-lg-9">
+            <div class="row row-30 mbn-40">
 
-                    <!-- Shop - Topbar -->
-                    @include('news.templates.shop_topbar', [
-                        'search'       => $search,
-                        'search_price' => $search_price,
-                        ])
+                <div class="col-xl-9 col-lg-8 col-12 order-1 order-lg-2 mb-40">
+                    <div class="row">
 
-                    <div class="grid-list-product-wrapper">
-                        <div class="product-view product-{{ $display }}">
-
-                            <!-- List - Product -->
-                            <div class="row">
-                                @include('news.pages.category.list_product')
+                        <div class="col-12">
+                            <div class="product-show">
+                                <h4>Show:</h4>
+                                <select class="nice-select">
+                                    <option>8</option>
+                                    <option>12</option>
+                                    <option>16</option>
+                                    <option>20</option>
+                                </select>
                             </div>
-
-                            <!-- paginate -->
-                            <div class="pagination-style text-center mt-10">
-                                <ul>
-                                    @include('news.templates.pagination')
-                                </ul>
+                            <div class="product-short">
+                                <h4>Short by:</h4>
+                                <select class="nice-select">
+                                    <option>Name Ascending</option>
+                                    <option>Name Descending</option>
+                                    <option>Date Ascending</option>
+                                    <option>Date Descending</option>
+                                    <option>Price Ascending</option>
+                                    <option>Price Descending</option>
+                                </select>
                             </div>
-
                         </div>
+                        @include('news.pages.category.category_list')
+
+
+
+
+                        @include('news.templates.pagination')
+
+
                     </div>
                 </div>
 
-                <div class="col-lg-3">
-                    <div class="shop-sidebar">
-
-                        <!-- Filter -->
-                        @include('news.partials.sidebar.search')
-                        @include('news.partials.sidebar.price')
-                        @include('news.partials.sidebar.brand')
-                        @include('news.partials.sidebar.product')
-                        
-                    </div>
-                </div>
+                @include('news.pages.category.category_sidebar')
             </div>
         </div>
-    </div>
+    </div><!-- Page Section End -->
 
-    <!-- modal -->
-    @include('news.templates.modal_quick_view')
 
-@endsection
-        
+@stop

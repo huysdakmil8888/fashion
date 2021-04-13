@@ -2,14 +2,25 @@
 ============================================ -->
 
 <!-- jQuery JS -->
-<script src="assets/js/vendor/jquery-3.4.1.min.js"></script>
+<script src="{{asset('assets/js/vendor/jquery-3.4.1.min.js')}}"></script>
 <!-- Popper JS -->
-<script src="assets/js/popper.min.js"></script>
+{{--<script src="{{asset('assets/js/popper.min.js')}}"></script>--}}
 <!-- Bootstrap JS -->
-<script src="assets/js/bootstrap.min.js"></script>
+<script src="{{asset('assets/js/bootstrap.min.js')}}"></script>
 <!-- Plugins JS -->
-<script src="assets/js/plugins.js"></script>
+<script src="{{asset('assets/js/plugins.js')}}"></script>
 <!-- Ajax Mail -->
-<script src="assets/js/ajax-mail.js"></script>
+{{--<script src="{{asset('assets/js/ajax-mail.js')}}"></script>--}}
 <!-- Main JS -->
-<script src="assets/js/main.js"></script>
+<script src="{{asset('assets/js/main.js')}}"></script>
+<!-- notify js -->
+{{--<script src="{{asset('assets/js/notify.min.js')}}"></script>--}}
+
+<!-- rating JS -->
+<script src="{{asset('assets/js/rating.js')}}"></script>
+
+<!-- alert js -->
+<script src="{{asset('assets/js/alertify.min.js')}}"></script>
+
+<!-- custom js -->
+<script src="{{asset('assets/js/my-js.js')}}"></script>

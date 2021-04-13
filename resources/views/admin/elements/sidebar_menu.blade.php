@@ -35,8 +35,9 @@
                     <li id="discount"><a href="{{ route('discount') }}"> Coupon</a></li>
                     <li id="attribute"><a href="{{ route('attribute') }}"> Thuộc tính</a></li>
                     <li id="shipping"><a href="{{ route('shipping') }}"> Phí ship</a></li>
-                    <li id="cart"><a href="{{ route('cart') }}">Đơn Hàng</a></li>
-                    <li id="comment"><a href="{{ route('comment') }}"> Comment</a></li>
+                    <li id="payment"><a href="{{ route('payment') }}"> Phương thức thanh toán</a></li>
+                    <li id="order"><a href="{{ route('order') }}">Đơn Hàng</a></li>
+{{--                    <li id="comment"><a href="{{ route('rating') }}"> Comment</a></li>--}}
 
                 </ul>
             </li>
@@ -46,7 +47,8 @@
                 <a><i class="fa fa-archive"></i> Quản lý bài viết <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                     <li id="article"><a href="{{ route('article') }}"> Article</a></li>
-                    <li id="comment_article"><a href="{{ route('commentArticle') }}"> Comment</a></li>
+                    <li id="categoryArticle"><a href="{{ route('categoryArticle') }}"> Danh mục bài viết</a></li>
+                    <li id="comment_article"><a href="{{ route('comment') }}"> Comment</a></li>
                     <li id="testimonial"><a href="{{ route('testimonial') }}"> Testimonial</a></li>
                     <li id="team"><a href="{{ route('team') }}"> Team</a></li>
                 </ul>
@@ -60,6 +62,7 @@
                 </ul>
             </li>
             <li><a href="{{ route('menu') }}"><i class="fa fa-sitemap"></i> Quản lý Menu</a></li>
+            <li><a href="{{ route('tag') }}"><i class="fa fa-tag"></i> Quản lý Tag</a></li>
             <li id = "logs" class="none"><a href="{{ route('logs') }}"><i class="fa fa-history"></i> Logs</a></li>
             <li>
                 <a><i class="fa fa-image"></i> hình ảnh & video <span class="fa fa-chevron-down"></span></a>
@@ -71,6 +74,7 @@
             </li>
 
             <li><a href="{{ route('slider') }}"><i class="fa fa-sliders"></i> Slider</a></li>
+            <li><a href="{{ route('ad') }}"><i class="fa fa-file-image-o"></i> Quảng cáo</a></li>
             <li><a href="{{ route('contact') }}"><i class="fa fa-connectdevelop"></i> Contact</a></li>
 
             <li>
@@ -83,8 +87,6 @@
                 </ul>
             </li>
 
-            <li><a href="{{ route('home') }}"><i class="fa fa-globe"></i> {{__('message.view-website')}}</a></li>
-            <li><a href="{{ route('auth/logout') }}"><i class="fa fa-sign-out"></i> {{__('message.logout')}}</a></li>
 
         </ul>
     </div>

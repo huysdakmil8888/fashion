@@ -37,6 +37,7 @@ class CategoryModel extends AdminModel
                 ->where('status', 'active')
                 ->get()
                 ->toTree();
+
         }
 
         if($options['task'] == 'news-list-items-category') {
@@ -48,16 +49,20 @@ class CategoryModel extends AdminModel
                 ->toTree()
                 ->toArray();
         }
+        /*================================= lay category sidebar ==========================*/
+        if($options['task'] == 'news-list-items-for-count') {
+            $result = self::withDepth()
+                ->withCount('product')
+                ->having('depth', '>', 0)
+                ->defaultOrder()
+                ->where('status', 'active')
+                ->where('parent_id', $params['parent_id'])
+                ->get()
+                ->toFlatTree(); //khong phan nhanh cay
 
-
-        if($options['task'] == 'news-list-items-is-home') {
-            $query = $this->select('id', 'name')
-                ->where('status', '=', 'active' )
-                ->where('is_home', '=', 'yes' );
-
-            $result = $query->get()->toArray();
-          
         }
+
+
 
         if ($options['task'] == 'admin-list-items-in-select-box-for-article') {
             $nodes = self::select('id', 'name')
@@ -132,62 +137,19 @@ class CategoryModel extends AdminModel
         if($options['task'] == 'get-item') {
             $result = self::select('id','thumb','slug', 'name', 'parent_id', 'status')->where('id', $params['id'])->first();
         }
-        if($options['task'] == 'get-item-by-slug') {
-            $result = self::select('id','thumb','slug', 'name', 'parent_id', 'status')->where('slug', $params['slug'])->first();
+        //for breadcrumb
+        if($options['task'] == 'breadcrumbs') {
+            $result = self::defaultOrder()->ancestorsAndSelf($params['category_id']);
+            unset($result[0]);
         }
 
         if($options['task'] == 'news-get-item') {
-            $result = self::select('id','thumb','slug', 'name')
+            $result = self::select('id','slug', 'name','parent_id')
             ->where('id', $params['category_id'])
-            ->where('is_home', 'yes')
             ->first();
 
-            if($result) $result = $result->toArray();
         }
 
-        if($options['task'] == 'get-category-id-form-slug') {
-            $result = self::where('slug', $params['slug'])->value('id');
-        }
-
-        if($options['task'] == 'news-get-item-all-food') {
-            $productModel = new ProductModel();
-            $result       = $productModel->getItem($params, ['task' => 'news-get-item-all-food']);
-        }
-
-        if($options['task'] == 'news-get-item-category-id') {
-            $productModel = new ProductModel();
-            $result       = $productModel->getItem($params, ['task' => 'news-get-item-category-id']);
-        }
-
-        if($options['task'] == 'news-get-item-all-slug') {
-            $result = self::where('id', '>', 1)
-            ->pluck('slug')
-            ;
-            // if($result) $result = $result->get()->toArray();
-            if($result) {
-                $result = $result->toArray();
-                array_push($result, 'all-food');
-            }
-        }
-
-        if($options['task'] == 'news-get-item-search-all-food') {
-            $productModel = new ProductModel();
-            $result       = $productModel->listItems($params, ['task' => 'news-get-item-search-all-food']);
-        }
-
-        if($options['task'] == 'news-get-item-category-display') {
-            $result = self::where('id', $params)->value('display');
-        }
-
-        if($options['task'] == 'news-get-item-setting-price') {
-            $model  = new SettingModel();
-            $result = $model->getItem(null, ['task' => 'news-get-item-setting-price']);
-        }
-
-        if($options['task'] == 'news-get-item-search-price-all-food') {
-            $productModel = new ProductModel();
-            $result       = $productModel->listItems($params, ['task' => 'news-get-item-search-price-all-food']);
-        }
 
 
         

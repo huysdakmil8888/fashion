@@ -39,12 +39,8 @@
             'label'   => Form::label('category_id', 'Category', $formLabelAttr),
             'element' => Form::select('category_id', $itemsCategory, @$item['category_id'],  $formInputAttr)
         ],
-/*        [
-            'label'   => Form::label('thumb', 'thumb', $formLabelAttr),
-            'element'   => Template::showFileManager($item['thumb'] ?? '')
-        ],
 
-*/        [
+        [
             'label'     => Form::label('price', 'Price (VND)', $formLabelAttr),
             'element'   => Form::text('price', $item['price'] ?? '', $formInputAttr)
         ],

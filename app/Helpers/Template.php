@@ -4,10 +4,15 @@ namespace App\Helpers;
 
 use App\Models\CategoryModel;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 
 class Template
 {
-    public static function share($items, $url,$page,$position)
+    public static function generate_string($num)
+    {
+        return strtoupper(Str::random($num));
+    }
+    public static function share($items, $url,$page,$position,$type=null)
     {
         $html = '';
         if(in_array($page,$items['page']) && $position==$items['placement']) {
@@ -27,10 +32,17 @@ class Template
                         break;
 
                 }
-                $html .= sprintf('<a target="_blank" href="%s">
-                                <img width="30" src="%s" alt="">
-                            </a>', $link . $url, asset('images/logo/' . $name . '.png'));
+                if($type=='product'){
+                    $html .= sprintf('<a href="%s"><i class="fa fa-%s"></i></a>',
+                        $link . $url, $name);
+                }else{
+                    $html .= sprintf('<li><a href="%s"><i class="fa fa-%s"></i></a></li>',
+                        $link . $url, $name);
+                }
+
+
             }
+
         }
 
         return $html;
@@ -42,18 +54,16 @@ class Template
         return date("Y-m-d H:i:s", $timestamp);
     }
 
-    public static function format_price($num, $type = 'dollar')
+    public static function format_price($num, $type = 'vnd')
     {
         switch ($type) {
-            case 'dollar':
-                $result = "$" . number_format($num, 0, ',', '.');
-                break;
-            case 'vietnamese dong':
-                $result = number_format($num, 0, ',', '.') . " <u>đ</u>";
+            case 'vnd':
+                $result = number_format($num, 0, ',', '.') . " đ";
                 break;
             default:
                 $result = "$" . number_format($num, 0, ',', '.');
                 break;
+
         }
 
         return $result;
@@ -283,6 +293,12 @@ class Template
         $xhtml .= sprintf('<span class="badge badge-danger p-1">%s</span> <strong>%s</strong>', $level, $name);
         return $xhtml;
     }
+    public static function showNestedSetNameComment($name, $level)
+    {
+        $xhtml = str_repeat('|------ ', $level);
+        $xhtml .= sprintf('<span class="badge badge-danger p-1">%s</span> <strong>%s</strong>', $level+1, $name);
+        return $xhtml;
+    }
 
     public static function showNestedSetUpDown($controllerName, $id)
     {
@@ -309,22 +325,66 @@ class Template
         return $xhtml;
     }
 
-    public static function showNestedMenu($items, &$xhtml)
+    public static function showNestedMenu($items,$type)
     {
-        foreach ($items as $item) {
-            $link = URL::linkCategory($item['id'], $item['name']);
-            if (count($item['children'])) {
-                $xhtml .= '<li class="nav-item">';
-                $xhtml .= sprintf('<a href="%s" class="nav-link dropdown-item">%s <span class="fa fa-caret-right"></span></a><ul class="submenu dropdown-menu">', $link, $item['name']);
-
-                Template::showNestedMenu($item['children'], $xhtml);
-
-                $xhtml .= '</ul></li>';
-            } else {
-                $xhtml .= sprintf('<li class="nav-item"><a class="nav-link dropdown-item" href="%s">%s</a></li>', $link, $item['name']);
+        $html="";
+        if(count($items)) {
+            $html = "<ul class='sub-menu'>";
+            foreach ($items as $item) {
+                $name = $item['name'];
+                $link =($type=='category')?  URL::linkCategory($item):URL::linkCategoryArticle($item);
+                if ($item->children) {
+                    $html .= sprintf("<li><a href='%s'>$name</a>", $link);
+                    $html .= self::showNestedMenu($item->children,$type);
+                    $html .= "</li>";
+                } else {
+                    $html .= sprintf("<li><a href='%s'>$name</a></li>", $link);
+                }
             }
+            $html .= "</ul>";
         }
+        return $html;
+
     }
+    public static function showNestedComment($items)
+    {
+        $html="";
+        if(count($items)) {
+            foreach ($items as $item) {
+                //li
+                $name=$item->name;
+                $message=$item->message;
+                $id=$item->id;
+                $created=date("d/m/Y",strtotime($item->created));
+                $ran=rand(1,3);
+                $image=asset('assets/images/blog/author-'.$ran.'.jpg');
+                $li=sprintf('<li>
+                         <div class="single-comment">
+                             <div class="image"><img src="%s" alt="">
+                             </div>
+                            <div class="content">
+                                 <h4>%s</h4>
+                            <span>%s &nbsp;&nbsp;-<a href="#" class="reply" data-field="%s">Reply</a></span>
+                            <p>%s</p>
+                            </div>
+                        </div>
+                        ', $image,$name,$created,$id,$message);
+                //end li
+                if ($item->children) {
+                    $html .=$li;
+                    $html .= '<ul class="child-comment">'.self::showNestedComment($item->children).'</ul>';
+                    $html .= "</li>";
+                } else {
+                    $html .=$li.'</li>' ;
+                }
+            }
+
+        }
+
+        return $html;
+
+    }
+
 
     public static function caculatorPriceFrontend($price, $price_sale, $sale = 0, $type = 1)
     {

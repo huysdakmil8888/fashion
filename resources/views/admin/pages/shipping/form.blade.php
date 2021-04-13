@@ -20,10 +20,6 @@
             'element' => Form::text('name', @$item['name'],  $formInputAttr )
         ],
         [
-            'label'   => Form::label('zip_postal_code', 'Zip_postal_code', $formLabelAttr),
-            'element' => Form::text('zip_postal_code', @$item['zip_postal_code'],  $formInputAttr )
-        ],
-        [
             'label'   => Form::label('fee', 'Fee', $formLabelAttr),
             'element' => Form::text('fee', @$item['fee'],  $formInputAttr )
         ],

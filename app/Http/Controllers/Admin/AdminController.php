@@ -57,8 +57,16 @@ class AdminController extends Controller
         $params["currentStatus"]  = $request->status;
         $params["id"]             = $request->id;
         $params['controllerName'] = $this->controllerName;
+
         $result = $this->model->status($params, ['task' => 'change-status']);
 
+        echo json_encode($result);
+    }
+    public function ordering(Request $request)
+    {
+        $this->params['ordering'] = $request->ordering;
+        $this->params['id'] = $request->id;
+        $result = $this->model->ordering($this->params, ['task' => 'change-ordering']);
         echo json_encode($result);
     }
 

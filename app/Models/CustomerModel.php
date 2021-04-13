@@ -11,7 +11,9 @@ class CustomerModel extends AdminModel
         protected $table               = 'customer';
         protected $folderUpload        = 'customer' ;
         protected $fieldSearchAccepted = ['id', 'name', 'description', 'link'];
-        protected $crudNotAccepted     = ['_token','thumb_current'];
+        protected $crudNotAccepted     = ['register','_token','thumb_current','_method','password_confirmation',
+            'note','shipping_id','create_account','amount','accept'
+        ];
 
 
     public function listItems($params = null, $options = null) {
@@ -90,15 +92,17 @@ class CustomerModel extends AdminModel
         if($options['task'] == 'get-item') {
             $result = self::select('id','name','phone','email','address','ip', 'status')->where('id', $params['id'])->first();
         }
+        if($options['task'] == 'auth-login') {
+            $result = self::select('id', 'name', 'phone', 'email')
+                ->where('status', 'active')
+                ->where(function ($query) use($params) {
+                    $query->where('email', $params['account'])
+                        ->orWhere('phone', $params['account']);
+                        })
+                ->where('password', md5($params['password']) )
+                ->first();
 
-        if($options['task'] == 'get-thumb') {
-            $result = self::select('id', 'thumb')->where('id', $params['id'])->first();
-        }
-
-        if($options['task'] == 'frontend-get-customer-id') {
-            // $result = self::select('id')->where('email', $params['email'])->first()->toArray();
-            // $result = $this->where('email', $params['email'])->value('id');
-            $result = self::where('email', $params['email'])->value('id');
+            if($result) $result = $result->toArray();
         }
 
         return $result;
@@ -119,6 +123,7 @@ class CustomerModel extends AdminModel
         if($options['task'] == 'add-item') {
             $params['created_by'] = session('userInfo')['username'];
             $params['created']    = date('Y-m-d');
+            $params['password']    = md5($params['password']);
             self::insert($this->prepareParams($params));
         }
 

@@ -1,12 +1,17 @@
+@php
+    use App\Helpers\Template as Tem;
+    $total=Tem::format_price(Cart::subTotal());
+@endphp
 <div class="header-bottom header-bottom-one header-sticky">
+    
     <div class="container-fluid">
         <div class="row menu-center align-items-center justify-content-between">
 
             <div class="col mt-15 mb-15">
                 <!-- Logo Start -->
                 <div class="header-logo">
-                    <a href="index.html">
-                        <img src="assets/images/logo.png" alt="Jadusona">
+                    <a href="{{route('home')}}">
+                        <img src="{{asset('assets/images/logo.png')}}" alt="Jadusona">
                     </a>
                 </div><!-- Logo End -->
             </div>
@@ -30,7 +35,16 @@
                     </div>
 
                     <div class="header-mini-cart">
-                        <a href="cart.html"><img src="{{asset('assets/images/icons/cart.png')}}" alt="Cart"> <span>02($250)</span></a>
+                        <a href="{{route('cart')}}"><img src="{{asset('assets/images/icons/cart.png')}}" alt="Cart">
+                            @if(Cart::count()>0)
+{{--                                <span class="badge badge-pill badge-danger">{{Cart::count()}}</span>--}}
+                                <span style="color:darkblue" id="cart_count">{{Cart::count()}}</span>
+                                <span style="color:dodgerblue" id="cart_total">({!! $total !!})</span>
+                            @else
+                            <span style="color:darkblue" id="cart_count"></span>
+                            <span style="color:dodgerblue" id="cart_total"></span>
+                            @endif
+                        </a>
                     </div>
 
                 </div><!-- Header Advance Search End -->
@@ -41,6 +55,7 @@
                     use App\Helpers\URL;
                     use App\Models\CategoryModel;
                     use App\Models\MenuModel;
+                    use App\Helpers\Template;
                     $prefix=config('zvn.url.prefix_news')?"/".config('zvn.url.prefix_news'):"";
 
                 @endphp
@@ -59,41 +74,15 @@
                                     <li {{$class}}><a href="{{$link}}">{{$name}}</a></li>
                                 @break
                                 @case('category_product')
-                                    <li  {{$class}}><a href="shop.html">Sản phẩm</a>
-                                        <ul class="sub-menu">
-                                            @foreach($itemsCategory as $item)
-                                                @php
-                                                    $name=$item->name;
-                                                    $link=$prefix.$item->link;
-                                                @endphp
-                                            <li><a href="shop.html">{{$name}}</a>
-                                                @if(count($item->children))
-                                                <ul class="sub-menu">
-                                                    @foreach($item->children as $value)
-                                                        @php
-                                                            $name=$value->name;
-                                                            $link=$prefix.$value->link;
-                                                        @endphp
-                                                        <li><a href="shop.html">{{$name}}</a>
-                                                    @endforeach
-                                                </ul>
-                                                @endif
-                                            </li>
-                                            @endforeach
-                                        </ul>
+                                    <li {{$class}}><a href="shop.html">Sản phẩm</a>
+
+                                       {!! Template::showNestedMenu($itemsCategory,'category') !!}
+
                                     </li>
                                 @break
                                 @case('category_article')
                                     <li  {{$class}}><a href="shop.html">Bài viết</a>
-                                        <ul class="sub-menu">
-                                            <li><a href="shop.html">abc</a>
-                                                <ul class="sub-menu">
-                                                    <li><a href="">shop abc</a></li>
-                                                    <li><a href="">shop abc 2</a></li>
-                                                    <li><a href="">shop abc 3</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
+                                        {!! Template::showNestedMenu($itemsCategoryArticle,'article') !!}
                                     </li>
                                 @break
                                 @endswitch

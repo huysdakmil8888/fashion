@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Models\DiscountModel as MainModel;
 use App\Http\Requests\DiscountRequest as MainRequest;
+use Illuminate\Support\Str;
 
 class DiscountController extends AdminController
 {
@@ -19,6 +20,9 @@ class DiscountController extends AdminController
     {
         if ($request->method() == 'POST') {
             $params = $request->all();
+            $params['code']=Str::upper($params['code']);
+            $params['expire_date']=strtotime($params['expire_date']);
+
             
             $task   = "add-item";
             $notify = "Thêm phần tử thành công!";

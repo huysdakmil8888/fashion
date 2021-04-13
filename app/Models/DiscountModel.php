@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\AdminModel;
+use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use DB; 
@@ -19,7 +20,7 @@ class DiscountModel extends AdminModel
         $result = null;
 
         if($options['task'] == "admin-list-items") {
-            $query = $this->select('id', 'status','code','date_start','date_end','created', 'created_by', 'modified', 'modified_by');
+            $query = $this->select('id','limit', 'status','code','expire_date','type','amount');
                
             if ($params['filter']['status'] !== "all")  {
                 $query->where('status', '=', $params['filter']['status'] );
@@ -86,9 +87,44 @@ class DiscountModel extends AdminModel
 
     public function getItem($params = null, $options = null) { 
         $result = null;
-        
+
+        if($options['task'] == 'check') {
+            $time=strtotime(now());
+            $result = self::where('status','active')
+                ->where('code',$params['code'])
+                ->where('limit','>',0)
+                ->where('expire_date','>',$time)
+                ->first();
+            if($result){
+                //khi coupon hop le
+                $subTotal=Cart::subTotal();
+                if($result->type=='percent'){
+                    //$discount= so tien duoc giam
+                    $discount=$subTotal*(($result->amount)/100);
+                }else{
+                    $discount=$result->amount;
+
+                }
+
+                session(['coupon'=>$discount]);
+
+                return [
+                    'type'=>$result->type,
+                    'amount'=>$result->amount,
+                    'discount'=>$discount,
+                    'message'=>1,
+
+                ];
+            }else{
+                return ['message'=>0];
+            }
+        }
         if($options['task'] == 'get-item') {
-            $result = self::select('id','code','date_start','date_end', 'status')->where('id', $params['id'])->first();
+
+            $result = self::where('id', $params['id'])->first()->toArray();
+
+
+
         }
 
         if($options['task'] == 'get-thumb') {
@@ -99,7 +135,8 @@ class DiscountModel extends AdminModel
     }
 
     public function saveItem($params = null, $options = null) { 
-        if($options['task'] == 'change-status') {
+/*        if($options['task'] == 'change-status') {
+
             $status = ($params['currentStatus'] == "active") ? "inactive" : "active";
             self::where('id', $params['id'])->update(['status' => $status ]);
             return  [
@@ -108,11 +145,11 @@ class DiscountModel extends AdminModel
                 'link' => route($params['controllerName'] . '/status', ['status' => $status, 'id' => $params['id']]),
                 'message' => config('zvn.notify.success.update')
             ];
-        }
+        }*/
 
         if($options['task'] == 'add-item') {
-            $params['created_by'] = session('userInfo')['username'];
-            $params['created']    = date('Y-m-d');
+//            $params['created_by'] = session('userInfo')['username'];
+//            $params['created']    = date('Y-m-d');
             self::insert($this->prepareParams($params));
         }
 
@@ -122,8 +159,6 @@ class DiscountModel extends AdminModel
                 $this->deleteThumb($params['thumb_current']);
                 $params['thumb'] = $this->uploadThumb($params['thumb']);
             }*/
-            $params['modified_by'] = session('userInfo')['username'];
-            $params['modified']    = date('Y-m-d');
             self::where('id', $params['id'])->update($this->prepareParams($params));
         }
     }

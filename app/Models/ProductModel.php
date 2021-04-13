@@ -15,8 +15,13 @@ class ProductModel extends AdminModel
     protected $table               = 'product';
     protected $folderUpload        = 'product' ;
     protected $fieldSearchAccepted = ['id', 'name', 'product_code'];
-    protected $crudNotAccepted     = ['changeInfo','changeSeo','changeCategory','changePrice','changeAttribute','changeSpecial','changeDropzone','dropzone','_token','thumb_current','id','attribute','nameImage','alt','res'];
+    protected $crudNotAccepted     = ['tag','changeInfo','changeSeo','changeCategory','changePrice','changeAttribute','changeSpecial','changeDropzone','dropzone','_token','thumb_current','id','attribute','nameImage','alt','res'];
+    protected $guarded=[];
 
+    public function tags()
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
+    }
     public function attribute()
     {
         return $this->hasMany(ProductAttributeModel::class,'product_id');
@@ -31,7 +36,7 @@ class ProductModel extends AdminModel
         $result = null;
 
         if($options['task'] == "admin-list-items") {
-            $query = $this->select('id','price_sale','product_code', 'name','price','category_id','thumb','status')->with('image');
+            $query = $this->select('id','product_code','sale', 'name','price','category_id','thumb','status')->with('image');
 
             if ($params['filter']['status'] !== "all")  {
                 $query->where('status', '=', $params['filter']['status'] );
@@ -54,21 +59,45 @@ class ProductModel extends AdminModel
 
         }
 
-        // Home - Recent Products
+        // Home - New Products
         if($options['task'] == 'news-list-items') {
-            $query = self::select('id', 'product_code', 'name', 'thumb', 'price', 'price_sale', 'sale', 'slug')
+            $query = self::select('id', 'name', 'thumb', 'price', 'slug','rating')
                 ->where('status', '=', 'active' )
+                ->where('sale', '=', null )
                 ->orderBy('id', 'desc')
-                ->orderBy('ordering', 'asc')
                 ->limit(8);
-            $result = $query->get()->toArray();
-            // $result = $query->get();
+
+            $result = $query->get();
+        }
+
+        // home - product sale
+        if($options['task'] == 'news-list-items-for-sale') {
+            $query = self::select('id', 'name', 'slug','thumb', 'sale','price')
+                ->where('status', '=', 'active' )
+                ->where('sale', '>', 0 )
+                ->where('date_start','<=',strtotime(now()))
+                ->where('date_end','>=',strtotime(now()))
+                ->orderBy('id', 'desc')
+                ->limit(8);
+            $result = $query->get();
+        }
+        // home - product sale
+        if($options['task'] == 'news-list-items-for-deal') {
+            $query = self::with('image')->select('id', 'name', 'slug','thumb', 'sale','price','date_end')
+                ->where('status', '=', 'active' )
+                ->where('sale', '>', 0 )
+                ->where('best_deal', '=', 1 )
+                ->where('date_start','<=',strtotime(now()))
+                ->where('date_end','>=',strtotime(now()))
+                ->orderBy('id', 'desc')
+                ->limit(2);
+            $result = $query->get();
         }
 
         // Product Detail - Related Product
         if($options['task'] == 'news-list-items-related-in-product') {
             $category_id = self::getItem($params, ['task' => 'news-get-category-id']);
-            $query       = self::select('id', 'name', 'price', 'price_sale', 'sale', 'thumb', 'slug')
+            $query       = self::select('id', 'name', 'price', 'sale', 'thumb', 'slug')
                 ->where('category_id', $category_id)
                 ->where('status', 'active')
                 ->where('id', '!=', $params['product_id'])
@@ -78,66 +107,8 @@ class ProductModel extends AdminModel
             $result = $query->get()->toArray();
         }
 
-        // Home - Best Deal
-        if($options['task'] == 'news-list-items-best-deal') {
-            $query = self::select('id', 'product_code', 'name', 'price', 'price_sale', 'sale', 'slug', 'short_description')
-                ->where('status', '=', 'active' )
-                ->orderBy('sale', 'desc')
-                ->limit(2)
-            ;
-            // $result = $query->get()->toArray();
-            $result = $query->first()->toArray();
 
-        }
 
-        if($options['task'] == 'news-list-items-get-product-info-in-cart') {
-
-            foreach ($params["product_id"] as $value) {
-                $result[] = self::select('id', 'name', 'product_code', 'thumb', 'slug')
-                ->where('status', 'active')
-                ->where('id', $value)
-                ->first()->toArray();
-            }
-
-            // echo '<pre style="color:red";>$params === '; print_r($params);echo '</pre>';
-            // echo '<pre style="color:red";>$result === '; print_r($result);echo '</pre>';
-            // echo '<h3>Die is Called Product Model</h3>';die;
-        }
-
-        if($options['task'] == 'news-list-items-get-product-attribute-in-cart') {
-
-            foreach ($params["attribute_id"] as $value) {
-                $newModel = new AttributeModel();
-                $result = $newModel->listItems($params["attribute_id"], 
-                ['task' => 'news-list-items-get-product-attribute-in-cart']);
-            }
-
-            // echo '<pre style="color:red";>$params === '; print_r($params);echo '</pre>';
-            // echo '<pre style="color:red";>$result === '; print_r($result);echo '</pre>';
-            // echo '<h3>Die is Called Product Model</h3>';die;
-        }
-
-        if($options['task'] == 'news-get-item-search-all-food') {
-            $result = self::select('id', 'product_code', 'name', 'thumb', 'price', 'quantity',
-            'price_sale', 'sale', 'slug', 'short_description')
-            ->where('status','active')
-            ->where('name', 'LIKE', "%{$params['search']}%")
-            ->orderBy('ordering', 'asc')
-
-            ->paginate($params['pagination']['totalItemsPerPage']);
-            // ->paginate($params['pagination']['totalItemsPerPage'])->toArray();
-        }
-
-        if($options['task'] == 'news-get-item-search-price-all-food') {
-            $result = self::select('id', 'product_code', 'name', 'thumb', 'price', 'quantity',
-            'price_sale', 'sale', 'slug', 'short_description')
-            ->where('status','active')
-            ->whereBetween('price', [ $params['min'] * 1000, $params['max'] * 1000  ])
-            ->orderBy('ordering', 'asc')
-
-            ->paginate($params['pagination']['totalItemsPerPage']);
-            // ->paginate($params['pagination']['totalItemsPerPage'])->toArray();
-        }
 
 
         return $result;
@@ -175,86 +146,59 @@ class ProductModel extends AdminModel
     public function getItem($params = null, $options = null) { 
         $result = null;
 
+        //edit product
         if($options['task'] == 'get-item') {
             $result = self::where('id', $params['id'])
                 ->with('attribute')
                 ->first();
         }
+        //lay san pham khi add to cart
+        if($options['task'] == 'cart') {
+            $result = self::where('id', $params['id'])
+                ->select('thumb','name','price','id')
+                ->first();
+        }
 
         if($options['task'] == 'news-get-item-product-detail') {
-            $result = self::select('id', 'category_id', 'product_code', 'name', 'quantity',
-                'thumb', 'price', 'price_sale', 'sale', 'slug', 'short_description', 'description')
+            $result = self::with('image','tags')->select('id', 'category_id', 'product_code', 'name', 'quantity',
+                'thumb', 'price', 'sale', 'slug', 'description','rating','content','datasheet')
             ->where('status','active')
-            ->where('id', $params["product_id"])
-            ->first()->toArray();
+            ->where('id', $params["id"])
+            ->first();
+        }
+        //get related product
+        if($options['task'] == 'news-get-item-product-related') {
+            $result = self::select('id', 'name', 'quantity','rating',
+                'thumb', 'price', 'sale', 'slug')
+                ->where([['status','active'],['id','<>',$params['id']],['category_id',$params['category_id']]])
+                ->take(7)
+                ->get();
         }
 
-        if($options['task'] == 'get-thumb') {
-            $result = self::select('id', 'thumb')->where('id', $params['id'])->first();
-        }
-
+        //trang category
         if($options['task'] == 'news-get-item-category-id') {
-            $result = self::select('id', 'category_id', 'product_code', 'name', 'thumb', 'price', 'price_sale', 'sale', 'slug', 'short_description')
+            $query = self::select('id', 'category_id', 'rating','product_code', 'name', 'thumb', 'price', 'sale', 'slug', 'description')
             ->where('status','active')
-            ->where('category_id', $params["category_id"])
-            ->orderBy('ordering', 'asc')
-            ->paginate($params['pagination']['totalItemsPerPage']);
-            // ->paginate($params['pagination']['totalItemsPerPage'])->toArray();
+            ->where('category_id', $params["category_id"]);
+             if ($params['price']['price_min'] !== NULL)  {
+                     $query->whereBetween('price', [$params['price']['price_min'],$params['price']['price_max']]);
+             }
 
-            // $result = $params;
-            // echo '<pre style="color:red";>$result === '; print_r($result);echo '</pre>';
-            // echo '<h3>Die is Called </h3>';die;
+
+
+            $result=$query->paginate(15);
+        }
+        //sidebar san pham ban chay nhat
+        if($options['task'] == 'news-get-item-buy') {
+            $result = self::select('id', 'buy', 'name', 'thumb', 'price','slug')
+                ->where('status','active')
+                ->where('category_id', $params["category_id"])
+                ->orderBy('buy','desc')
+                ->take(3)
+                ->get()
+            ;
         }
 
-        if($options['task'] == 'news-get-item-all-food') {
-            $result = self::select('id', 'product_code', 'name', 'thumb', 'price', 'quantity',
-                'price_sale', 'sale', 'slug', 'short_description')
-            ->where('status','active')
-            ->orderBy('ordering', 'asc')
-            ->paginate($params['pagination']['totalItemsPerPage']);
-            // ->paginate($params['pagination']['totalItemsPerPage'])->toArray();
-
-        }
-
-        if($options['task'] == 'news-get-items-modal') {
-            $result = self::select('id', 'name', 'price', 'price_sale', 'sale', 'slug', 'short_description')
-                ->where('id', $params['product_id'])
-                ->where('status', 'active')
-                // ->get()->toArray();
-                ->first();
-            
-            $productImage = new ProductImageModel();
-            $result['list_images'] = $productImage->getItem($params, ['task' => 'get-list-thumb-product-id-modal']);
-             
-            $attribute = new AttributeModel();
-            $result['attribute'] = $attribute->getItem(null, ['task' => 'get-list-thumb-product-id-modal']);
-            foreach ($result['attribute'] as $value) {
-                $params['attribute_id'][] = $value['id'];
-            }
-
-            $productAttribute = new ProductAttributeModel();
-            $result['list_attribute'] = $productAttribute->getItem($params, ['task' => 'get-list-thumb-product-id-modal']);
-
-        }
-
-        if($options['task'] == 'get-list-thumb-product-detail') {
-            $productImage = new ProductImageModel();
-            $result       = $productImage->getItem($params, ['task' => 'get-list-thumb-product-detail']);
-        }
-
-        if($options['task'] == 'get-list-thumb-product-id-modal') {
-            $attribute = new AttributeModel();
-            $result    = $attribute->getItem(null, ['task' => 'get-list-thumb-product-id-modal']);
-        }
-
-        if($options['task'] == 'get-list-thumb-product-id-modal-array') {
-            $productAttribute = new ProductAttributeModel();
-            $result           = $productAttribute->getItem($params, ['task' => 'get-list-thumb-product-id-modal-array']);
-        }
-
-        if($options['task'] == 'news-get-category-id') {
-            $result        = self::where('id', $params['product_id'])->value('category_id');
-        }
 
         return $result;
 
@@ -262,18 +206,25 @@ class ProductModel extends AdminModel
     }
 
     public function saveItem($params = null, $options = null) {
+        //loai bo dau .
         if(isset($params['price'])){
             $params['price']=str_replace(".", "", $params['price']);
         }
-        if(isset($params['price_sale'])){
-            $params['price_sale']=str_replace(".", "", $params['price_sale']);
+        if(isset($params['sale'])){
+            $params['sale']=str_replace(".", "", $params['sale']);
+        }
+        if(isset($params['date_start'])){
+            $params['date_start']=strtotime($params['date_start']);
+        }
+        if(isset($params['date_end'])){
+            $params['date_end']=strtotime($params['date_end']);
+
         }
 
 
 
         if($options['task'] == 'add-item') {
 
-            $params['thumb']='/images/product/'.array_column($params['dropzone'],'name')[0];
             $params['product_code']="PET".rand(100,999);
 
             self::insert($this->prepareParams($params));
@@ -282,13 +233,20 @@ class ProductModel extends AdminModel
             $product->image()->createMany($params['dropzone']);
 
         }
-        /*================================= EDIT =============================*/
+        /*================================= form-edit-info =============================*/
         if($options['task']=='change-info-product'){
             // $params['special']=isset($params['special'])?1:0;
 
-            self::where('id', $params['id'])->update($this->prepareParams($params));
+            $product=self::find($params['id']);
+            $product->update($this->prepareParams($params));
+
+            if(isset($params['tag'])){
+                //luu tag
+                $this->saveTag($params,$product);
+            }
+
         }
-        /*================================= change dropzone =============================*/
+        /*================================= form-dropzone =============================*/
         if($options['task'] == 'edit-item') {
 
             self::where('id', $params['id'])->update($this->prepareParams($params));

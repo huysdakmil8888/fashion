@@ -7,8 +7,8 @@
 
     $elements = [
         [
-            'label'     => Form::label('username', 'Tài khoản', $formLabelAttributes),
-            'element'   => Form::email('username', $item['username'] ?? '', $formInputAttributes)
+            'label'     => Form::label('email', 'Tài khoản', $formLabelAttributes),
+            'element'   => Form::email('email', $item['email'] ?? '', $formInputAttributes)
         ],
         [
             'label'     => Form::label('password', 'Mật khẩu', $formLabelAttributes),

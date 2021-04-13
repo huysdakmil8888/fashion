@@ -22,11 +22,16 @@
         <div class="right_col" role="main">
             @yield('content')
         </div>
+
         @include('admin.elements.footer')
     </div>
 </div>
-@include('admin.elements.script_define')
+
+<script>
+    var controllerName={{$controllerName}}
+</script>
 @include('admin.elements.script')
 @yield('script')
+@yield('script2')
 </body>
 </html>
