@@ -29,9 +29,11 @@
 
 <script>
     var controllerName={{$controllerName}}
+
 </script>
 @include('admin.elements.script')
 @yield('script')
 @yield('script2')
+@yield('script3')
 </body>
 </html>

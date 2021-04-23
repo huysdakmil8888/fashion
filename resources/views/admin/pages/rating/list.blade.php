@@ -8,11 +8,10 @@
             <thead>
                 <tr class="headings">
                     <th class="column-title">STT</th>
-                    <th class="column-title">{{$controllerName}} Info</th>
-                    <th class="column-title">Message</th>
+                    <th class="column-title">Email</th>
+                    <th class="column-title">Nội dung bình luận</th>
+                    <th class="column-title">Đánh giá</th>
                     <th class="column-title">Trạng thái</th>
-                    <th class="column-title">Star</th>
-                    <th class="column-title">Tạo mới</th>
                     <th class="column-title">Hành động</th>
                 </tr>
             </thead>
@@ -23,11 +22,8 @@
                             $index           = $key + 1;
                             $class           = ($index % 2 == 0) ? "even" : "odd";
                             $id              = $val['id'];
-                            $name            = Hightlight::show($val['name'], $params['search'], 'name');
-                            $description     = Hightlight::show($val['description'], $params['search'], 'description');
-                            $message            = Hightlight::show($val['message'], $params['search'], 'message');
-                            $star=$val['star'];
-                            $status          = Template::showItemStatus($controllerName, $id, $val['status']); ;
+                            $email            = Template::showNestedSetNameComment($val['email'], $val['depth']);
+                            $status          = Template::showItemStatus($controllerName, $id, $val['status']);
                             $createdHistory  = Template::showItemHistory($val['created_by'], $val['created']);
                             $modifiedHistory = Template::showItemHistory($val['modified_by'], $val['modified']);
                             $listBtnAction   = Template::showButtonAction($controllerName, $id);
@@ -35,17 +31,12 @@
 
                         <tr class="{{ $class }} pointer">
                             <td >{{ $index }}</td>
-                            <td width="20%">
-                                <p><strong>Name:</strong> {!! $name !!}</p>
-
-
-
+                            <td width="25%">{!! $email !!}</td>
+                            <td>
+                                {{$val->message}}
                             </td>
-                            <td>{{$message}}</td>
-
+                            <td>{{$val['score']}}/5</td>
                             <td>{!! $status !!}</td>
-                            <td>{{$star}}</td>
-                            <td>{!! $createdHistory !!}</td>
 
                             <td class="last">{!! $listBtnAction !!}</td>
                         </tr>
@@ -57,4 +48,3 @@
         </table>
     </div>
 </div>
-           

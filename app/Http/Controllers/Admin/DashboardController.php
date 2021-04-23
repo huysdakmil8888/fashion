@@ -32,5 +32,10 @@ class DashboardController extends AdminController
         ]));
     }
 
+    public function noPermission()
+    {
+        return view('admin.pages.dashboard.404');
+    }
+
 }
 

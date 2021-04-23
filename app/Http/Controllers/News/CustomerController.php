@@ -26,13 +26,27 @@ class CustomerController extends NewsController
     public function __construct()
     {
         view()->share('controllerName', $this->controllerName);
+        $this->model=new CustomerModel();
         parent::__construct();
     }
 
 
     public function myAccount(Request $request)
     {
-        return view($this->pathViewController . 'my-account');
+        $params['id']=session('customerInfo')['id'];
+        $item=$this->model->getItem($params,['task'=>'get-item-for-news']);
+        return view($this->pathViewController . 'my-account',compact('item'));
+
+    }
+    public function edit(CustomerRequest $request)
+    {
+        $params['data']=$request->data;
+        $params['data']['id']=session('customerInfo')['id'];
+//        $item=$this->model->getItem($params,['task'=>'get-item-for-news-info']);
+        return response()->json([
+           'data'=>$params['data']
+        ]);
+
     }
     public function registerLogin(Request $request)
     {
@@ -61,7 +75,7 @@ class CustomerController extends NewsController
             if (!$customerInfo) return redirect()->back()->with('alert', 'Tài khoản hoặc mật khẩu không chính xác!');
 
             $request->session()->put('customerInfo', $customerInfo);
-            return redirect()->route('home');
+            return redirect()->route('customer/my-account');
         }
     }
 

@@ -2,7 +2,7 @@
     use App\Helpers\Template;
     use Gloudemans\Shoppingcart\Facades\Cart;
         $subTotal=Cart::subTotal();
-        $coupon= session('coupon');
+        $coupon= session('discount');
         $ship=0;
         $total=$subTotal-$coupon+$ship;
 @endphp
@@ -16,7 +16,7 @@
 
         <ul>
             @foreach($cart as $item)
-             <li>{{$item->name}} X {{$item->qty}} <span>{!! Template::format_price($item->qty*$item->price) !!}</span></li>
+             <li>{{$item->name}} ({{$item->options->color}}) X {{$item->qty}} <span>{!! Template::format_price($item->qty*$item->price) !!}</span></li>
             @endforeach
         </ul>
 

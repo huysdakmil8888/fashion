@@ -3,11 +3,66 @@
 namespace App\Helpers;
 
 use App\Models\CategoryModel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 class Template
 {
+    public static function showColor($color,$type='button')
+    {
+        $html = null;
+        $arrColor=Config::get('zvn.template.color');
+        $change_price=$type=='button'?'change-color':'change-color-item';
+        foreach ($color as $k=> $item) {
+            if($item['pivot']['default']==1) $class='pick-color';
+            else $class='';
+            $html.=sprintf('<%s class="%s %s" data-color="%s" data-name="%s" data-field="%s" style="background-color: %s">
+            
+            </%s>',$type,$change_price,$class,$item['name'],$k,$item['pivot']['value'],$arrColor[$item->slug],$type);
+        }
+        return $html;
+    }
+    public static function showAreaShow($controllerName,$num)
+    {
+        $html = null;
+        $options='';
+        for ($i=1;$i<=30;$i++){
+            if($i==$num) $class="selected";
+            else $class="";
+            $options.='<option '.$class.' value="'.$i.'">'.$i.'</option>';
+        }
+
+        $html = sprintf('
+            <select class="nice-selects" >
+                    %s
+                </select>',$options);
+        return $html;
+    }
+    public static function showAreaShort($controllerName,$selected)
+    {
+
+        $html = null;
+        $arr=['price_asc'=>'Giá tăng dần',
+            'price_desc'=>'Giá giảm dần',
+            'rating_asc'=>'Số sao tăng dần',
+            'rating_desc'=>'Số sao giảm dần',
+            ];
+        $option="";
+        foreach ($arr as $k=>$value){
+            if($k==$selected) $class="selected";
+            else $class="";
+            $option.='<option '.$class.' value="'.$k.'">'.$value.'</option>';
+        }
+        $html = sprintf('
+                <select class="nice-selects2">
+                   %s
+                </select>
+            ',$option);
+        return $html;
+    }
+
     public static function generate_string($num)
     {
         return strtoupper(Str::random($num));
@@ -155,18 +210,24 @@ class Template
         return $xhtml;
     }
 
-    public static function showItemHistory($by, $time, $type='both')
+    public static function showItemHistory($by, $time, $type='short')
     {
-        if ($type == 'both') {
+        $byHtml='';
+
+        if($by){
+            $byHtml=sprintf('<p><i class="fa fa-user"></i> %s</p>',$by);
+        }
+        if ($type == 'long') {
             $xhtml = sprintf('
-                <p><i class="fa fa-user"></i> %s</p>
-                <p><i class="fa fa-clock-o"></i> %s</p>', 
-                $by, date(Config::get('zvn.format.long_time'), strtotime($time))
+                %s    
+                <p><i class="fa fa-clock-o"></i> %s</p>',
+                $byHtml, date(Config::get('zvn.format.long_time'), strtotime($time))
             );
         } else {
             $xhtml = sprintf('
+                %s
                 <p><i class="fa fa-clock-o"></i> %s</p>', 
-                date(Config::get('zvn.format.long_time'), strtotime($time))
+                $byHtml,date(Config::get('zvn.format.short_time'), strtotime($time))
             );
         }
         
@@ -223,11 +284,12 @@ class Template
 
     public static function showButtonAction($controllerName, $id)
     {
+
         $tmplButton = Config::get('zvn.template.button');
         $buttonInArea = Config::get('zvn.config.button');
 
-        $controllerName = (array_key_exists($controllerName, $buttonInArea)) ? $controllerName : "default";
-        $listButtons = $buttonInArea[$controllerName]; // ['edit', 'delete']
+        $configButton = (array_key_exists($controllerName, $buttonInArea)) ? $controllerName : "default";
+        $listButtons = $buttonInArea[$configButton]; // ['edit', 'delete']
 
         $xhtml = '<div class="zvn-box-btn-filter">';
 
@@ -253,12 +315,53 @@ class Template
         return date_format(date_create($dateTime), $time);
     }
 
-    public static function showContent($content, $length, $prefix = '...')
-    {
-        $prefix = ($length == 0) ? '' : $prefix;
-        $content = str_replace(['<p>', '</p>'], '', $content);
-        return preg_replace('/\s+?(\S+)?$/', '', substr($content, 0, $length)) . $prefix;
+
+    public static function showContent($str,$len,$prefix=' còn tiếp...'){
+            $start=0;
+            $str_clean = substr(strip_tags($str),$start,$len);
+            $pos = strrpos($str_clean, " ");
+            if($pos === false) {
+                $str_clean = substr(strip_tags($str),$start,$len);
+            }else
+                $str_clean = substr(strip_tags($str),$start,$pos);
+
+            if(preg_match_all('/\<[^>]+>/is',$str,$matches,PREG_OFFSET_CAPTURE)){
+
+                for($i=0;$i<count($matches[0]);$i++){
+
+                    if($matches[0][$i][1] < $len){
+
+                        $str_clean = substr($str_clean,0,$matches[0][$i][1]) . $matches[0][$i][0] . substr($str_clean,$matches[0][$i][1]);
+
+                    }else if(preg_match('/\<[^>]+>$/is',$matches[0][$i][0])){
+
+                        $str_clean = substr($str_clean,0,$matches[0][$i][1]) . $matches[0][$i][0] . substr($str_clean,$matches[0][$i][1]);
+
+                        break;
+
+                    }
+
+                }
+
+                $result= $str_clean;
+
+            }else{
+                $string = substr($str,$start,$len);
+                $pos = strrpos($string, " ");
+                if($pos === false) {
+                    $result= substr($str,$start,$len);
+                }
+                $result= substr($str,$start,$pos);
+
+            }
+            if($len>0){
+                $result.=$prefix;
+            }
+            return $result;
+
     }
+
+
 
     public static function showBoxDashboard($box)
     {
@@ -349,26 +452,41 @@ class Template
     public static function showNestedComment($items)
     {
         $html="";
+//        dd($items[1]->toArray());
+//        dd($items);
         if(count($items)) {
             foreach ($items as $item) {
                 //li
                 $name=$item->name;
                 $message=$item->message;
+                $score=$item->score;
+                $rating='';
+                if($score>0){
+                    $rating='<div class="ratting">
+                            <div class="my-rating-4" data-rating="'.$score.'"></div>
+                        </div>';
+                }
                 $id=$item->id;
                 $created=date("d/m/Y",strtotime($item->created));
                 $ran=rand(1,3);
-                $image=asset('assets/images/blog/author-'.$ran.'.jpg');
+                if($item['customer']){
+                    $image=asset($item['customer']['thumb']);
+                }else{
+                    $image=asset('assets/images/blog/author.jpeg');
+                }
                 $li=sprintf('<li>
                          <div class="single-comment">
+                        
                              <div class="image"><img src="%s" alt="">
                              </div>
+                             %s 
                             <div class="content">
                                  <h4>%s</h4>
                             <span>%s &nbsp;&nbsp;-<a href="#" class="reply" data-field="%s">Reply</a></span>
                             <p>%s</p>
                             </div>
                         </div>
-                        ', $image,$name,$created,$id,$message);
+                        ', $image,$rating,$name,$created,$id,$message);
                 //end li
                 if ($item->children) {
                     $html .=$li;

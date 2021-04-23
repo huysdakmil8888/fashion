@@ -37,6 +37,7 @@ class ContactRequest extends FormRequest
             'message' => 'bail|required',
             'email' => 'bail|required',
             'name' => 'bail|required',
+            'phone' => 'bail|required',
         ];
     }
 

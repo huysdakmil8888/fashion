@@ -20,7 +20,7 @@
 <!-- dropzone + bootstrap tags input -->
 <script src="{{asset('admin/js/dropzone.js')}}"></script>
 <script src="{{asset('admin/tag/bootstrap-tagsinput.min.js')}}"></script>
-@if($controllerName == 'product' || $controllerName=='category' || $controllerName=='article' )
+@if($controllerName == 'product' || $controllerName=='category' || $controllerName=='article' || $controllerName=='page' )
     <script src="{{ asset('admin/js/slug/speakingurl.min.js') }}"></script>
     <script src="{{ asset('admin/js/slug/slugify.min.js') }}"></script>
     <script>

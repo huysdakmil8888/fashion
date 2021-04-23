@@ -15,9 +15,13 @@
                 <ul class="header-lan-curr">
 
 
-                    <a href="{{route('language','en')}}"><img width="25" src="{{asset('admin/images/logo/en.png')}}" alt=""></a>
-                    &nbsp; <a href="{{route('language','vi')}}"><img width="25" src="{{asset('admin/images/logo/vi.png')}}"
-                                                                     alt=""></a>
+                    <a href="{{route('language','en')}}">
+                        <img width="25" src="{{asset('admin/images/logo/en.png')}}" alt="">
+                    </a>
+                    &nbsp; <a href="{{route('language','vi')}}">
+                        <img width="25" src="{{asset('admin/images/logo/vi.png')}}"
+                                                                     alt="">
+                    </a>
 
                 </ul><!-- Header Language Currency End -->
             </div>
@@ -26,8 +30,8 @@
                 <!-- Header Shop Links Start -->
                 <div class="header-top-right">
                     @if(session()->has('customerInfo'))
-                        <p><a href="{{route('customer/my-account')}}">My Account</a></p>
-                        <p><a href="{{route('customer/logout')}}">Logout</a></p>
+                        <p><a href="{{route('customer/my-account')}}">@lang('message.account')</a></p>
+                        <p><a href="{{route('customer/logout')}}"> Logout </a></p>
                     @else
                         <p>
                             <a href="{{route('customer/register-login')}}">Register</a>

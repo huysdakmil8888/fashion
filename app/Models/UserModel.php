@@ -3,24 +3,62 @@
 namespace App\Models;
 
 use App\Models\AdminModel;
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use DB; 
-class UserModel extends AdminModel
+use Spatie\Permission\Traits\HasRoles;
+use DB;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Contracts\Auth\Access\Authorizable;
+class UserModel extends AdminModel implements
+    \Illuminate\Contracts\Auth\Authenticatable,Authorizable
 {
 
+
+        use HasRoles;
+        use Authenticatable;
         protected $table               = 'user';
         protected $folderUpload        = 'user' ;
         protected $fieldSearchAccepted = ['id', 'username', 'email', 'fullname'];
         protected $crudNotAccepted     = ['_token','avatar_current', 'password_confirmation', 'taskAdd', 'taskChangePassword', 'taskChangeLevel', 'taskEditInfo'];
         public $timestamps=false;
+        protected $guard_name = 'web';
 
+    public function loginUsername()
+    {
+        return 'email';
+    }
+    public function can($ability, $arguments = []){
+
+    }
+
+    public function groups()
+    {
+        return $this->belongsTo(GroupModel::class,'group','name');
+    }
+
+    public function getPermission($user)
+    {
+        $id=explode(',',$user->groups->permission_ids); //1,2
+        $allow=$user->permission_allow; //+3
+        $deny=$user->permission_deny; //-2
+        array_push($id,$allow);
+        $ids=array_diff($id,array($deny));
+        return $ids;
+    }
     public function listItems($params = null, $options = null) {
      
         $result = null;
+//        $role1 = Role::create(['name' => 'editor']);
+//        $role2 = Role::create(['name' => 'admin']);
+//        $permission1 = Permission::create(['name' => 'list articles']);
+//        $permission2 = Permission::create(['name' => 'edit articles']);
+//        $role2->syncPermissions($permission1,$permission2);
 
         if($options['task'] == "admin-list-items") {
-            $query = $this->select('id', 'username', 'email', 'fullname', 'thumb', 'status', 'level','created' ,'created_by','modified','modified_by');
+            $query = $this->with('roles')->select('id', 'username', 'email', 'fullname', 'thumb', 'status', 'level','created' ,'created_by','modified','modified_by');
                
             if ($params['filter']['status'] !== "all")  {
                 $query->where('status', '=', $params['filter']['status'] );
@@ -81,7 +119,9 @@ class UserModel extends AdminModel
         $result = null;
         
         if($options['task'] == 'get-item') {
-            $result = self::select('id', 'username', 'email', 'status', 'fullname', 'level', 'thumb')->where('id', $params['id'])->first();
+
+
+            $result = self::with('roles')->select('id', 'username', 'email', 'status', 'fullname', 'level', 'thumb')->where('id', $params['id'])->first();
         }
 
         if($options['task'] == 'get-avatar') {

@@ -230,7 +230,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-//        'Cart'=>\Gloudemans\Shoppingcart\Facades\Cart::class
+        'Template' => App\Helpers\Template::class,
+        'Hightlight' => App\Helpers\Hightlight::class,
 
     ],
 

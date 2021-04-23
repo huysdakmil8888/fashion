@@ -17,7 +17,7 @@
                     <div class="col-lg-8 col-md-7 col-12 mb-40">
                         <div class="cart-buttons mb-30">
 {{--                            <input type="submit" value="Update Cart" />--}}
-                            <a href="#">Continue Shopping</a>
+                            <a href="{{route('category/productnews')}}">Continue Shopping</a>
                         </div>
                         <div class="cart-coupon">
                             <h4>Coupon</h4>

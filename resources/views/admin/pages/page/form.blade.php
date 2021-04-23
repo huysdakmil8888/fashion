@@ -25,7 +25,8 @@
         ],
         [
             'label'   => Form::label('content', 'Content', $formLabelAttr),
-            'element' => Form::textArea('content', @$item['content'],  $formCkeditor )
+            'element' => Form::textArea('content', @$item['content'],  $formCkeditor ),
+
         ],
 
         [

@@ -4,16 +4,18 @@
 @endphp
 <div class="blog-item">
     @php
-        $thumb=$item->thumb;
-        $content=Template::showContent($item->content,100);
-        $name=$item->name;
-        $view=$item->view;
-        $like=$item->like;
-        $link=URL::linkArticle($item);
-        $date=date("d",strtotime($item->created));
-        $month=date("F",strtotime($item->created));
-        $author=$item->user->name;
-        $avatar=$item->user->thumb;
+    $thumb=$item->thumb;
+    $content=Template::showContent($item->content,130);
+    $name=$item->name;
+    $view=$item->view;
+    $like=$item->like;
+
+    $link=URL::linkArticle($item);
+    $linkAuthor=URL::linkAuthor($item->user);
+    $date=date("d",strtotime($item->created));
+    $month=date("F",strtotime($item->created));
+    $author=$item->user->username;
+    $avatar=$item->user->thumb;
     @endphp
     <div class="image-wrap">
         <h4 class="date">{{$month}} <span>{{$date}}</span></h4>
@@ -26,7 +28,7 @@
             {!! $content !!}
         </div>
         <ul class="meta">
-            <li><a href="{{$link}}"><img src="{{asset($avatar)}}"
+            <li><a href="{{$linkAuthor}}"><img src="{{asset($avatar)}}"
                                          alt="Blog Author">{{$author}}</a></li>
             <li><a href="#">{{$like}} Likes</a></li>
             <li><a href="#">{{$view}} Views</a></li>

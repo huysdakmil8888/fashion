@@ -49,7 +49,7 @@
                             </div>
                             @break
                             @case('reviews')
-                            @include('news.pages.product.child-tab.comment')
+                            @include('news.partials.comment.show-comment')
                             @break
                         @endswitch
 

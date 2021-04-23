@@ -6,29 +6,22 @@
     $formInputAttr = config('zvn.template.form_input');
     $formLabelAttr = config('zvn.template.form_label');
 
-    $statusValue      = ['default' => 'Select status', 'active' => config('zvn.template.status.active.name'), 'inactive' => config('zvn.template.status.inactive.name')];
+    $statusValue      = ['default' => 'Select status', 'trash' => config('zvn.template.status.trash.name'), 'accept' => config('zvn.template.status.accept.name')];
 
     $inputHiddenID    = Form::hidden('id', @$item['id']);
+    $inputHiddenParentId    = Form::hidden('parent_id', @$item['parent_id']);
 
     $elements = [
         [
-            'label'   => Form::label('name', 'Name', $formLabelAttr),
-            'element' => Form::text('name', @$item['name'], $formInputAttr )
-        ],
-          [
-            'label'   => Form::label('slug', 'Slug', $formLabelAttr),
-            'element' => Form::text('slug', @$item['slug'],  $formInputAttr )
-        ],
-        [
-            'label'   => Form::label('parent_id', 'Parent', $formLabelAttr),
-            'element' => Form::select('parent_id', $nodes, @$item['parent_id'], $formInputAttr)
+            'label'   => Form::label('message', 'Message', $formLabelAttr),
+            'element' => Form::textarea('message', @$item['message'], $formInputAttr )
         ],
         [
             'label'   => Form::label('status', 'Status', $formLabelAttr),
             'element' => Form::select('status', $statusValue, @$item['status'], $formInputAttr)
         ],
         [
-            'element' => $inputHiddenID . Form::submit('Save', ['class'=>'btn btn-success']),
+            'element' => $inputHiddenParentId.$inputHiddenID . Form::submit('Save', ['class'=>'btn btn-success']),
             'type'    => "btn-submit"
         ]
     ];

@@ -1,6 +1,5 @@
 @php
-    use App\Helpers\Template as Template;
-    use App\Helpers\Hightlight as Hightlight;
+    use App\Models\UserModel;
 @endphp
 <div class="x_content">
     <div class="table-responsive">
@@ -10,11 +9,9 @@
                     <th class="column-title">STT</th>
                     <th class="column-title">Tên bài viết</th>
                     <th class="column-title">Hình ảnh</th>
-{{--                    <th class="column-title">Category</th>--}}
-                    <th class="column-title">Kiểu bài viết</th>
+                    @can('thay đổi trạng thái')
                     <th class="column-title">Trạng thái</th>
-                    {{-- <th class="column-title">Tạo mới</th>
-                    <th class="column-title">Chỉnh sửa</th> --}}
+                    @endcan
                     <th class="column-title">Hành động</th>
                 </tr>
             </thead>
@@ -34,6 +31,7 @@
                             $type            = Template::showItemSelect($controllerName, $id, $val['type'], 'type');
                             // $createdHistory  = Template::showItemHistory($val['created_by'], $val['created']);
                             // $modifiedHistory = Template::showItemHistory($val['modified_by'], $val['modified']);
+
                             $listBtnAction   = Template::showButtonAction($controllerName, $id);
                         @endphp
 
@@ -45,19 +43,22 @@
                             <td width="14%">
                                 <p>{!! $thumb !!}</p>
                             </td>
+                            @can('thay đổi trạng thái')
 {{--                            <td >{!! $category !!}</td>--}}
-                            <td>{!! $type   !!}</td>
                             <td>{!! $status !!}</td>
+                            @endcan
                             {{-- <td>{!! $createdHistory !!}</td>
                             <td>{!! $modifiedHistory !!}</td> --}}
-                            <td class="last">{!! $listBtnAction !!}</td>
-                        </tr>
-                    @endforeach
-                @else
-                    @include('admin.templates.list_empty', ['colspan' => 6])
-                @endif
-            </tbody>
-        </table>
-    </div>
+
+                                <td class="last">{!! $listBtnAction !!}</td>
+
+
+</tr>
+@endforeach
+@else
+@include('admin.templates.list_empty', ['colspan' => 6])
+@endif
+</tbody>
+</table>
 </div>
-           
+</div>

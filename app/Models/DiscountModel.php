@@ -106,7 +106,7 @@ class DiscountModel extends AdminModel
 
                 }
 
-                session(['coupon'=>$discount]);
+//                session(['coupon'=>$discount]);
 
                 return [
                     'type'=>$result->type,
@@ -116,7 +116,7 @@ class DiscountModel extends AdminModel
 
                 ];
             }else{
-                return ['message'=>0];
+                return ['message'=>0,'discount'=>0];
             }
         }
         if($options['task'] == 'get-item') {

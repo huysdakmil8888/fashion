@@ -15,7 +15,10 @@ class CustomerModel extends AdminModel
             'note','shipping_id','create_account','amount','accept'
         ];
 
-
+    public function order()
+    {
+        return $this->hasMany(OrderModel::class,'customer_id');
+    }
     public function listItems($params = null, $options = null) {
      
         $result = null;
@@ -88,12 +91,16 @@ class CustomerModel extends AdminModel
 
     public function getItem($params = null, $options = null) { 
         $result = null;
-        
+        //trang edit
         if($options['task'] == 'get-item') {
             $result = self::select('id','name','phone','email','address','ip', 'status')->where('id', $params['id'])->first();
         }
+        if($options['task'] == 'get-item-for-news') {
+            $result = self::with('order')->where('id', $params['id'])->first();
+        }
+        //dang nhap cho khach hang
         if($options['task'] == 'auth-login') {
-            $result = self::select('id', 'name', 'phone', 'email')
+            $result = self::select('id', 'name', 'phone', 'email','thumb','address')
                 ->where('status', 'active')
                 ->where(function ($query) use($params) {
                     $query->where('email', $params['account'])

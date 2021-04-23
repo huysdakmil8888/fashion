@@ -18,7 +18,6 @@ function allStorage() {
 	// $.each(archive, function (key, param) {
 	// 	console.log(`key = ${key} -- param = ${param}`);
 	// });
-	console.log('all localStorage = ' + archive);
 
     return archive;
 }

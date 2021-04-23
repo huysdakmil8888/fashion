@@ -30,7 +30,7 @@ class AdminModel extends Model
 
     public function uploadThumb($thumbObj,$dir='') {
 
-        $thumbName        = Str::random(10) . '.' . $thumbObj->clientExtension();
+        $thumbName        = $thumbObj->getClientOriginalName() . '.' . $thumbObj->clientExtension();
 
         $thumbObj->storeAs(!empty($dir)?$dir:$this->folderUpload, $thumbName, 'zvn_storage_image' );
         return $thumbName;
@@ -82,7 +82,43 @@ class AdminModel extends Model
     public function status($params,$options)
     {
         if($options['task'] == 'change-status') {
-            $status = ($params['currentStatus'] == "active") ? "inactive" : "active";
+            switch ($params['currentStatus']){
+                case "active":
+                    $status="inactive";
+                    break;
+                case "inactive":
+                    $status="active";
+                    break;
+                case "pending":
+                    $status="confirmed";
+                    break;
+                case "confirmed":
+                    $status="cancel";
+                    break;
+                case "cancel":
+                    $status="pending";
+                    break;
+                case "trash":
+                    $status="accept";
+                    break;
+                case "accept":
+                    $status="trash";
+                    break;
+                case "order_pending":
+                    $status="order_confirmed";
+                    break;
+                case "order_confirmed":
+                    $status="order_delivery";
+                    break;
+                case "order_delivery":
+                    $status="order_success";
+                    break;
+                case "order_success":
+                    $status="order_fail";
+                    break;
+                case "order_fail":
+                    $status="order_pending";
+                    break;}
             self::where('id', $params['id'])->update(['status' => $status
 //                ,'modified'=>now(),'modified_by'=>session()->get('userInfo')['username']
             ]);

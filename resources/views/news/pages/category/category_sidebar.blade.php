@@ -13,7 +13,18 @@ use App\Helpers\Template;
             <input type="text" id="price-amount" readonly style="width: 100%">
             <input type="hidden" name="price_min" value="300000">
             <input type="hidden" name="price_max" value="1500000">
-            <div class="comment-form">
+               @isset($_GET['show'])
+                <input type="hidden" name="show" value="{{$itemsNum}}">
+                @endisset
+                @isset($_GET['order'])
+                <input type="hidden" name="order" value="{{$itemsOrder}}">
+                @endisset
+                @isset($_GET['search'])
+                    <input type="hidden" name="search" value="{{$_GET['search']}}">
+                @endisset
+
+
+                <div class="comment-form">
                 <input value="lọc" type="submit" style="padding: 2px 14px;margin-top: 10px;text-transform: capitalize;">
             </div>
             </form>
@@ -21,6 +32,7 @@ use App\Helpers\Template;
         </div>
     </div>
 
+    @isset($cats)
     <div class="sidebar">
         <h4 class="sidebar-title">Category</h4>
         <ul class="sidebar-list">
@@ -31,6 +43,7 @@ use App\Helpers\Template;
             @endforelse
         </ul>
     </div>
+    @endisset
 
 
     <div class="sidebar">
@@ -43,6 +56,7 @@ use App\Helpers\Template;
             <li><a href="#"><span class="color" style="background-color: #FF6801"></span> Orange</a></li>
         </ul>
     </div>
+    @isset($itemsBestBuy)
 
     <div class="sidebar">
         <h4 class="sidebar-title">Sản phẩm bán chạy</h4>
@@ -80,6 +94,7 @@ use App\Helpers\Template;
             @endforelse
         </div>
     </div>
+    @endisset
 
 
     <div class="sidebar">
@@ -87,7 +102,7 @@ use App\Helpers\Template;
             <h3 class="sidebar-title">Tags</h3>
             <ul class="sidebar-tag">
                 @foreach($tags as $tag)
-                    <li><a href="{{route('article/tag',[Str::slug($tag->name),$tag->id])}}">{{$tag->name}}</a></li>
+                    <li><a href="{{route('category/tag',[Str::slug($tag->name),$tag->id])}}">{{$tag->name}}</a></li>
                 @endforeach
             </ul>
         @endif

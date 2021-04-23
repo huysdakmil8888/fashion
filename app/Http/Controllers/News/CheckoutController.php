@@ -42,10 +42,15 @@ class CheckoutController extends FrontendController
     public function index(Request $request)
     {
 
+        if(Cart::count()==0){
+            return redirect()->route('home');
+        }
         $cart=Cart::content();
+
 
         //phuong thuc van chuyen
         $shipping=DB::table("shipping")->pluck('name','id');
+
 
 
         //phuong thuc thanh toan
@@ -71,24 +76,26 @@ class CheckoutController extends FrontendController
         }
         //luu vao bang order
         $params['quantity']=Cart::count();
-        $params['status']='pending';
+        $params['status']='order_pending';
         $params['order_code']=Template::generate_string(5);
         $orderModel=new OrderModel();
         $order=$orderModel->saveItem($params,['task'=>'add-item']);
 
         //luu vao bang trung gian order_product
         foreach ($cart as $item) {
-            $order->products()->attach($item->id, ['qty' => $item->qty,'price'=>$item->price]);
+            $order->products()->attach($item->id, [
+                'qty' => $item->qty,
+                'price'=>$item->price,
+                'color'=>$item->options->color,
+            ]);
         }
+        Cart::destroy();
+        
 
-
-
-
-
-
-       return redirect()->back()->with('notify','Bạn đã đặt hàng thành công,chúng tôi sẽ liên hệ lại với bạn
+       return redirect()->route('home')->with('notify','Bạn đã đặt hàng thành công,chúng tôi sẽ liên hệ lại với bạn
        trong thời gian sớm nhất!,xin cảm ơn bạn');
     }
+
 
 
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Models\OrderModel as MainModel;
 use App\Http\Requests\OrderRequest as MainRequest;
+use Illuminate\Http\Request;
 
 class OrderController extends AdminController
 {
@@ -30,5 +31,13 @@ class OrderController extends AdminController
             $this->model->saveItem($params, ['task' => $task]);
             return redirect()->route($this->controllerName)->with("zvn_notify", $notify);
         }
+    }
+    public function changeStatus(Request $request)
+    {
+        $this->params['change-status'] = $request->change_status;
+        $this->params['id'] = $request->id;
+        $this->params['controllerName']=$this->controllerName;
+        $result = $this->model->saveItem($this->params, ['task' => 'change-status-ajax']);
+        echo json_encode($result);
     }
 }

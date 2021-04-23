@@ -340,6 +340,8 @@ $('.pro-thumb-img').on('click', 'a', function(e) {
     var $this = $(this);
 
     e.preventDefault();
+    console.log($this);
+    
 
     // Use EasyZoom's `swap` method
     api1.swap($this.data('standard'), $this.attr('href'));

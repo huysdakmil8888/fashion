@@ -13,10 +13,11 @@
         $name=$item->name;
         $view=$item->view;
         $like=$item->like;
+        $linkAuthor=URL::linkAuthor($item->user);
         $link=URL::linkArticle($item);
         $date=date("d",strtotime($item->created));
         $month=date("F",strtotime($item->created));
-        $author=$item->user->name;
+        $author=$item->user->username;
         $avatar=$item->user->thumb;
     @endphp
 
@@ -33,7 +34,7 @@
                         <div class="content">
                             <h1 style="margin-bottom: 20px">{{$name}}</h1>
                             <ul class="meta">
-                                <li><a href="{{$link}}"><img src="{{asset($avatar)}}"
+                                <li><a href="{{$linkAuthor}}"><img src="{{asset($avatar)}}"
                                                              alt="Blog Author">{{$author}}</a></li>
                                 <li><a href="{{route('article/increaseLike',$item->id)}}" id="like">
                                         <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
@@ -64,7 +65,7 @@
                             </div>
                         </div>
                     </div>
-                    @include("news.partials.article.comment")
+                    @include("news.partials.comment.show-comment")
 
                 </div>
 

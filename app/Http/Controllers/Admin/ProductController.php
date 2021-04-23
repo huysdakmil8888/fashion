@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\AttributeModel;
 use App\Models\CategoryModel;
+use App\Models\ProductModel;
 use App\Models\ProductModel as MainModel;
 use App\Http\Requests\ProductRequest as MainRequest;
 use Illuminate\Http\Request;
@@ -137,7 +138,8 @@ class ProductController extends AdminController
         if ($request->method() == 'POST') {
             $params = $request->all();
 
-            $this->model->saveItem($params, ['task' => 'change-attribute-product']);
+
+            $this->model->saveItem($params, ['task' => 'change-color-product']);
             return redirect()->back()->with("zvn_notify", "Cập nhật thông tin sản phẩm thành công!");
         }
     }

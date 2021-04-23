@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\News;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CommentRequest;
 use App\Models\CategoryArticleModel;
 use App\Models\CommentArticleModel;
 use App\Models\CommentModel;
 use App\Models\SettingModel;
 use App\Models\Tag;
+use App\Models\UserModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
@@ -39,9 +41,24 @@ class ArticleController extends NewsController
          $articleModel  = new ArticleModel();
          $items = $articleModel->getItem($params, ['task' => 'news-get-item']);
 
-
         return view($this->pathViewController .  'index', compact(
             'items','breadItem','breadItems'
+
+        ));
+    }
+    public function author(Request $request)
+    {
+
+
+        $params['author_id']=$request->author_id;
+
+
+        $articleModel  = new ArticleModel();
+        $items = $articleModel->getItem($params, ['task' => 'news-get-item-by-author']);
+        $author=$items[0]->user->username;
+
+        return view($this->pathViewController .  'index', compact(
+            'items','author'
 
         ));
     }
@@ -99,14 +116,14 @@ class ArticleController extends NewsController
 
         //lay list comment
         $comment=new CommentModel();
-        $itemsComment=$comment->listItems(null,['task'=>'news-list-items']);
+        $itemsComment=$comment->listItems($params,['task'=>'news-list-items']);
 
 
         /*================================= increase view ==========================*/
-        if($_SERVER['REMOTE_ADDR']!=session('ip') || strtotime(now())>session('time')+60 || $request->url()!= session('url')){
-            session(['ip'=>$_SERVER['REMOTE_ADDR']]);
-            session(['time'=>strtotime(now())]);
-            session(['url'=>$request->url()]);
+        if($_SERVER['REMOTE_ADDR']!=session('ip_view') || strtotime(now())>session('time_view')+120 || $request->url()!= session('url_view')){
+            session(['ip_view'=>$_SERVER['REMOTE_ADDR']]);
+            session(['time_view'=>strtotime(now())]);
+            session(['url_view'=>$request->url()]);
             $params['view']=$item->view+1;
             $articleModel->increaseView($params);
         }
@@ -124,20 +141,23 @@ class ArticleController extends NewsController
         $params['id']=$request->id;
         $articleModel=new ArticleModel();
         $item = $articleModel->getItem($params, ['task' => 'get-item']);
+        $params['like']=$item->like;
 
         /*================================= increase view ==========================*/
-        if($_SERVER['REMOTE_ADDR']!=session('ip') || strtotime(now())>session('time')+60 ){
-            session(['ip'=>$_SERVER['REMOTE_ADDR']]);
-            session(['time'=>strtotime(now())]);
+        if($_SERVER['REMOTE_ADDR']!=session('ip_like') || strtotime(now())>session('time_like')+60 ){
+            session(['ip_like'=>$_SERVER['REMOTE_ADDR']]);
+            session(['time_like'=>strtotime(now())]);
             $params['like']=$item->like+1;
             $articleModel->increaseLike($params);
         }
-        return response()->json(['like'=>$params['like']]);
+        return response()->json([
+            'like'=>$params['like']
+        ]);
 
     }
 
     //post comment
-    public function comment(Request $request)
+    public function comment(CommentRequest $request)
     {
         $params=$request->all();
         $commentModel=new CommentModel();

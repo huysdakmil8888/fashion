@@ -13,6 +13,7 @@ return [
     'user'=>'User',
     'view-website'=>'View Website',
     'logout'=>'Log out',
+    'account'=>'My Account'
 
 
 ];

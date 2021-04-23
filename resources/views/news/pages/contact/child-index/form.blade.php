@@ -14,6 +14,10 @@
                     <input type="email" name="email" placeholder="Email Address">
                     <span class="color-red">{{$errors->first('email')}}</span>
                 </div>
+                <div class="col-lg-6 col-12 mb-30">
+                    <input type="text" name="phone" placeholder="Phone number">
+                    <span class="color-red">{{$errors->first('phone')}}</span>
+                </div>
                 <div class="col-12 mb-30">
                     <textarea name="message" placeholder="Message"></textarea>
                     <span class="color-red">{{$errors->first('message')}}</span>

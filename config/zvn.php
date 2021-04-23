@@ -6,12 +6,12 @@ return [
         'prefix_news'  => 'news69',
     ],
     'format'         => [
-        'long_time'  => 'H:m:s d/m/Y',
+        'long_time'  => 'H:i:s d/m/Y',
         'short_time' => 'd/m/Y',
-        // 'count_down' => "+10 hours" 
-        'count_down' => "+2 day"
     ],
     'template'         => [
+        'color'=>['do'=>'#ff502e','vang'=>'#fff600','den'=>'#73777d',
+            'xanh'=>'#00c183','hong'=>'#Be25a8','cam'=>'#BE6325','xanh-da-troi'=>'#256dbe'],
         'form_input' => [
             'class' => 'form-control col-md-6 col-xs-12'
         ],
@@ -43,10 +43,20 @@ return [
         ],
         'status'       => [
             'all'      => ['name' => 'Tất cả', 'class' => 'btn-info'],
+            'trash'      => ['name' => 'Chờ xét duyệt', 'class' => 'btn-warning'],
+            'accept'      => ['name' => 'Đã duyệt', 'class' => 'btn-success'],
             'active'   => ['name' => 'Kích hoạt', 'class'      => 'btn-success'],
             'inactive' => ['name' => 'Chưa kích hoạt', 'class' => 'btn-danger'],
+            'pending' => ['name' => 'Chờ xác nhận', 'class' => 'btn-warning'],
+            'cancel' => ['name' => 'Không thể liên lạc', 'class' => 'btn-danger'],
+            'confirmed' => ['name' => 'Đã liên hệ', 'class' => 'btn-success'],
             'block'    => ['name' => 'Bị khóa', 'class' => 'btn-danger'],
-            'default'  => ['name' => 'Chưa xác định', 'class' => 'btn-success'],
+            'default'  => ['name' => 'Chưa xác định', 'class' => 'btn-danger'],
+            'order_pending'  => ['name' => 'Chờ xác nhận đơn', 'class' => 'btn-default'],
+            'order_confirmed'  => ['name' => 'Đã xác nhận', 'class' => 'btn-primary'],
+            'order_delivery'  => ['name' => 'Đang vận chuyển', 'class' => 'btn-warning'],
+            'order_success'  => ['name' => 'Giao thành công', 'class' => 'btn-success'],
+            'order_fail'  => ['name' => 'Giao thất bại', 'class' => 'btn-danger'],
         ],
         'is_home'       => [
             'yes' => ['name'=> 'Hiển thị', 'class'=> 'btn-primary'],
@@ -69,9 +79,22 @@ return [
             'new_tab' => ['name' => 'Tab mới', 'target' => '_blank'],
             'current' => ['name' => 'Trang hiện tại', 'target' => '_self'],
         ],
+        'contact' => [
+            'pending' => ['name' => 'Đang chờ duyệt'],
+            'confirmed' => ['name' => 'Đã duyệt'],
+            'cancel' => ['name' => 'Không thể liên lạc'],
+        ],
+        'order' => [
+            'order_pending' => ['name' => 'Chờ xác nhận'],
+            'order_confirmed' => ['name' => 'Đã xác nhận'],
+            'order_delivery' => ['name' => 'Đang giao hàng'],
+            'order_success' => ['name' => 'Giao hàng thành công'],
+            'order_fail' => ['name' => 'Giao hàng thất bại'],
+        ],
         'level'       => [
-            'admin'  => ['name'=> 'Quản trị hệ thống'],
-            'member' => ['name'=> 'Người dùng bình thường'],
+            'admin'  => ['name'=> 'Admin'],
+            'writer' => ['name'=> 'Writer'],
+            'editor' => ['name'=> 'Editor'],
         ],
         'rss_source' => [
             'vnexpress' => ['name' => 'VNExpress'],
@@ -112,7 +135,6 @@ return [
     ],
     'config' => [
         'search' => [
-            'default'     => ['all', 'id'],
             'slider'      => ['all', 'name', 'link'],
             'category'    => ['all', 'name'],
             'article'     => ['all', 'name'],
@@ -123,35 +145,17 @@ return [
             'contact'     => ['all', 'email'],
             'product'     => ['all','product_code','name'],
             'attribute'   => ['all','name'],
-            'rating'     => ['all','product_code','product_name','email','ip']
+            'rating'     => ['all','product_code','product_name','email','ip'],
+            'default'     => ['all', 'id'],
+
         ],
         'button' => [
             'default'        => ['edit', 'delete'],
-            'slider'         => ['edit', 'delete'],
-            'category'       => ['edit', 'delete'],
-            'article'        => ['edit', 'delete'],
-            'tag'            => ['edit', 'delete'],
-            'categoryArticle'        => ['edit', 'delete'],
-            'comment'       => ['edit', 'delete'],
-            'rating'        => ['edit', 'delete'],
             'user'           => ['edit'],
-            'menu'           => ['edit', 'delete'],
-            'testimonial'    => ['edit', 'delete'],
-            'recruitment'    => ['edit', 'delete'],
-            'payment'        => ['edit', 'delete'],
-            'page'           => ['edit', 'delete'],
-            'customer'       => ['edit', 'delete'],
-            'discount'       => ['edit', 'delete'],
+            'subscribe'           => ['edit'],
             'order'       => ['info', 'delete'],
-            'ad'       => ['edit', 'delete'],
             'cart'           => [ 'info'],
-            // 'cart'           => [],
-            'shipping'       => ['edit', 'delete'],
             'contact'        => [ 'delete'],
-            'team'           => ['edit', 'delete'],
-            'rss'            => ['edit', 'delete'],
-            'attribute'      => ['edit', 'delete'],
-            'product'        => ['edit', 'delete'],
         ]
     ],
     'notify' => [

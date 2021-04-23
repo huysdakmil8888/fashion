@@ -18,6 +18,14 @@ class CommentModel extends AdminModel
     {
         return $this->hasMany(ProductModel::class,'comment_id');
     }
+    public function article()
+    {
+        return $this->belongsTo(ArticleModel::class,'article_id');
+    }
+    public function customer()
+    {
+        return $this->belongsTo(CustomerModel::class,'customer_id');
+    }
     public function listItems($params = null, $options = null) {
      
         $result = null;
@@ -31,10 +39,11 @@ class CommentModel extends AdminModel
         }
         /*================================= lay comment da cap o frontend =============================*/
         if($options['task'] == 'news-list-items') {
-            $result = self::withDepth()
+            $result = self::with('customer')->withDepth()
 //                ->having('depth', '>', 0)
                 ->defaultOrder()
-                ->where('status', 'active')
+                ->where('status', 'accept')
+                ->where('article_id',$params['id'])
                 ->get()
                 ->toTree();
 
@@ -131,7 +140,7 @@ class CommentModel extends AdminModel
         $result = null;
         
         if($options['task'] == 'get-item') {
-            $result = self::select('id','thumb','slug', 'name', 'parent_id', 'status')->where('id', $params['id'])->first();
+            $result = self::select('id','parent_id', 'message', 'status')->where('id', $params['id'])->first();
         }
         //for breadcrumb
         if($options['task'] == 'breadcrumbs') {
@@ -186,10 +195,9 @@ class CommentModel extends AdminModel
         if ($options['task'] == 'edit-item') {
             $params['created_by'] = session('userInfo')['username'];
             $parent = self::find($params['parent_id']);
-
             $query = $current = self::find($params['id']);
-            $query->update($this->prepareParams($params));
-            if($current->parent_id != $params['parent_id']) $query->prependToNode($parent)->save();
+            $query->update($this->prepareParams($params,$parent));
+//            if($current->parent_id != $params['parent_id']) $query->prependToNode($parent)->save();
         }
 
         if ($options['task'] == 'change-ordering') {

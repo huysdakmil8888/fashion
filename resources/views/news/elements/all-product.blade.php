@@ -5,14 +5,18 @@
 <div class="product-section section section-padding">
     <div class="container">
 
-        <div class="row">
-            <div class="section-title text-center col mb-30">
-                <h1>Sản phẩm mới nhất</h1>
-                <p>Tất cả các sản phẩm phổ biến có thể tìm thấy ở đây</p>
-            </div>
-        </div>
+
+        <!-- Trigger to open Modal -->
+
+
+
 
         <div class="row mbn-40">
+            <!-- Modal HTML embedded directly into document -->
+            <!-- Modal structure -->
+
+
+
             @foreach($itemsProductRecent as $item)
                 @php
                     $name=$item->name;

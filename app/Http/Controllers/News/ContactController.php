@@ -4,6 +4,8 @@ namespace App\Http\Controllers\News;
 
 use App\Http\Requests\ContactRequest;
 use App\Mail\MailService;
+use App\Models\SettingModel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
 use App\Models\ContactModel as MainModel;
 
@@ -30,19 +32,25 @@ class ContactController extends NewsController
              'name' => $request->name,
              'email' => $request->email,
              'message' => $request->message,
+             'phone' => $request->phone,
+
          ];
 
          $this->model->saveItem($data, ['task' => 'news-add-item']);
 
          $mailService = new MailService();
-//         $mailService->sendContactConfirm($data);
          $mailService->sendContactInfo($data);
 
         return redirect()->back()->with('notify', 'Cảm ơn bạn đã gửi thông tin liên hệ. Chúng tôi sẽ liên hệ lại với bạn trong thời gian sớm nhất.');
     }
 
-    public function thank_you()
+    public function map()
     {
-        return view($this->pathViewController . 'thank_you');
+        //lay setting general
+        $settingModel=new SettingModel();
+        $setting_general=$settingModel->getItem(null,['task'=>'general']);
+        return response()->json([
+            'map'=>$setting_general['map']
+        ]);
     }
 }

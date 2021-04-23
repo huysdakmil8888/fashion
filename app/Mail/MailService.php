@@ -22,7 +22,7 @@ class MailService
             return false;
         else {
             Mail::send([], [], function ($message) use ($mail, $data) {
-                $message->from($mail['username'], $this->fromTitle);
+                $message->from($this->fromTitle);
                 $message->to($data['email']);
                 $message->subject($this->fromTitle . ' Thông báo gửi liên hệ thành công');
 
@@ -54,14 +54,40 @@ class MailService
                 $content = sprintf('
                 <p>Name: %s</p>
                 <p>Email: %s</p>
+                <p>Phone: %s</p>
                 <p>Message: %s</p>
-                ', $data['name'], $data['email'], $data['message']);
+                ', $data['name'], $data['email'],$data['phone'], $data['message']);
                 $message->setBody($content, 'text/html');
             });
             return true;
         }
     }
 
-    // Mailer::sendContactConfirm($data);
-    // Mailer::sendContactInfo($data);
+    public function sendSubscribe($data)
+    {
+        $mail = json_decode(SettingModel::where('key_value', 'setting-email')->first()->value, true);
+        if (empty($mail))
+            return false;
+        else {
+            Mail::send([], [], function ($message) use ($mail, $data) {
+                $message->from($mail['email'],$this->fromTitle );
+                $message->to($data['email']);
+                foreach ($data['bcc'] as $datum) {
+                    $message->bcc($datum);
+                }
+                $link=  route("home/unsubscribe");
+
+                $content = sprintf('%s <br />
+                    bạn đã đăng kí trang web của chúng tôi,
+                    nếu muốn hủy đăng kí vui lòng nhấp vào <a href="%s">link</a> này 
+                    ',  $data['message'],$link);
+                $message->subject($data['title']);
+                $message->setBody($content, 'text/html');
+
+
+
+            });
+            return true;
+        }
+    }
 }

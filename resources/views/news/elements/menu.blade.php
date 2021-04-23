@@ -1,5 +1,6 @@
 @php
     use App\Helpers\Template as Tem;
+    use Illuminate\Support\Facades\Cookie;
     $total=Tem::format_price(Cart::subTotal());
 @endphp
 <div class="header-bottom header-bottom-one header-sticky">
@@ -23,15 +24,25 @@
                     <div class="header-search">
                         <button class="search-toggle"><img src="{{asset('assets/images/icons/search.png')}}" alt="Search Toggle"><img class="toggle-close" src="{{asset('assets/images/icons/close.png')}}" alt="Search Toggle"></button>
                         <div class="header-search-wrap">
-                            <form action="#">
-                                <input type="text" placeholder="Type and hit enter">
+                            <form action="{{route('category/search')}}">
+                                <input type="text" placeholder="Tìm kiếm sản phẩm với tên" name="search">
+                                @isset($_GET['show'])
+                                    <input type="hidden" name="show" value="{{$itemsNum}}">
+                                @endisset
+                                @isset($_GET['order'])
+                                    <input type="hidden" name="order" value="{{$itemsOrder}}">
+                                @endisset
                                 <button><img src="{{asset('assets/images/icons/search.png')}}" alt="Search"></button>
                             </form>
                         </div>
                     </div>
 
                     <div class="header-wishlist">
-                        <a href="wishlist.html"><img src="{{asset('assets/images/icons/wishlist.png')}}" alt="Wishlist"> <span>02</span></a>
+                        @php
+                                $cookie=json_decode(Cookie::get('ids'))?count(json_decode(Cookie::get('ids'))):'';
+
+                        @endphp
+                        <a href="{{route('category/wishlist')}}" class="submit_wishlist"><img src="{{asset('assets/images/icons/wishlist.png')}}" alt="Wishlist"> <span id="get_wishlist_num">{{$cookie}}</span></a>
                     </div>
 
                     <div class="header-mini-cart">
@@ -74,14 +85,14 @@
                                     <li {{$class}}><a href="{{$link}}">{{$name}}</a></li>
                                 @break
                                 @case('category_product')
-                                    <li {{$class}}><a href="shop.html">Sản phẩm</a>
+                                    <li {{$class}}><a href="{{$link}}">Sản phẩm</a>
 
                                        {!! Template::showNestedMenu($itemsCategory,'category') !!}
 
                                     </li>
                                 @break
                                 @case('category_article')
-                                    <li  {{$class}}><a href="shop.html">Bài viết</a>
+                                    <li  {{$class}}><a href="{{$link}}">Bài viết</a>
                                         {!! Template::showNestedMenu($itemsCategoryArticle,'article') !!}
                                     </li>
                                 @break

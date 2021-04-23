@@ -179,11 +179,22 @@ class ArticleModel extends AdminModel
         }
 
         if($options['task']=='news-get-item'){
-            $result=self::with(['user','category_article'])->where('category_article_id',$params['category_article_id'])->select('id','like','view','user_id','category_article_id','name','slug','content','created_by','created','thumb')->paginate(2);
+            $result=self::with(['user','category_article'])
+                ->where('category_article_id',$params['category_article_id'])
+                ->select('id','like','view','user_id','category_article_id','name','slug','content','created_by','created','thumb')
+                ->orderby('id','desc')
+                ->paginate(4);
+
+        }
+        if($options['task']=='news-get-item-by-author'){
+            $result=self::with(['user','category_article'])
+                ->where('user_id',$params['author_id'])
+                ->select('id','like','view','user_id','category_article_id','name','slug','content','created_by','created','thumb')
+                ->paginate(4);
         }
         if($options['task']=='news-get-item-by-tag'){
             $result=Tag::find($params['tag'])->articles()
-                ->paginate(2);
+                ->paginate(4);
         }
         //get article same category
         if($options['task']=='news-get-item-recent'){
@@ -261,7 +272,7 @@ class ArticleModel extends AdminModel
     { 
         if($options['task'] == 'delete-item') {
             $item   = self::getItem($params, ['task'=>'get-thumb']);
-            $this->deleteThumb($item['thumb']);
+//            $this->deleteThumb($item['thumb']);
             self::where('id', $params['id'])->delete();
         }
     }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;    
 use App\Http\Requests\AuthLoginRequest as MainRequest;
 use App\Models\UserModel;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends NewsController
 {
@@ -37,6 +38,7 @@ class AuthController extends NewsController
             $userInfo = $userModel->getItem($params, ['task' => 'auth-login']);
 
             if (!$userInfo) return redirect()->route($this->controllerName . '/login')->with('news_notify', 'Tài khoản hoặc mật khẩu không chính xác!');
+            Auth::loginUsingId($userInfo['id']); //su dung auth
 
             $request->session()->put('userInfo', $userInfo);
             $url = session()->pull('url.intended');

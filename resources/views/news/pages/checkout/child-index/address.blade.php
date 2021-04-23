@@ -1,10 +1,11 @@
 @php
-    $name=old('name');
-    $email=old('email');
-    $phone=old('phone');
+    $customer=session('customerInfo');
+    $name=old('name',@$customer['name']);
+    $email=old('email',@$customer['email']);
+    $phone=old('phone',@$customer['phone']);
     $note=old('note');
     $password=old('password');
-    $address=old('address');
+    $address=old('address',@$customer['address']);
 
 @endphp
 <div id="billing-form" class="mb-20">
@@ -64,7 +65,11 @@
         <div class="col-12 mb-5 mt-5">
             <div class="check-box mb-15">
                 <input type="checkbox" id="shiping_address" data-shipping name="create_account">
-                <label for="shiping_address">Create an Acount?</label>
+                @if(!session('customerInfo'))
+                    <label for="shiping_address">Create an Acount?</label>
+                @else
+                    <input type="hidden" name="customer_id" value="{{$customer['id']}}">
+                @endif
             </div>
         </div>
 

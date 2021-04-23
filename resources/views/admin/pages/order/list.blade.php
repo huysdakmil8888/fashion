@@ -1,7 +1,3 @@
-@php
-    use App\Helpers\Template as Template;
-    use App\Helpers\Hightlight as Hightlight;
-@endphp
 <div class="x_content">
     <div class="table-responsive">
         <table class="table table-striped jambo_table bulk_action">
@@ -18,6 +14,8 @@
             </thead>
             <tbody>
                 @if (count($items) > 0)
+                    @php
+                    @endphp
                     @foreach ($items as $key => $val)
                         @php
 
@@ -25,9 +23,10 @@
                             $class           = ($index % 2 == 0) ? "even" : "odd";
                             $id              = $val['id'];
                             $code            = Hightlight::show($val['order_code'], $params['search'], 'type');
-                            $customer     = Hightlight::show($val['customer']->name, $params['search'], 'customer');
-                            $payment            = Hightlight::show($val['payment']->type, $params['search'], 'payment');
-                            $status          = Template::showItemStatus($controllerName, $id, $val['status']); ;
+                            $customer_name=$val['customer']?$val['customer']->name:$val['name'];
+                            $customer        = Hightlight::show($customer_name, $params['search'], 'customer');
+                            $payment         = Hightlight::show($val['payment']->type, $params['search'], 'payment');
+                            $status          = Template::showItemSelect($controllerName, $val['id'], $val['status'], 'order');
                             $createdHistory  = Template::showItemHistory($val['created_by'], $val['created']);
                             $modifiedHistory = Template::showItemHistory($val['modified_by'], $val['modified']);
                             $listBtnAction   = Template::showButtonAction($controllerName, $id);

@@ -26,7 +26,6 @@
         <ul class="nav side-menu">
             <li id="dashboard"><a href="{{ route('dashboard') }}"><i class="fa fa-home"></i> {{__('message.dashboard')}}
                 </a></li>
-
             <li>
                 <a><i class="fa fa-product-hunt"></i> Quản lý sản phẩm <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
@@ -37,12 +36,10 @@
                     <li id="shipping"><a href="{{ route('shipping') }}"> Phí ship</a></li>
                     <li id="payment"><a href="{{ route('payment') }}"> Phương thức thanh toán</a></li>
                     <li id="order"><a href="{{ route('order') }}">Đơn Hàng</a></li>
-{{--                    <li id="comment"><a href="{{ route('rating') }}"> Comment</a></li>--}}
-
+                    <li id="color"><a href="{{ route('color') }}">Màu sắc</a></li>
+                    <li id="comment_article"><a href="{{ route('rating') }}"> Đánh giá khách hàng</a></li>
                 </ul>
             </li>
-
-
             <li>
                 <a><i class="fa fa-archive"></i> Quản lý bài viết <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
@@ -50,20 +47,19 @@
                     <li id="categoryArticle"><a href="{{ route('categoryArticle') }}"> Danh mục bài viết</a></li>
                     <li id="comment_article"><a href="{{ route('comment') }}"> Comment</a></li>
                     <li id="testimonial"><a href="{{ route('testimonial') }}"> Testimonial</a></li>
-                    <li id="team"><a href="{{ route('team') }}"> Team</a></li>
+                    <li id="subscribe"><a href="{{ route('subscribe') }}"> Subscriber</a></li>
                 </ul>
             </li>
+
+
             <li>
-                <a><i class="fa fa-user"></i> Quản lý thành viên <span class="fa fa-chevron-down"></span></a>
+                <a><i class="fa fa-file"></i> Quản lý trang và tag <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li id="user"><a href="{{ route('user') }}"> User</a></li>
-                    <li class="none"><a href="{{ route('user/change-logged-password') }}"> Change Password</a></li>
+                    <li id="page"><a href="{{ route('page') }}"> Quản lý Trang</a></li>
+                    <li id="tag"><a href="{{ route('tag') }}"> Quản lý Tag</a></li>
 
                 </ul>
             </li>
-            <li><a href="{{ route('menu') }}"><i class="fa fa-sitemap"></i> Quản lý Menu</a></li>
-            <li><a href="{{ route('tag') }}"><i class="fa fa-tag"></i> Quản lý Tag</a></li>
-            <li id = "logs" class="none"><a href="{{ route('logs') }}"><i class="fa fa-history"></i> Logs</a></li>
             <li>
                 <a><i class="fa fa-image"></i> hình ảnh & video <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
@@ -72,10 +68,38 @@
 
                 </ul>
             </li>
+            <li>
+                <a><i class="fa fa-sliders"></i> Slider & Quảng cáo <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li id="slider"><a href="{{ route('slider') }}"> Slider</a></li>
+                    <li id="ad"><a href="{{ route('ad') }}"> Quảng cáo</a></li>
 
-            <li><a href="{{ route('slider') }}"><i class="fa fa-sliders"></i> Slider</a></li>
-            <li><a href="{{ route('ad') }}"><i class="fa fa-file-image-o"></i> Quảng cáo</a></li>
-            <li><a href="{{ route('contact') }}"><i class="fa fa-connectdevelop"></i> Contact</a></li>
+                </ul>
+            </li>
+            <li>
+                <a><i class="fa fa-envelope-o"></i>Menu & Liên hệ <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li id="menu"><a href="{{ route('menu') }}"> Menu</a></li>
+                    <li id="contact"><a href="{{ route('contact') }}"> Liên hệ</a></li>
+
+                </ul>
+            </li>
+            <li class="none">
+                <a href="{{ route('user/change-logged-password') }}"><i class="fa fa-sliders"></i> Change Password</a>
+            </li>
+
+            @role('admin')
+
+            <li>
+                <a><i class="fa fa-user"></i> Quản lý thành viên <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li id="user"><a href="{{ route('user') }}"> User</a></li>
+                    <li id="group"><a href="{{ route('group') }}"> {{ucFirst('group')}}</a></li>
+                    <li id="permission"><a href="{{ route('permission') }}"> {{ucFirst('permission')}}</a></li>
+
+                </ul>
+            </li>
+
 
             <li>
                 <a><i class="fa fa-cog"></i> {{__('message.config')}} <span class="fa fa-chevron-down"></span></a>
@@ -84,8 +108,10 @@
                     <li id="setting"><a href="{{ route('setting', ['type' => 'email']) }}">Email</a></li>
                     <li id="setting"><a href="{{ route('setting', ['type' => 'social']) }}">Social</a></li>
                     <li id="setting"><a href="{{ route('setting', ['type' => 'share']) }}">Share button</a></li>
+                    <li id="logs"><a href="{{ route('logs') }}">Log error</a></li>
                 </ul>
             </li>
+            @endrole
 
 
         </ul>

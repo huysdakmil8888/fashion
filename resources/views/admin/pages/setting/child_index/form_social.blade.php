@@ -7,16 +7,8 @@
     
     $elements = [
         [
-            'label'     => Form::label('facebook', 'Facebook', $formLabelAttributes),
-            'element'   => Form::text('facebook', $item['facebook'] ?? '', $formInputAttributes)
-        ],
-        [
             'label'     => Form::label('youtube', 'Youtube', $formLabelAttributes),
             'element'   => Form::text('youtube', $item['youtube'] ?? '', $formInputAttributes)
-        ],
-        [
-            'label'     => Form::label('google', 'Google', $formLabelAttributes),
-            'element'   => Form::text('google', $item['google'] ?? '', $formInputAttributes)
         ],
         [
             'element'   => Form::submit('Lưu', ['class' => 'btn btn-success']),

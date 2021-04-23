@@ -63,7 +63,7 @@ class UserRequest extends FormRequest
 
                 break;
             case 'change-level':
-                $condLevel = 'bail|in:admin,member';
+                $condLevel = 'required';
                 break;
             case 'change-logged-password':
                 $condOldPass    = "bail|required|between:5,100";

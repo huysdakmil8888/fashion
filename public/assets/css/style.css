@@ -797,7 +797,7 @@ img.mfp-img {
 }
 
 /*-- Sticky Header --*/
-.header-sticky.is-sticky {
+.header-sticky.is-stickys {
     -webkit-animation: 300ms ease-in-out 0s normal none 1 running fadeInDown;
     animation: 300ms ease-in-out 0s normal none 1 running fadeInDown;
     -webkit-box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
@@ -3646,24 +3646,29 @@ img.mfp-img {
     margin-right: 10px;
 }
 
-.product-show .nice-select {
+.product-show .nice-select, .product-show .nice-selects, .product-show .nice-selects2{
     clear: none;
     line-height: 36px;
-    height: 38px;
-    width: 70px;
+    height: 30px;
+    width: 39px;
+}
+span.highlight {
+    color: dodgerblue;
+    text-decoration: underline;
+    font-weight: bold;
 }
 
-.product-show .nice-select::after {
+.product-show .nice-select::after,.product-show .nice-selects::after {
     height: 6px;
     width: 6px;
     border-width: 1px;
 }
 
-.product-show .nice-select .list {
+.product-show .nice-select .list,.product-show .nice-selects .list {
     width: 100%;
 }
 
-.product-show .nice-select.open, .product-show .nice-select:focus {
+.product-show .nice-select.open, .product-show .nice-select:focus,.product-show .nice-selects.open {
     border-color: #e8e8e8;
 }
 
@@ -3947,7 +3952,7 @@ img.mfp-img {
     text-align: right;
 }
 
-.product-item .product-inner .content .content-right .price {
+.product-item .product-inner .content .content-right .price,.price-item {
     display: block;
     font-family: "Dosis", sans-serif;
     font-size: 24px;
@@ -6866,8 +6871,10 @@ img.mfp-img {
 .comment-wrap {
     padding-left: 100px;
 }
-
-.comment-wrap h3 {
+.pick-color{
+    border: 3px solid black !important;
+}
+.comment-wrap h3,#reviews h3 {
     font-size: 24px;
     margin-bottom: 30px;
     font-weight: 600;

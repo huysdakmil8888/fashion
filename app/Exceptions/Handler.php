@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -49,13 +50,21 @@ class Handler extends ExceptionHandler
         if ($this->isHttpException($exception)) {
             switch ($exception->getStatusCode()) {
                 case '403':
+                    return response()->redirectToRoute('dashboard/no-permission');
+
+                    break;
+
+
                 case '404':
+                    return response()->redirectToRoute('dashboard/no-permission');
+
+                    break;
+
+
                 case '500':
                     return response()->redirectToRoute('home/not-found');
-                    break;
                 default:
                     return $this->renderHttpException($exception);
-                    break;
             }
         } else {
             return parent::render($request, $exception);

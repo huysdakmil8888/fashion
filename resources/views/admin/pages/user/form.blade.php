@@ -5,7 +5,6 @@
     @include ('admin.templates.error')
     @include ('admin.templates.zvn_notify')
 
-
     @isset ( $item['id'])
 
         <div class="row">

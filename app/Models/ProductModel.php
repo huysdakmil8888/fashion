@@ -2,11 +2,13 @@
 namespace App\Models;
 
 use App\Models\AdminModel;
+use App\Models\ProductAttributeModel;
 use App\Models\ProductImageModel;
 use App\Models\AttributeModel;
-use App\Models\ProductAttributeModel;
 use App\Models\CommentModel;
 use App\Models\CategoryModel;
+//use App\Models\ProductImageModel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -24,12 +26,20 @@ class ProductModel extends AdminModel
     }
     public function attribute()
     {
-        return $this->hasMany(ProductAttributeModel::class,'product_id');
+        return $this->hasMany(ProductAttributeModel::class,'product_id')->where('attribute_id',2);
+    }
+    public function comments()
+    {
+        return $this->hasMany(RatingModel::class,'product_id');
     }
 
     public function image()
     {
         return $this->hasMany(ProductImageModel::class,'product_id');
+    }
+    public function colors()
+    {
+        return $this->belongsToMany(ColorModel::class,'product_color','product_id','color_id','id')->withPivot('value','default');
     }
 
     public function listItems($params = null, $options = null) {
@@ -70,6 +80,51 @@ class ProductModel extends AdminModel
             $result = $query->get();
         }
 
+        //product footer category
+        if($options['task'] == 'news-get-product') {
+            $query = self::select('featured','date_start','date_end','id','buy', 'category_id', 'rating','product_code', 'name', 'thumb', 'price', 'sale', 'slug', 'description')
+                ->where('status','active');
+            if($options['type']=='bestdeal'){
+                $query->where('best_deal', '=', 1 )
+                    ->where('date_start','<=',strtotime(now()))
+                    ->where('date_end','>=',strtotime(now()));
+            }
+            if($options['type']=='sale'){
+                $query->where('sale', '>', 0 )
+                    ->where('date_start','<=',strtotime(now()))
+                    ->where('date_end','>=',strtotime(now()));
+            }
+            if($options['type']=='search'){
+                $name=$params['name'];
+                $query->where('name', "LIKE","%$name%" );
+            }
+            if($options['type']=='featured') $query->where('featured',1);
+            if($options['type']=='wishlist') $query->whereIn('id', $params["ids"]);
+
+
+
+            if ($params['price']['price_min'] !== NULL)  {
+                $query->whereBetween('price', [$params['price']['price_min'],$params['price']['price_max']]);
+            }
+            $order=explode('_',$params['order']);
+            $query->orderBy($order[0],$order[1]);
+            if($options['type']=='news') $query->orderBy('id','desc');
+            if($options['type']=='bestbuy') $query->orderBy('buy','desc');
+
+
+            $result=$query->paginate($params['show']);
+        }
+        if($options['task']=='news-get-item-by-tag'){
+            $query=Tag::find($params['id'])->products();
+            if ($params['price']['price_min'] !== NULL)  {
+                $query->whereBetween('price', [$params['price']['price_min'],$params['price']['price_max']]);
+            }
+            $order=explode('_',$params['order']);
+            $query->orderBy($order[0],$order[1]);
+
+            $result=$query->paginate($params['show']);
+        }
+
         // home - product sale
         if($options['task'] == 'news-list-items-for-sale') {
             $query = self::select('id', 'name', 'slug','thumb', 'sale','price')
@@ -81,7 +136,7 @@ class ProductModel extends AdminModel
                 ->limit(8);
             $result = $query->get();
         }
-        // home - product sale
+        // home - product best deal
         if($options['task'] == 'news-list-items-for-deal') {
             $query = self::with('image')->select('id', 'name', 'slug','thumb', 'sale','price','date_end')
                 ->where('status', '=', 'active' )
@@ -155,12 +210,12 @@ class ProductModel extends AdminModel
         //lay san pham khi add to cart
         if($options['task'] == 'cart') {
             $result = self::where('id', $params['id'])
-                ->select('thumb','name','price','id')
+                ->select('thumb','name','price','id','slug')
                 ->first();
         }
 
         if($options['task'] == 'news-get-item-product-detail') {
-            $result = self::with('image','tags')->select('id', 'category_id', 'product_code', 'name', 'quantity',
+            $result = self::with('image','tags','attribute')->select('id', 'category_id', 'product_code', 'name', 'quantity',
                 'thumb', 'price', 'sale', 'slug', 'description','rating','content','datasheet')
             ->where('status','active')
             ->where('id', $params["id"])
@@ -168,7 +223,7 @@ class ProductModel extends AdminModel
         }
         //get related product
         if($options['task'] == 'news-get-item-product-related') {
-            $result = self::select('id', 'name', 'quantity','rating',
+            $result = self::with('attribute')->select('id', 'name', 'quantity','rating',
                 'thumb', 'price', 'sale', 'slug')
                 ->where([['status','active'],['id','<>',$params['id']],['category_id',$params['category_id']]])
                 ->take(7)
@@ -184,9 +239,10 @@ class ProductModel extends AdminModel
                      $query->whereBetween('price', [$params['price']['price_min'],$params['price']['price_max']]);
              }
 
+            $order=explode('_',$params['order']);
+            $query->orderBy($order[0],$order[1]);
 
-
-            $result=$query->paginate(15);
+            $result=$query->paginate($params['show']);
         }
         //sidebar san pham ban chay nhat
         if($options['task'] == 'news-get-item-buy') {
@@ -264,6 +320,24 @@ class ProductModel extends AdminModel
                 $productAttr->saveItem(['attr'=>$params['attribute'],'id'=>$params['id']],['task'=>'edit-item']);
             }
         }
+        /*================================= change price color =============================*/
+        if($options['task'] == 'change-color-product') {
+            $product=self::find($params['id']);
+            foreach ($params['price'] as $color_id=>$value){
+                if($value){
+                    if($params['default']==$color_id){
+                        $default=1;
+                        $product->update(['price'=>$value]);
+                    }else{
+                        $default=0;
+                    }
+                    $newArr[$color_id]=['value'=>$value,'default'=>$default];
+                }
+            }
+            $product->colors()->sync($newArr);
+
+        }
+
         /*================================= status index =============================*/
         if ($options['task'] == 'change-status') {
             $status = $params['currentStatus'] == 'active' ? 'inactive' : 'active';

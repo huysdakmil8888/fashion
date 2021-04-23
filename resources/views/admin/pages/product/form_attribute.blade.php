@@ -1,7 +1,10 @@
 @php
 
     use App\Helpers\Form as FormTemplate;
-    use App\Helpers\Template;
+    use App\Models\ColorModel;
+    use Illuminate\Support\Facades\Config;
+    use Illuminate\Support\Str;
+
 
     $formInputAttributes = config('zvn.template.form_input');
     $formLabelAttributes = [
@@ -9,20 +12,49 @@
         ];
     $form_tag=config('zvn.template.form_tag');
 
-
-
+    $colorModel=new ColorModel();
+    $define=Config::get('zvn.template.color');
+   $attribute=$colorModel->getItem(['id'=>$item->id],['task'=>'get-color']);
     $inputHiddenID = Form::hidden('id', $item['id'] ?? '');
     $arr=[];
+    //dd($attribute);
+/*    dd($item->colors->toArray());
 
-    foreach ($attribute as $attr) {
 
-        $name=$attr['name'];
-        $id=$attr['id'];
-        $value=isset($newArr[$id])?$newArr[$id]:'';
+*/    foreach ($attribute as $key=>$value) {
+        $slug=Str::slug($value['name']);
+
+        //checked
+       foreach (@$item->colors->toArray() as $i){
+            if($i['name']==$value['name']){
+               $newArr[$key]=$i;
+
+            }
+        }
+      if(@$newArr[$key]['pivot']['default']==1){
+               $checked="checked";
+        }else{
+               $checked="";
+        }
 
          $arr[]=[
-            'label'   => Form::label($name, ucfirst($name), $formLabelAttributes),
-            'element'   => Form::text("attribute[$id]",$value , $form_tag),
+            'label'   => '',
+            'element'   => sprintf('<div class="input-group">
+                <span class="input-group-btn">
+                <button style="background:%s;" type="button" class="btn btn-danger go-class">%s</button>
+                </span>
+                <input type="text" class="form-control" name="price[%s]" value="%s">
+
+                </div>
+
+                <input %s type="radio" name="default" value="%s" /> lua chon lam gia tri mac dinh'
+                ,$define[$slug],$value['name'],$value['id'],
+                @$newArr[$key]['pivot']['value'],
+                $checked,
+                $value['id']
+
+
+                ),
         ];
     }
 
@@ -39,7 +71,7 @@
 <div class="row">
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
-        @include('admin.templates.x_title', ['title' => 'Thay đổi thuộc tính'])
+        @include('admin.templates.x_title', ['title' => 'giá theo màu sắc'])
         <div class="x_content">
             {{ Form::open([
                 'method'         => 'POST',

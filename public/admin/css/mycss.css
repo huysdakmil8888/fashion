@@ -108,3 +108,10 @@ span.tag{
 .bootstrap-tagsinput{
     height: 33px;
 }
+.icheckbox_flat-green{
+    position: relative;
+    margin-bottom: 3px;
+}
+.flat{
+    position: absolute; opacity: 0;
+}

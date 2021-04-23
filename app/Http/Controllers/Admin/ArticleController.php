@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CategoryArticleModel;
+use App\Models\UserModel;
 use Illuminate\Http\Request;
 use App\Models\ArticleModel as MainModel;
 use App\Models\CategoryModel;
 use App\Http\Requests\ArticleRequest as MainRequest ;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ArticleController extends AdminController
@@ -17,10 +19,15 @@ class ArticleController extends AdminController
         $this->controllerName = 'article';
         $this->model = new MainModel();
         parent::__construct();
+
+
     }
 
     public function form(Request $request)
     {
+
+//        Auth::user()->can('sửa xóa bài viết');
+
         $categoryModel=new CategoryArticleModel();
         $itemsCategoryArticle  = $categoryModel->listItems(null, ['task' => 'admin-list-items-in-select-box']);
 

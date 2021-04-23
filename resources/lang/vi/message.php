@@ -13,6 +13,8 @@ return [
     'user'=>'Người dùng',
     'view-website'=>'Trang chủ',
     'logout'=>'Đăng xuất',
+    'account'=>'Tài khoản của tôi'
+
 
 
 ];

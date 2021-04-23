@@ -27,14 +27,16 @@
             $result+=$subTotal;
 
             $thumb=$item->options->thumb;
+            $color=$item->options->color;
+            $link=$item->options->link;
 
 
         @endphp
         <tr>
-            <td class="pro-thumbnail"><a href="#"><img src="{{asset($thumb)}}" alt="" /></a></td>
-            <td class="pro-title"><a href="#">{{$name}}</a></td>
+            <td class="pro-thumbnail"><a href="{{$link}}"><img src="{{asset($thumb)}}" alt="" /></a></td>
+            <td class="pro-title"><a href="{{$link}}">{{$name}} ({{$color}})</a></td>
             <td class="pro-price"><span class="amount">{!! $price !!}</span></td>
-            <td class="pro-quantity"><div class="pro-qty"><input type="text" value="{{$qty}}" class="qty"></div></td>
+            <td class="pro-quantity"><div class="pro-qty"><input  min="1" type="text" value="{{$qty}}" class="qty"></div></td>
 
             <td class="pro-subtotal subtotal">{!! Template::format_price($subTotal) !!}</td>
             <input type="hidden" value="{{route('cart/remove-cart')}}" class="url">

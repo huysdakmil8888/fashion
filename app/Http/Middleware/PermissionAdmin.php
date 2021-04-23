@@ -2,8 +2,13 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\UserModel;
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 class PermissionAdmin
 {
@@ -16,11 +21,24 @@ class PermissionAdmin
      */
     public function handle($request, Closure $next)
     {
-        App::setLocale(session()->get('language'));
+//        App::setLocale(session()->get('language'));
+        $routeCollection = Route::getRoutes();
+
+        foreach ($routeCollection as $value) {
+//            echo $value->getName().'<br/>';
+        }
+
         if($request->session()->has('userInfo'))  {
             $userInfo = $request->session()->get('userInfo');
-       
-            if ($userInfo['level'] == 'admin')  return $next($request);
+
+//            $route_name=$request->route()->getName();
+//            $user=new UserModel();
+//            $ids=$user->getPermission($user->find(session('userInfo')['id']));
+//            $user=DB::table('permission')
+//                ->where('route_name',$route_name)
+//                ->whereIn('id',$ids)
+//                ->count();
+            if ($userInfo)  return $next($request);
             return redirect()->route('notify/noPermission');
         }
 

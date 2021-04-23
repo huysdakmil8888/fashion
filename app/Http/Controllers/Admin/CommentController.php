@@ -34,12 +34,6 @@ class CommentController extends AdminController
     {
         if ($request->method() == 'POST') {
             $params = $request->all();
-            if(empty($params['slug'])){
-                $params['slug']=Str::slug($params['name']);
-            }
-
-
-
 
             $task   = "add-item";
             $notify = "Thêm phần tử thành công!";
@@ -49,7 +43,7 @@ class CommentController extends AdminController
                 $notify = "Cập nhật phần tử thành công!";
             }
             $this->model->saveItem($params, ['task' => $task]);
-            return redirect()->route($this->controllerName)->with("zvn_notify", $notify);
+            return redirect()->back()->with("zvn_notify", $notify);
         }
     }
 

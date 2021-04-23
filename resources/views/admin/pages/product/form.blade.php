@@ -13,7 +13,7 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <ul id="settingTab" class="nav nav-tabs bar_tabs" role="tablist">
                     <li @if ($type == 'general') class="active" @endif><a href="{{ route('product/form', ['id'=>$item['id'],'type' => 'general']) }}" role="tab">Thông tin cơ bản</a></li>
-                    <li @if ($type == 'attribute') class="active" @endif><a href="{{ route('product/form', ['id'=>$item['id'],'type' => 'attribute']) }}" role="tab">Thuộc tính</a></li>
+                    <li @if ($type == 'attribute') class="active" @endif><a href="{{ route('product/form', ['id'=>$item['id'],'type' => 'attribute']) }}" role="tab">Giá theo màu sắc</a></li>
                     <li @if ($type == 'seo') class="active" @endif><a href="{{ route('product/form', ['id'=>$item['id'],'type' => 'seo']) }}" role="tab">SEO</a></li>
                     <li @if ($type == 'content') class="active" @endif><a href="{{ route('product/form', ['id'=>$item['id'],'type' => 'content']) }}" role="tab">More info</a></li>
                 </ul>
@@ -25,10 +25,11 @@
                                 @include('admin.pages.product.form_category')
                                 @include('admin.pages.product.form_price')
                                 @include('admin.pages.product.form_special')
-                                @include('admin.pages.product.form_dropzone')
                             @break
                             @case('attribute')
                                 @include('admin.pages.product.form_attribute')
+                                @include('admin.pages.product.form_dropzone')
+
                             @break
                             @case('seo')
                                 @include('admin.pages.product.form_seo')

@@ -135,11 +135,18 @@ class CategoryArticleModel extends AdminModel
             $result = self::select('id','slug', 'name', 'parent_id', 'status')->where('id', $params['id'])->first();
         }
 
-        //for item
-        if($options['task'] == 'news-get-item') {
+        //lay thong tin bai viet cua tac gia
+        if($options['task'] == 'news-get-item-by-author') {
             $result = self::select('id','slug', 'name')
             ->where('id', $params['category_article_id'])
             ->first();
+
+        }
+        //lay thong tin bai viet trong chuyen muc
+        if($options['task'] == 'news-get-item') {
+            $result = self::select('id','slug', 'name')
+                ->where('id', $params['category_article_id'])
+                ->first();
 
         }
         //for breadcrumb

@@ -47,10 +47,10 @@ return [
     'base_directory' => 'public',
 
     'images_folder_name' => 'assets/images',
-    'files_folder_name'  => 'images',
+    'files_folder_name'  => 'assets/images',
 
     'shared_folder_name' => 'shares',
-    // 'thumb_folder_name'  => 'thumbs',
+//     'thumb_folder_name'  => 'thumbs',
 
     /*
     |--------------------------------------------------------------------------

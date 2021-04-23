@@ -35,7 +35,7 @@ class CommentRequest extends FormRequest
         }
         return [
             'message' => 'bail|required',
-            'status'      => 'bail|in:active,inactive',
+//            'status'      => 'bail|in:trash,accept',
         ];
     }
 

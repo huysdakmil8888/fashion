@@ -5,8 +5,11 @@
 @endphp
 @extends('news.main')
 @section('content')
-    @include("news.templates.breadcumb",['name'=>$breadItem->name,'itemsBread'=>$breadItems,'type'=>'categoryArticle'])
-
+    @isset($author)
+        @include("news.templates.breadcumb",['name'=>'Bài viết của tác giả '.$author])
+    @else
+        @include("news.templates.breadcumb",['name'=>$breadItem->name,'itemsBread'=>$breadItems,'type'=>'categoryArticle'])
+    @endisset
     <div class="blog-section section section-padding">
         <div class="container">
             <div class="row">

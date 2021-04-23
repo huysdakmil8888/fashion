@@ -1,6 +1,7 @@
 @php
     use App\Helpers\Template as Template;
     use App\Helpers\Hightlight as Hightlight;
+    use App\Models\GroupModel;
 @endphp
 <div class="x_content">
     <div class="table-responsive">
@@ -23,18 +24,18 @@
                 @if (count($items) > 0)
                     @foreach ($items as $key => $val)
                         @php
-                            $index           = $key + 1;
-                            $class           = ($index % 2 == 0) ? "even" : "odd";
-                            $id              = $val['id'];
-                            $username        = Hightlight::show($val['username'], $params['search'], 'username');
-                            $fullname        = Hightlight::show($val['fullname'], $params['search'], 'fullname');
-                            $email           = Hightlight::show($val['email'], $params['search'], 'email');
-                            $level           = Template::showItemSelect($controllerName, $id, $val['level'], 'level');
-                            $avatar          = Template::showItemThumb($controllerName, $val['thumb'], $val['name']);
-                            $status          = Template::showItemStatus($controllerName, $id, $val['status']); ;
-                            $createdHistory  = Template::showItemHistory($val['created_by'], $val['created']);
-                            $modifiedHistory = Template::showItemHistory($val['modified_by'], $val['modified']);
-                            $listBtnAction   = Template::showButtonAction($controllerName, $id);
+                                $index           = $key + 1;
+                                $class           = ($index % 2 == 0) ? "even" : "odd";
+                                $id              = $val['id'];
+                                $username        = Hightlight::show($val['username'], $params['search'], 'username');
+                                $fullname        = Hightlight::show($val['fullname'], $params['search'], 'fullname');
+                                $email           = Hightlight::show($val['email'], $params['search'], 'email');
+                                $level           = Template::showItemSelect($controllerName, $id, $val['roles'][0]['name'], 'level');
+                                $avatar          = Template::showItemThumb($controllerName, $val['thumb'], $val['name']);
+                                $status          = Template::showItemStatus($controllerName, $id, $val['status']); ;
+                                $createdHistory  = Template::showItemHistory($val['created_by'], $val['created']);
+                                $modifiedHistory = Template::showItemHistory($val['modified_by'], $val['modified']);
+                                $listBtnAction   = Template::showButtonAction($controllerName, $id);
                         @endphp
 
                         <tr class="{{ $class }} pointer">

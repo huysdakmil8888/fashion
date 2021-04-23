@@ -10,6 +10,13 @@ $(document).ready(function() {
 	let $inputSearchValue     = $("input[name  = search_value]");
 	let $selectChangeAttr     = $("select[name = select_change_attr]");
 
+	choose=$("#"+location.pathname.split("/")[2]);
+	choose.addClass('current-page');
+	choose.parent().css('display', 'block');
+	choose.parent().parent().addClass('active');
+
+
+
 	//date picker
 	// alert(1)
 	// $( "#datepicker" ).datepicker();
@@ -73,9 +80,9 @@ $(document).ready(function() {
 	
 	$btnSearch.click(function() {
 
-		var pathname	= window.location.pathname;
+		var pathname	= location.pathname;
 		let params 		= ['filter_status'];
-		let searchParams= new URLSearchParams(window.location.search);	// ?filter_status=active
+		let searchParams= new URLSearchParams(location.search);	// ?filter_status=active
 
 		let link		= "";
 		$.each( params, function( key, param ) { // filter_status
@@ -90,7 +97,7 @@ $(document).ready(function() {
 		if(search_value.replace(/\s/g,"") == ""){
 			alert("Nhập vào giá trị cần tìm !!");
 		} else {
-			window.location.href = pathname + "?" + link + 'search_field='+ search_field + '&search_value=' + search_value;
+			location.href = pathname + "?" + link + 'search_field='+ search_field + '&search_value=' + search_value;
 		}
 	});
 
@@ -144,10 +151,6 @@ $(document).ready(function() {
 		$inputSearchField.val(field);
 	});
 
-	$('.btn-delete').on('click', function() {
-		if(!confirm('Bạn có chắc muốn xóa phần tử?'))
-			return false;
-	});
 
 	/* ---------- Setting ---------- */
 	// Tag Input
@@ -193,25 +196,7 @@ $(document).ready(function() {
 		return false;
 	})
 
-	// Active Menu Side Bar
-	let child_Li = $(`#sidebar-menu li`);
-	var parentDiv = [];
 	
-	child_Li.each((index, val) => {
-		parentDiv.push(val.id);
-		// console.log(`key = ${index} - param = ${val}`);
-	});
-
-	$(parentDiv).each((index, val) => {
-		// console.log('val = ' + val);
-
-		if(controllerName == val) {
-			let choose = $(`#${val}`);
-			choose.addClass('current-page');
-			choose.parent().css('display', 'block');
-			choose.parent().parent().addClass('active');
-		}
-	});
 	//format number when typing
 	$('#price,#price_sale').keyup(function(event) {
 		// skip for arrow keys
@@ -229,11 +214,13 @@ $(document).ready(function() {
 	allStorage();
 
 
+/*
 	document.getElementById("main-form").onkeypress = function(e) {
 		var key = e.charCode || e.keyCode || 0;
 		if (key == 13) {
 			e.preventDefault();
 		}
 	}
+*/
 });
 

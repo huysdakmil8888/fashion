@@ -1,30 +1,27 @@
 @extends('admin.main')
 @php
-
     use App\Helpers\Form as FormTemplate;
     use App\Helpers\Template;
 
     $formInputAttr = config('zvn.template.form_input');
     $formLabelAttr = config('zvn.template.form_label');
-    $formCkeditor  = config('zvn.template.form_ckeditor');
 
-
-    $statusValue      = ['default' => 'Select status', 'active' => config('zvn.template.status.active.name'), 'inactive' => config('zvn.template.status.inactive.name')];
+    $statusValue      = ['default' => 'Select status', 'trash' => config('zvn.template.status.trash.name'), 'accept' => config('zvn.template.status.accept.name')];
 
     $inputHiddenID    = Form::hidden('id', @$item['id']);
-    $inputHiddenThumb = Form::hidden('thumb_current', @$item['thumb']);
+    $inputHiddenParentId    = Form::hidden('parent_id', @$item['parent_id']);
 
     $elements = [
         [
             'label'   => Form::label('message', 'Message', $formLabelAttr),
-            'element' => Form::textArea('message', @$item['message'],  $formCkeditor )
+            'element' => Form::textarea('message', @$item['message'], $formInputAttr )
         ],
         [
             'label'   => Form::label('status', 'Status', $formLabelAttr),
             'element' => Form::select('status', $statusValue, @$item['status'], $formInputAttr)
         ],
         [
-            'element' => $inputHiddenID . $inputHiddenThumb . Form::submit('Save', ['class'=>'btn btn-success']),
+            'element' => $inputHiddenParentId.$inputHiddenID . Form::submit('Save', ['class'=>'btn btn-success']),
             'type'    => "btn-submit"
         ]
     ];
@@ -40,7 +37,7 @@
                 @include('admin.templates.x_title', ['title' => 'Form'])
                 <div class="x_content">
                     {{ Form::open([
-                        'method'         => 'POST', 
+                        'method'         => 'POST',
                         'url'            => route("$controllerName/save"),
                         'accept-charset' => 'UTF-8',
                         'enctype'        => 'multipart/form-data',

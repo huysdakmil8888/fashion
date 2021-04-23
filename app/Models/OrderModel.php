@@ -25,14 +25,14 @@ class OrderModel extends AdminModel
 
     public function products()
     {
-        return $this->belongsToMany(ProductModel::class,'order_product','order_id','product_id')->withPivot(['qty','price']);
+        return $this->belongsToMany(ProductModel::class,'order_product','order_id','product_id')->withPivot(['qty','price','color']);
     }
     public function listItems($params = null, $options = null) {
      
         $result = null;
 
         if($options['task'] == "admin-list-items") {
-            $query = $this->select('id', 'status','note','quantity','amount','order_code',
+            $query = $this->select('id', 'status','note','quantity','name','amount','order_code',
                 'customer_id','payment_id','created', 'created_by', 'modified', 'modified_by')
               ->with(['customer','payment','products']);
             if ($params['filter']['status'] !== "all")  {
@@ -100,7 +100,7 @@ class OrderModel extends AdminModel
         $result = null;
         
         if($options['task'] == 'get-item') {
-            $result = self::with('products')->select('id','note','quantity','amount','order_code','customer_id','payment_id', 'status')->where('id', $params['id'])->first();
+            $result = self::with('products')->select('id','name','phone','email','address','note','quantity','amount','order_code','customer_id','payment_id', 'status')->where('id', $params['id'])->first();
         }
 
         if($options['task'] == 'get-thumb') {
@@ -128,15 +128,18 @@ class OrderModel extends AdminModel
     }
 
     public function saveItem($params = null, $options = null) { 
-        if($options['task'] == 'change-status') {
-            $status = ($params['currentStatus'] == "active") ? "inactive" : "active";
-            self::where('id', $params['id'])->update(['status' => $status ]);
-            return  [
+        if ($options['task'] == 'change-status-ajax') {
+            $status=$params['change-status'];
+            self::where('id', $params['id'])->update(['status' => $params['change-status']]);
+
+            $result = [
                 'id' => $params['id'],
-                'status' => ['name' => config("zvn.template.status.$status.name"), 'class' => config("zvn.template.status.$status.class")],
-                'link' => route($params['controllerName'] . '/status', ['status' => $status, 'id' => $params['id']]),
+                'status' => ['name' => config("zvn.template.status.$status.name")],
+                'link' => route($params['controllerName'] . '/order', ['change_status' => $status, 'id' => $params['id']]),
                 'message' => config('zvn.notify.success.update')
             ];
+
+            return $result;
         }
 
         if($options['task'] == 'add-item') {

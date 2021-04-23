@@ -15,7 +15,16 @@
         </div>
 
         <div class="head-right">
-            <span class="price">{!! $price !!}</span>
+            @if(isset($item->sale))
+                <span class="price">{!! Template::format_price($item->sale) !!}</span>
+                <span class="price_root"><s>{!! Template::format_price($item->price) !!}</s></span>
+                <input type="hidden" name="price" value="{{$item->sale}}">
+            @else
+                <span class="price">{!! $price !!}</span>
+                <input type="hidden" name="price" value="{{$item->price}}">
+            @endif
+
+            <input type="hidden" name="color" value="">
         </div>
     </div>
 
@@ -37,8 +46,7 @@
             <h5>Quantity:</h5>
             <div class="pro-qty">
                 <input type="text" value="1" id="cart_qty">
-                <input type="hidden" value="{{$item->id}}" id="cart_id">
-                <input type="hidden" value="{{route('cart/add-cart')}}" id="cart_url">
+
             </div>
         </div>
 
@@ -46,19 +54,26 @@
         <div class="colors">
             <h5>Color:</h5>
             <div class="color-options">
-                <button style="background-color: #ff502e"></button>
-                <button style="background-color: #fff600"></button>
-                <button style="background-color: #1b2436"></button>
+{{--                @dd($item->colors->toArray());--}}
+                {!! Template::showColor($item->colors) !!}
             </div>
         </div>
+        <input type="hidden" value="{{$item->id}}" id="cart_id">
+        <input type="hidden" value="{{route('cart/add-cart')}}" id="cart_url">
 
     </div>
 
     <div class="actions">
 
-        <button id="addToCart"><i class="ti-shopping-cart"></i><span>ADD TO CART</span></button>
+        <button id="addToCart"
+        @if($item->quantity<1)
+            class="disabled1"
+
+        @endif
+        ><i class="ti-shopping-cart"></i><span>ADD TO CART</span></button>
 {{--        <button class="box" data-tooltip="Compare"><i class="ti-control-shuffle"></i></button>--}}
-        <button class="box" data-tooltip="Wishlist"><i class="ti-heart"></i></button>
+{{--        <button class="box" data-tooltip="Wishlist"><i class="ti-heart"></i></button>--}}
+
 
     </div>
 
@@ -66,7 +81,7 @@
 
         <h5>Tags:</h5>
         @foreach($item->tags as $tag)
-        <a href="#">{{$tag['name']}}</a>
+            <a href="{{route('category/tag',[Str::slug($tag->name),$tag->id])}}">{{$tag->name}}</a>
         @endforeach
 
     </div>

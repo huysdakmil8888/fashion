@@ -22,7 +22,7 @@ class ContactModel extends AdminModel
         $result = null;
 
         if ($options['task'] == "admin-list-items") {
-            $query = $this->select('id', 'name', 'subject', 'email', 'status', 'message', 'ip', 'created');
+            $query = $this->select('id', 'phone','name', 'email', 'status', 'message', 'ip', 'created');
 
             if ($params['filter']['status'] !== "all") {
                 $query->where('status', '=', $params['filter']['status']);
@@ -77,14 +77,14 @@ class ContactModel extends AdminModel
 
     public function saveItem($params = null, $options = null)
     {
-        if ($options['task'] == 'change-status') {
-            $status = ($params['currentStatus'] == "active") ? "inactive" : "active";
-            self::where('id', $params['id'])->update(['status' => $status]);
+        if ($options['task'] == 'change-status-ajax') {
+            $status=$params['change-status'];
+            self::where('id', $params['id'])->update(['status' => $params['change-status']]);
 
             $result = [
                 'id' => $params['id'],
-                'status' => ['name' => config("zvn.template.status.$status.name"), 'class' => config("zvn.template.status.$status.class")],
-                'link' => route($params['controllerName'] . '/status', ['status' => $status, 'id' => $params['id']]),
+                'status' => ['name' => config("zvn.template.status.$status.name")],
+                'link' => route($params['controllerName'] . '/contact', ['change_status' => $status, 'id' => $params['id']]),
                 'message' => config('zvn.notify.success.update')
             ];
 

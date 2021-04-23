@@ -102,9 +102,12 @@ class Tag extends AdminModel
 
     public function getItem($params = null, $options = null) { 
         $result = null;
-        
+
         if($options['task'] == 'get-item') {
             $result = self::select('id', 'name', 'status')->where('id', $params['id'])->first();
+        }
+        if($options['task'] == 'get-item-with-product') {
+            $result = self::with('products')->select('id', 'name', 'status')->where('id', $params['id'])->first();
         }
         //get-list-items-for-product
 

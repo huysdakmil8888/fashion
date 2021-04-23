@@ -46,6 +46,7 @@
                                 @php
                                 $class=$k%2==0?"even":"odd";
                                 $quantity=$val->pivot->qty;
+                                $color=$val->pivot->color;
                                 $price=$val->pivot->price;
                                 $subTotal=$quantity*$price;
                                 $total+=$subTotal;
@@ -53,7 +54,7 @@
                                 @endphp
                             <tr class="{{$class}} pointer">
 
-                                <td class=" ">{{$val->name}}</td>
+                                <td class=" ">{{$val->name}} ({{$color}})</td>
                                 <td class=" "><img width="70" src="{{asset($val->thumb)}}" alt=""> </td>
                                 <td class=" ">{{Template::format_price($price)}}</td>
                                 <td>{{$quantity}}</td>
@@ -84,10 +85,17 @@
                             </thead>
                             <tbody>
                                 <tr class="even pointer">
+                                    @if(isset($item->customer))
                                     <td>{{$item->customer->name}}</td>
                                     <td>{{$item->customer->phone}}</td>
                                     <td>{{$item->customer->email}}</td>
                                     <td>{{$item->customer->address}}</td>
+                                    @else
+                                        <td>{{$item->name}}</td>
+                                        <td>{{$item->phone}}</td>
+                                        <td>{{$item->email}}</td>
+                                        <td>{{$item->address}}</td>
+                                    @endif
                                 </tr>
 
 

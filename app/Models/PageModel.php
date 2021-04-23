@@ -43,9 +43,9 @@ class PageModel extends AdminModel
         }
 
         if($options['task'] == 'news-list-items') {
-            $query = $this->select('id', 'name', 'description', 'link', 'thumb')
+            $query = $this->select('id', 'name', 'slug', 'status')
                         ->where('status', '=', 'active' )
-                        ->limit(5);
+                        ->limit(6);
 
             $result = $query->get();
         }

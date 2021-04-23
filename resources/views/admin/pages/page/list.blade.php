@@ -10,7 +10,6 @@
                     <th class="column-title">STT</th>
                     <th class="column-title">{{$controllerName}} Name</th>
                     <th class="column-title">Slug</th>
-                    <th class="column-title">Content</th>
                     <th class="column-title">Trạng thái</th>
                     <th class="column-title">Tạo mới</th>
                     <th class="column-title">Hành động</th>
@@ -24,7 +23,6 @@
                             $class           = ($index % 2 == 0) ? "even" : "odd";
                             $id              = $val['id'];
                             $name            = Hightlight::show($val['name'], $params['search'], 'type');
-                            $content     = Hightlight::show($val['content'], $params['search'], 'content');
                             $slug            = Hightlight::show($val['slug'], $params['search'], 'slug');
                             $star=$val['star'];
                             $status          = Template::showItemStatus($controllerName, $id, $val['status']); ;
@@ -41,7 +39,6 @@
                             </td>
                             <td>{{$slug}}</td>
 
-                            <td>{{$content}}</td>
 
                             <td>{!! $status !!}</td>
                             <td>{!! $createdHistory !!}</td>

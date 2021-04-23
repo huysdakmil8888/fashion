@@ -1,4 +1,5 @@
 @extends('news.main')
+@include('news.templates.notify')
 @section('content')
     @section('slider')
         @include("news.elements.slider")

@@ -26,7 +26,26 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
         $controller = ucfirst($controllerName)  . 'Controller@';
         Route::get('/',                             [ 'as' => $controllerName,                  'uses' => $controller . 'index' ]);
         Route::get('/not-found',                    [ 'as' => $controllerName. '/not-found',                  'uses' => $controller . 'notFound' ]);
+        Route::get('/subscribe',                    [ 'as' => $controllerName. '/subscribe',                  'uses' => $controller . 'subscribe' ]);
+        Route::get('/unsubscribe',                    [ 'as' => $controllerName. '/unsubscribe',                  'uses' => $controller . 'unsubscribe' ]);
+        Route::get('/delete-unsubsribe',                    [ 'as' => $controllerName. '/delete_unsubscribe',                  'uses' => $controller . 'delete_unsubscribe' ]);
     });
+    // ====================== Product page ========================
+    $prefix         = 'san-pham';
+    $controllerName = 'product';
+    Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
+        $controller = ucfirst($controllerName)  . 'Controller@';
+
+        Route::get('{product_slug}-{product_id}.html', [ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ])->where('product_slug', '[0-9a-zA-Z_-]+');
+        Route::post('{product_slug}-{product_id}.html', [ 'as' => $controllerName . '/rating', 'uses' => $controller . 'rating' ])->where('product_slug', '[0-9a-zA-Z_-]+');
+        Route::post('comment', [ 'as' => $controllerName . '/comment', 'uses' => $controller . 'comment' ]);
+        Route::get('modal/{id}', [ 'as' => $controllerName . '/modal', 'uses' => $controller . 'modal' ]);
+
+
+
+
+    });
+
 
     // ============================== CUSTOMER PAGE ==============================
     $prefix         = 'customer';
@@ -34,6 +53,7 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
     Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
         $controller = ucfirst($controllerName)  . 'Controller@';
         Route::get('/my-account',                    [ 'as' => $controllerName. '/my-account',                  'uses' => $controller . 'myAccount' ]);
+        Route::get('/my-account/edit',                    [ 'as' => $controllerName. '/edit',                  'uses' => $controller . 'edit' ]);
         Route::get('/register-login',                    [ 'as' => $controllerName. '/register-login',                  'uses' => $controller . 'registerLogin' ]);
         Route::post('/register',                    [ 'as' => $controllerName. '/register',                  'uses' => $controller . 'register' ]);
         Route::post('/login',                    [ 'as' => $controllerName. '/login',                  'uses' => $controller . 'login' ]);
@@ -52,14 +72,24 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
         Route::get('tag/{slug}-{tag}.html', [ 'as' => $controllerName . '/tag', 'uses' => $controller . 'tag' ]);
 
     });
+    // ====================== PAGE ========================
+    $prefix         = 'trang';
+    $controllerName = 'page';
+    Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
+        $controller = ucfirst($controllerName)  . 'Controller@';
+
+        Route::get('{page_slug}-{id}.html', [ 'as' => $controllerName . '/detail', 'uses' => $controller . 'index' ])->where('page_slug', '[0-9a-zA-Z_-]+');
+
+    });
     // ====================== Category ARTICLE ========================
     $prefix         = 'chuyen-muc';
     $controllerName = 'article';
     Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
         $controller = ucfirst($controllerName)  . 'Controller@';
 
-        Route::get('{category_article_slug}-{category_article_id}.html', [ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ])
-            ->where('category_article_slug', '[0-9a-zA-Z_-]+');
+        Route::get('{category_article_slug}-{category_article_id}.html', [ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ])->where('category_article_slug', '[0-9a-zA-Z_-]+');
+        Route::get('author/{author_slug}-{author_id}.html', [ 'as' => $controllerName . '/author', 'uses' => $controller . 'author' ])
+            ->where('author_slug', '[0-9a-zA-Z_-]+');
 
 
 
@@ -78,30 +108,22 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
         Route::get('{category_slug}-{id}.html', [ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ])
             ->where('category_slug', '[0-9a-zA-Z_-]+');
         ;
+        Route::get('addwishlist.html', [ 'as' => $controllerName . '/addWishList', 'uses' => $controller . 'addWishList' ]);
+
+        Route::get('wishlist.html', [ 'as' => $controllerName . '/wishlist', 'uses' => $controller . 'wishlist' ]);
+        Route::get('productnews.html', [ 'as' => $controllerName . '/productnews', 'uses' => $controller . 'productnews' ]);
+        Route::get('productbestbuy.html', [ 'as' => $controllerName . '/productbestbuy', 'uses' => $controller . 'productbestbuy' ]);
+        Route::get('productbestdeal.html', [ 'as' => $controllerName . '/productbestdeal', 'uses' => $controller . 'productbestdeal' ]);
+        Route::get('productsale.html', [ 'as' => $controllerName . '/productsale', 'uses' => $controller . 'productsale' ]);
+        Route::get('productfeatured.html', [ 'as' => $controllerName . '/productfeatured', 'uses' => $controller . 'productfeatured' ]);
+        Route::get('search.html', [ 'as' => $controllerName . '/search', 'uses' => $controller . 'search' ]);
+        Route::get('tag/{tag_slug}-{tag_id}.html', [ 'as' => $controllerName . '/tag', 'uses' => $controller . 'tag' ]);
     });
 
 
-    // ====================== Product page ========================
-    $prefix         = 'san-pham';
-    $controllerName = 'product';
-    Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
-        $controller = ucfirst($controllerName)  . 'Controller@';
-
-        Route::get('{product_slug}-{product_id}.html', [ 'as' => $controllerName . '/index', 'uses' => $controller . 'index' ])->where('product_slug', '[0-9a-zA-Z_-]+');
-        Route::post('{product_slug}-{product_id}.html', [ 'as' => $controllerName . '/rating', 'uses' => $controller . 'rating' ])->where('product_slug', '[0-9a-zA-Z_-]+');
 
 
 
-    });
-
-
-    // ============================== NOTIFY ==============================
-    $prefix         = '';
-    $controllerName = 'notify';
-    Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
-        $controller = ucfirst($controllerName)  . 'Controller@';
-        Route::get('/no-permission',                             [ 'as' => $controllerName . '/noPermission',                  'uses' => $controller . 'noPermission' ]);
-    });
 
     // ====================== LOGIN ========================
     // news69/login
@@ -125,7 +147,7 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
         Route::get('', [ 'as' => $controllerName, 'uses' => $controller . 'index' ]);
 
         Route::post('/contact',                 [ 'as' => $controllerName . '/contact',                  'uses' => $controller . 'contact' ]);
-        Route::get('/thank-you.html',                 [ 'as' => $controllerName . '/thank_you',                  'uses' => $controller . 'thank_you' ]);
+        Route::get('/map',                 [ 'as' => $controllerName . '/map',                  'uses' => $controller . 'map' ]);
     });
 
     // ====================== ABOUT US ========================
@@ -148,6 +170,7 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
         Route:: get('/shipping',                ['as' => $controllerName ."/shipping"            ,'uses' => $controller . 'shipping' ]);
         Route:: post('/',                ['as' => $controllerName ."/order"            ,'uses' => $controller . 'order' ]);
 
+
     });
     /*============================================== Cart  =======================================================*/ $prefix         = 'cart';
     $controllerName = 'cart';
@@ -163,6 +186,11 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
         Route:: get('/thank-you.html',  ['as' => $controllerName . '/thankyou', 'uses' => $controller . 'thankyou' ]);
 
     });
+    /*================================= multi language =============================*/
+    Route::get('/language/{locale}', function ($locale) {
+        session(['language' => $locale]);
+        return redirect()->back();
+    })->name('language');
 
 
 });

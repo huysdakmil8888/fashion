@@ -4,12 +4,15 @@ namespace App\Http\Controllers\News;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerRequest;
+use App\Mail\MailService;
 use App\Models\AdModel;
 use App\Models\ArticleModel;
 use App\Models\CustomerModel;
 use App\Models\MenuModel;
 use App\Models\ProductModel;
+use App\Models\SubscribeModel;
 use App\Models\TestimonialModel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Models\SliderModel;
 use App\Models\CategoryModel;
@@ -93,6 +96,52 @@ class HomeController extends NewsController
         return redirect(url()->previous() .'#form-register')->with(
             ['news_notify'=>'Tài khoản của bạn đã được đăng kí']
         );
+    }
+    public function subscribe(Request $request)
+    {
+        $params=$request->data;
+
+        $subscribeModel=new SubscribeModel();
+        $result=$subscribeModel->getItem($params,['task'=>'get-email']);
+        if($result){
+            $message=0;
+        }else{
+            $subscribeModel->saveItem($params,['task'=>'add-item']);
+            $message=1;
+            //send email
+            $data = [
+                'name' => '',
+                'email' => $params['email'],
+                'message' => route("home/unsubscribe",["email"=>$params['email']]),
+            ];
+
+
+//            $mailService = new MailService();
+//            $mailService->sendSubscribe($data);
+
+        }
+        return response()->json([
+           'message'=>$message
+        ]);
+    }
+    public function unsubscribe()
+    {
+        return view($this->pathViewController . 'unsubscribe');
+    }
+    public function delete_unsubscribe(Request $request)
+    {
+        $params['email']=$request->email;
+
+        $subscribeModel=new SubscribeModel();
+        $result=$subscribeModel->getItem($params,['task'=>'get-email']);
+        if($result){
+            $message=0;
+            $subscribeModel->getItem($params,['task'=>'change-status']);
+        }else{
+            $message=1;
+
+        }
+        echo "ban da huy dang ki web cua chung toi <br />vui long nhap vao <a href='".route('home')."'>day</a> de quay lai trang chu";
     }
 
 

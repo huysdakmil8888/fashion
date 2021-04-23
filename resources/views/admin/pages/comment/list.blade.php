@@ -8,9 +8,10 @@
             <thead>
                 <tr class="headings">
                     <th class="column-title">STT</th>
-                    <th class="column-title">Name</th>
+                    <th class="column-title">Email</th>
+                    <th class="column-title">Thuộc bài viết</th>
+                    <th class="column-title">Nội dung bình luận</th>
                     <th class="column-title">Trạng thái</th>
-                    <th class="column-title">Tạo mới</th>
                     <th class="column-title">Hành động</th>
                 </tr>
             </thead>
@@ -21,7 +22,7 @@
                             $index           = $key + 1;
                             $class           = ($index % 2 == 0) ? "even" : "odd";
                             $id              = $val['id'];
-                            $name            = Template::showNestedSetNameComment($val['name'], $val['depth']);
+                            $email            = Template::showNestedSetNameComment($val['email'], $val['depth']);
                             $status          = Template::showItemStatus($controllerName, $id, $val['status']);
                             $createdHistory  = Template::showItemHistory($val['created_by'], $val['created']);
                             $modifiedHistory = Template::showItemHistory($val['modified_by'], $val['modified']);
@@ -30,9 +31,13 @@
 
                         <tr class="{{ $class }} pointer">
                             <td >{{ $index }}</td>
-                            <td width="25%">{!! $name !!}</td>
+                            <td width="25%">{!! $email !!}</td>
+                            <td>
+                                {{$val->article->name}}
+                            </td>
+                            <td>{{$val['message']}}</td>
                             <td>{!! $status !!}</td>
-                            <td>{!! $createdHistory !!}</td>
+
                             <td class="last">{!! $listBtnAction !!}</td>
                         </tr>
                     @endforeach

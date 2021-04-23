@@ -10,11 +10,11 @@
             <thead>
                 <tr class="headings">
                     <th class="column-title">STT</th>
-                    <th class="column-title">Contact Info</th>
-                    <th class="column-title">Lời nhắn</th>
+                    <th class="column-title">Name</th>
+                    <th class="column-title">Email</th>
+                    <th class="column-title">Phone</th>
+                    <th class="column-title">Nội dung</th>
                     <th class="column-title">Trạng thái</th>
-                    <th class="column-title">Thời gian</th>
-                    <th class="column-title">IP Address</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,21 +26,24 @@
                             $email          = HightLight::show($val['email'], $params['search'], 'email');
                             $phone          = HightLight::show($val['phone'], $params['search'], 'phone');
                             $message        = HightLight::show($val['message'], $params['search'], 'message');
-                            $status         = Template::showItemStatus($controllerName, $val['id'], $val['status']);
+                            $phone        = HightLight::show($val['phone'], $params['search'], 'phone');
+                            $status       = Template::showItemSelect($controllerName, $val['id'], $val['status'], 'contact');
+
                             $time           = $val['time'];
                             $ipAddress      = $val['ip_address'];
+
                         @endphp
                         <tr>
                             <td>{{ $index }}</td>
-                            <td style="min-width: 150px; width: 20%">
-                                <p><strong>Name: </strong>{!! $name !!}</p>
-                                <p><strong>Email: </strong>{!! $email !!}</p>
-                                <p><strong>Phone: </strong>{!! $phone !!}</p>
+                            <td>
+                                <p></p>{!! $name !!}</p>
                             </td>
-                            <td style="min-width: 300px; width: 40%">{!! $message !!}</td>
+                            <td >{!! $email !!}</td>
+                            <td >{!! $phone !!}</td>
+                            <td >{!! $message !!}</td>
                             <td class="status-{{$val['id']}}">{!! $status !!}</td>
-                            <td>{{ $time }}</td>
-                            <td>{{ $ipAddress }}</td>
+
+
                         </tr>
                     @endforeach
                     
