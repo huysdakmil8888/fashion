@@ -1,7 +1,7 @@
 <div class="contact-form-wrap col-md-6 col-12 mb-40">
     <h3>Leave a Message</h3>
     @include('news.templates.notify')
-    <form id="contact-foras" action="{{route('contact/contact')}}" method="post">
+    <form id="contact-foras" action="{{route('contact/contacts')}}" method="post">
         @csrf
         @method('POST')
         <div class="contact-form">

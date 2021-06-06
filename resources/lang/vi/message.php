@@ -13,7 +13,14 @@ return [
     'user'=>'Người dùng',
     'view-website'=>'Trang chủ',
     'logout'=>'Đăng xuất',
-    'account'=>'Tài khoản của tôi'
+    'account'=>'Tài khoản của tôi',
+
+    //frontend
+    'readmore'=>'Còn tiếp...',
+    'home'=>'Trang chủ',
+    'contact'=>'Liên hệ',
+    'register'=>'Đăng kí',
+    'login'=>'Đăng nhập',
 
 
 

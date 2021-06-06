@@ -56,7 +56,6 @@
 
 
                                     {!! Template::format_price($sale) !!}
-                                    <img width="40px"  src="{{asset('/assets/images/icons/sale.png')}}" alt="">
 
                                     <br>
 

@@ -3,7 +3,7 @@
 return [
     'url'              => [
         'prefix_admin' => 'admin123',
-        'prefix_news'  => 'news69',
+        'prefix_news'  => '',
     ],
     'format'         => [
         'long_time'  => 'H:i:s d/m/Y',
@@ -52,7 +52,7 @@ return [
             'confirmed' => ['name' => 'Đã liên hệ', 'class' => 'btn-success'],
             'block'    => ['name' => 'Bị khóa', 'class' => 'btn-danger'],
             'default'  => ['name' => 'Chưa xác định', 'class' => 'btn-danger'],
-            'order_pending'  => ['name' => 'Chờ xác nhận đơn', 'class' => 'btn-default'],
+            'order_pending'  => ['name' => 'Chờ xác nhận đơn', 'class' => 'btn-info'],
             'order_confirmed'  => ['name' => 'Đã xác nhận', 'class' => 'btn-primary'],
             'order_delivery'  => ['name' => 'Đang vận chuyển', 'class' => 'btn-warning'],
             'order_success'  => ['name' => 'Giao thành công', 'class' => 'btn-success'],
@@ -85,9 +85,9 @@ return [
             'cancel' => ['name' => 'Không thể liên lạc'],
         ],
         'order' => [
-            'order_pending' => ['name' => 'Chờ xác nhận'],
+            'order_pending' => ['name' => 'Chờ xác nhận đơn'],
             'order_confirmed' => ['name' => 'Đã xác nhận'],
-            'order_delivery' => ['name' => 'Đang giao hàng'],
+            'order_delivery' => ['name' => 'Đang vận chuyển'],
             'order_success' => ['name' => 'Giao hàng thành công'],
             'order_fail' => ['name' => 'Giao hàng thất bại'],
         ],

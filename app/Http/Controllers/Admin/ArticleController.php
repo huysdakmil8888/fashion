@@ -26,7 +26,7 @@ class ArticleController extends AdminController
     public function form(Request $request)
     {
 
-//        Auth::user()->can('sửa xóa bài viết');
+
 
         $categoryModel=new CategoryArticleModel();
         $itemsCategoryArticle  = $categoryModel->listItems(null, ['task' => 'admin-list-items-in-select-box']);
@@ -45,14 +45,14 @@ class ArticleController extends AdminController
         ]);
     }
 
-    public function save(Request $request)
+    public function save(MainRequest $request)
     {
         if ($request->method() == 'POST') {
-            $params = $request->all();
+            $params = $request->except('_token');
 
-            if(empty($params['slug'])){
+/*            if(empty($params['slug'])){
                 $params['slug']=Str::slug($params['name']);
-            }
+            }*/
             $params['user_id']=session('userInfo')['id'];
 
             
@@ -64,7 +64,7 @@ class ArticleController extends AdminController
                 $notify = "Cập nhật phần tử thành công!";
             }
             $this->model->saveItem($params, ['task' => $task]);
-            return redirect()->route($this->controllerName)->with("zvn_notify", $notify);
+            return redirect()->back()->with("zvn_notify", $notify);
         }
     }
 

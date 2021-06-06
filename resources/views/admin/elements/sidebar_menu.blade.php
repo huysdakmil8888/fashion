@@ -1,15 +1,15 @@
 <!-- menu profile quick info -->
 <div class="profile clearfix">
     <div class="profile_pic">
-        <img src="{{ asset(session('userInfo')['thumb']) }}" alt="..." class="img-circle profile_img">
+        <img src="{{ @asset(session('userInfo')['thumb']) }}" alt="..." class="img-circle profile_img">
     </div>
     <div class="profile_info">
 
         <h2><span>{{__('message.welcome')}},</span>
-            {{ session('userInfo')['username'] }} <br>
+            {{ @session('userInfo')['username'] }} <br>
 
-            <a href="{{route('language','en')}}"><img width="30" src="{{asset('images/logo/en.png')}}" alt=""></a>
-            &nbsp; <a href="{{route('language','vi')}}"><img width="30" src="{{asset('images/logo/vi.png')}}"
+            <a href=""><img width="30" src="{{asset('images/logo/en.png')}}" alt=""></a>
+            &nbsp; <a href=""><img width="30" src="{{asset('images/logo/vi.png')}}"
                                                              alt=""></a>
         </h2>
 

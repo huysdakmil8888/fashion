@@ -141,10 +141,6 @@ $(document).ready(function() {
 				let image=$(".pro-large-img a").attr('href');
 
 				let data={id,qty,url,price,image,color}
-				console.log(data);
-
-
-
 				callAjax($currentElement, url,'add',data);
 				e.preventDefault()
 
@@ -162,9 +158,8 @@ $(document).ready(function() {
 	$(".trigger").on('click', function (event) {
 		event.preventDefault();
 		id=$(this).attr('href')
-		console.log('{{route("product/modal"}}');
-		
-		$.get('http://fashion.test/news69/san-pham/modal/'+id, function(data) {
+
+		$.get(modal.replace(1, id), function(data) {
 			$("#modal .iziModal-content").html(data);
 			$('.pro-thumb-img').slick({
 				arrows: true,
@@ -242,52 +237,6 @@ $(document).ready(function() {
 	    
 	    
 	})
-	//thay doi gia o item
-	/*$(".change-color-item").click(function(){
-		$(this).siblings().removeClass('pick-color')
-		$(this).addClass('pick-color')
-		$val=$(this).data('field')
-		console.log($val);
-
-
-		//thay doi mau sac
-		let color=$(this).data('color');
-		$("[name='color-item']").val(color)
-
-
-		//thay doi gia
-		$(this).parent().parent().next().find('.price-item').text(format($val))
-		$('[name="price-item"]').val($val)
-		// console.log($val);
-
-
-	})*/
-	// add to cart cho cac item con
-	/*addToCartClass.click(function (e) {
-
-
-		$currentElement=$(this)
-
-		let id=$(this).parent().find(".cart_id").val()
-		let url=$(this).parent().find(".cart_url").val()
-		let qty=$(this).parent().find(".cart_qty").val()
-		let price=$(this).parent().find(".price-item").val()
-		let color=$(this).parent().find(".color-item").val()
-		let image=$(this).parent().parent().prev().attr('src')
-
-
-		let data={id,qty,url,price,color,image}
-		console.log(data);
-
-
-		// console.log(data);
-
-
-		callAjax($currentElement, url,'add',data);
-		e.preventDefault()
-
-	});*/
-
 	//chon so phan tu phan trang o category product
 	$(".nice-selects").change(function(){
 		val=$(this).val()

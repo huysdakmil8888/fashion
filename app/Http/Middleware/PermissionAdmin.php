@@ -22,11 +22,6 @@ class PermissionAdmin
     public function handle($request, Closure $next)
     {
 //        App::setLocale(session()->get('language'));
-        $routeCollection = Route::getRoutes();
-
-        foreach ($routeCollection as $value) {
-//            echo $value->getName().'<br/>';
-        }
 
         if($request->session()->has('userInfo'))  {
             $userInfo = $request->session()->get('userInfo');

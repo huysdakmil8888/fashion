@@ -10,6 +10,26 @@ $(document).ready(function() {
 	let $inputSearchValue     = $("input[name  = search_value]");
 	let $selectChangeAttr     = $("select[name = select_change_attr]");
 
+	//active tab
+	$(".nav-link").click(function(){
+	    id=$(this).attr('href');
+		localStorage.setItem('activeTab', id);
+
+	})
+	//active content
+	let cat = localStorage.getItem('activeTab');
+	$(cat).addClass("active in");
+	$(cat).siblings().removeClass("active in")
+	//active li,a
+	$("[href='"+cat+"']").addClass('active')
+	$("[href='"+cat+"']").parent().addClass('active')
+
+	$("[href='"+cat+"']").parent().siblings().children().removeClass('active')
+	$("[href='"+cat+"']").parent().siblings().removeClass('active')
+
+
+
+
 	choose=$("#"+location.pathname.split("/")[2]);
 	choose.addClass('current-page');
 	choose.parent().css('display', 'block');

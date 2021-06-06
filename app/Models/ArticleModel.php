@@ -2,19 +2,22 @@
 
 namespace App\Models;
 
-use App\Helpers\Template;
-use App\Models\AdminModel;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use DB; 
-class ArticleModel extends AdminModel
+use Astrotomic\Translatable\Translatable;
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use DB;
+
+class ArticleModel extends AdminModel implements TranslatableContract
 {
+    use Translatable;
     protected $table='article';
+    protected $translationForeignKey = 'article_model_id';
+
     protected $folderUpload='article';
     protected $fieldSearchAccepted=['name','content'];
     protected $crudNotAccepted=['_token','thumb_current','tag'];
     protected $guarded=[];
+    public $translatedAttributes = ['name', 'content','slug','description'];
 
     public function tags()
     {
@@ -48,8 +51,7 @@ class ArticleModel extends AdminModel
         $result = null;
 
         if($options['task'] == "admin-list-items") {
-            $query = $this
-                    ->select("*")
+            $query = $this::with('translation')
 //                ->leftJoin('category as c', 'article.category_id', '=', 'c.id')
             ;
 
@@ -83,7 +85,7 @@ class ArticleModel extends AdminModel
         }
 
         if($options['task'] == 'news-list-items') {
-            $query = $this->with('user')->select('id','user_id','slug', 'name', 'thumb','created','like','view','content')
+            $query = $this->with('user')
                         ->where('status', '=', 'active' )
                         ->limit(2);
 
@@ -173,7 +175,7 @@ class ArticleModel extends AdminModel
         //form article
         if($options['task'] == 'get-item') {
             $result = self::with('user','tags')
-                ->select('id', 'slug','name','like','view','user_id', 'content', 'status', 'thumb', 'category_article_id','created')->where('id', $params['id'])
+                ->where('id', $params['id'])
                 ->first();
 
         }
@@ -181,7 +183,6 @@ class ArticleModel extends AdminModel
         if($options['task']=='news-get-item'){
             $result=self::with(['user','category_article'])
                 ->where('category_article_id',$params['category_article_id'])
-                ->select('id','like','view','user_id','category_article_id','name','slug','content','created_by','created','thumb')
                 ->orderby('id','desc')
                 ->paginate(4);
 
@@ -198,8 +199,7 @@ class ArticleModel extends AdminModel
         }
         //get article same category
         if($options['task']=='news-get-item-recent'){
-            $result=self::select('id','name','slug','thumb','created','thumb')
-                ->where("id","<>",$params['id'])
+            $result=self::where("id","<>",$params['id'])
                 ->where("category_article_id",$params['category_article_id'])
                 ->take(3)->orderBy('id','desc')
                 ->get();
@@ -236,6 +236,9 @@ class ArticleModel extends AdminModel
 
             $params['created_by'] = "hailan";
             $params['created']    = date('Y-m-d');
+//            $params['vi']=['locale'=>'vi'];
+//            $params['en']=['locale'=>'en'];
+
             $article=self::create($this->prepareParams($params));
 
             //luu tag
@@ -246,11 +249,26 @@ class ArticleModel extends AdminModel
 
             $params['modified_by']   = "hailan";
             $params['modified']      = date('Y-m-d');
+            $article=self::where('id',$params['id'])->get()->first();
+//            $article->translate('en')->locale='en';
+//            $article->translateOrNew($locale)->name = "Title {$locale}";
 
-            $article=self::find( $params['id']);
-            $article->update($this->prepareParams($params));
+            foreach ($params as $key=>$value) {
+                if(in_array($key,['vi','en'])){
+                    //save translation
+                    foreach ($value as $key2=>$value2) {
+                        $article->translateOrNew($key)->$key2=$value2;
+                    }
+                }else{
+                        $article->$key=$value;
+                }
+            }
+            $article->save();
+//            $article->update($this->prepareParams($params));
             //luu tag
-            $this->saveTag($params,$article);
+//            $this->saveTag($params,$article);
+
+
         }
 
         if ($options['task'] == 'change-category') {

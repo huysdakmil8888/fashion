@@ -15,10 +15,10 @@
                 <ul class="header-lan-curr">
 
 
-                    <a href="{{route('language','en')}}">
+                    <a href="{{ route('home', null, true, 'en') }}">
                         <img width="25" src="{{asset('admin/images/logo/en.png')}}" alt="">
                     </a>
-                    &nbsp; <a href="{{route('language','vi')}}">
+                    &nbsp; <a href="{{ route('home', null, true,'vi') }}">
                         <img width="25" src="{{asset('admin/images/logo/vi.png')}}"
                                                                      alt="">
                     </a>
@@ -34,8 +34,8 @@
                         <p><a href="{{route('customer/logout')}}"> Logout </a></p>
                     @else
                         <p>
-                            <a href="{{route('customer/register-login')}}">Register</a>
-                            <a href="{{route('customer/register-login')}}">Login</a>
+                            <a href="{{route('customer/register-login',['locale'=>'vi'])}}">{{__('message.register')}}</a>
+                            <a href="{{route('customer/register-login',['locale'=>'vi'])}}">{{__('message.login')}}</a>
                         </p>
                     @endif
 

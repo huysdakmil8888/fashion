@@ -82,17 +82,17 @@
                             @switch($item->type_menu)
                             {{--     lam class active sau      --}}
                                 @case('link')
-                                    <li {{$class}}><a href="{{$link}}">{{$name}}</a></li>
+                                    <li {{$class}}><a href="{{$link}}">{{__('message.'.$name)}}</a></li>
                                 @break
                                 @case('category_product')
-                                    <li {{$class}}><a href="{{$link}}">Sản phẩm</a>
+                                    <li {{$class}}><a href="{{$link}}">{{__('message.product')}}</a>
 
                                        {!! Template::showNestedMenu($itemsCategory,'category') !!}
 
                                     </li>
                                 @break
                                 @case('category_article')
-                                    <li  {{$class}}><a href="{{$link}}">Bài viết</a>
+                                    <li  {{$class}}><a href="{{$link}}">{{__('message.article')}}</a>
                                         {!! Template::showNestedMenu($itemsCategoryArticle,'article') !!}
                                     </li>
                                 @break

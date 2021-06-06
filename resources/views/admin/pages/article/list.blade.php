@@ -20,6 +20,7 @@
                 @if (count($items) > 0)
                     @foreach ($items as $key => $val)
                         @php
+
                             $index           = $key + 1;
                             $class           = ($index % 2 == 0) ? "even" : "odd";
                             $id              = $val['id'];
@@ -27,7 +28,7 @@
                             $content         = Hightlight::show($val['content'], $params['search'], 'content');
                             $thumb           = Template::showItemThumb($controllerName, $val['thumb'], $val['name']);
                             $category        = Form::select('category_id', $itemsCategory, $val['category_id'], ['class' => 'form-control select-ajax', 'data-url' => route("$controllerName/change-category", ['id' => $id, 'category_id' => 'value_new'])]);
-                            $status          = Template::showItemStatus($controllerName, $id, $val['status']); 
+                            $status          = Template::showItemStatus($controllerName, $id, $val['status']);
                             $type            = Template::showItemSelect($controllerName, $id, $val['type'], 'type');
                             // $createdHistory  = Template::showItemHistory($val['created_by'], $val['created']);
                             // $modifiedHistory = Template::showItemHistory($val['modified_by'], $val['modified']);

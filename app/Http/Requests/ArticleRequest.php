@@ -36,16 +36,17 @@ class ArticleRequest extends FormRequest
         }
 
         return [
-            'name'        => $condName,
-            'content' => 'bail|required|min:5',
+//            'vi.name'        => 'required',
+//            'en.name'       => 'required',
             'status'      => 'bail|in:active,inactive',
-            'thumb'       => $condThumb
+//            'thumb'       => $condThumb
         ];
     }
 
     public function messages()
     {
         return [
+
             // 'name.required' => 'Name không được rỗng',
             // 'name.min'      => 'Name :input chiều dài phải có ít nhất :min ký tứ',
         ];
@@ -53,7 +54,8 @@ class ArticleRequest extends FormRequest
     public function attributes()
     {
         return [
-            // 'description' => 'Field Description: ',
+            'vi.name'=>'tên tiếng việt',
+            'en.name'=>'tên tiếng anh',
         ];
     }
 }

@@ -13,7 +13,14 @@ return [
     'user'=>'User',
     'view-website'=>'View Website',
     'logout'=>'Log out',
-    'account'=>'My Account'
+    'account'=>'My Account',
+
+    //frontend
+    'readmore'=>'Read more...',
+    'home'=>'Home Page',
+    'contact'=>'Contact',
+    'register'=>'Register',
+    'login'=>'Login',
 
 
 ];

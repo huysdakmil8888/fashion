@@ -20,16 +20,16 @@
 <!-- dropzone + bootstrap tags input -->
 <script src="{{asset('admin/js/dropzone.js')}}"></script>
 <script src="{{asset('admin/tag/bootstrap-tagsinput.min.js')}}"></script>
-@if($controllerName == 'product' || $controllerName=='category' || $controllerName=='article' || $controllerName=='page' )
-    <script src="{{ asset('admin/js/slug/speakingurl.min.js') }}"></script>
-    <script src="{{ asset('admin/js/slug/slugify.min.js') }}"></script>
-    <script>
-        $(function (){
-            $('#slug').slugify('#name'); // Type as you slug
+{{--slugify--}}
+<script src="{{ asset('admin/js/slug/speakingurl.min.js') }}"></script>
+<script src="{{ asset('admin/js/slug/slugify.min.js') }}"></script>
+<script>
+    $(function (){
+        $('#slug').slugify('#name'); // Type as you slug
+        $("[name='en[slug]']").slugify("[name='en[name]']")
 
-        });
-    </script>
-@endif
+    });
+</script>
 
 <script src="{{ asset('admin/js/custom.min.js') }}"></script>
 <script src="{{ asset('admin/js/my-js.js') }}"></script>

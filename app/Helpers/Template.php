@@ -316,7 +316,10 @@ class Template
     }
 
 
-    public static function showContent($str,$len,$prefix=' còn tiếp...'){
+    public static function showContent($str,$len,$prefix=null){
+        if($prefix==null){
+            $prefix=__('message.readmore');
+        }
             $start=0;
             $str_clean = substr(strip_tags($str),$start,$len);
             $pos = strrpos($str_clean, " ");

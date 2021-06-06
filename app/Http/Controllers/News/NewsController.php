@@ -10,6 +10,7 @@ use App\Models\PageModel;
 use App\Models\SettingModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Input;
 
 class NewsController extends Controller
 {

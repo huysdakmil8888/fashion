@@ -36,7 +36,7 @@
                             <ul class="meta">
                                 <li><a href="{{$linkAuthor}}"><img src="{{asset($avatar)}}"
                                                              alt="Blog Author">{{$author}}</a></li>
-                                <li><a href="{{route('article/increaseLike',$item->id)}}" id="like">
+                                <li><a href="{{URL::linkLike($item)}}" id="like">
                                         <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
                                     </a>
                                 </li>

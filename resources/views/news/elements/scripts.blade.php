@@ -1,5 +1,6 @@
-<!-- JS
-============================================ -->
+<script>
+    let modal="{{route('product/modal',1)}}"
+</script>
 
 <!-- jQuery JS -->
 <script src="{{asset('assets/js/vendor/jquery-3.4.1.min.js')}}"></script>

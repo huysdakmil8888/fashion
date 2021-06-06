@@ -12,13 +12,14 @@ use App\Models\MenuModel;
 |
 */
 
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Route;
 
 $prefixNews  = config('zvn.url.prefix_news');
 
 Route::get('', [ 'as' => 'HomeController', 'uses' => 'News\HomeController@' . 'index' ]);
-
-Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
+Route::group(['prefix' => $prefixNews, 'namespace' => 'News'],function(){
+    Route::localized(function() {
     // ============================== HOMEPAGE ==============================
     $prefix         = '';
     $controllerName = 'home';
@@ -60,7 +61,8 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
         Route::get('/logout',                    [ 'as' => $controllerName. '/logout',                  'uses' => $controller . 'logout' ]);
     });
     // ====================== ARTICLE ========================
-    $prefix         = 'bai-viet';
+    $prefix         = app()->getLocale()=='vi'?'bai-viet':'news';
+
     $controllerName = 'article';
     Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
         $controller = ucfirst($controllerName)  . 'Controller@';
@@ -82,7 +84,7 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
 
     });
     // ====================== Category ARTICLE ========================
-    $prefix         = 'chuyen-muc';
+    $prefix         = app()->getLocale()=='vi'?'chuyen-muc':'cats';
     $controllerName = 'article';
     Route::group(['prefix' =>  $prefix], function () use ($controllerName) {
         $controller = ucfirst($controllerName)  . 'Controller@';
@@ -139,14 +141,14 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
         Route::get('/logout',       ['as' => $controllerName.'/logout',     'uses' => $controller . 'logout']);
     });
 
-     // ============================== CONTACT ============================== //
+    // ============================== CONTACT ============================== //
     $prefix = 'lien-he';
     $controllerName = 'contact';
     Route::group(['prefix' => $prefix], function () use ($controllerName) {
         $controller = ucfirst($controllerName) . 'Controller@';
         Route::get('', [ 'as' => $controllerName, 'uses' => $controller . 'index' ]);
 
-        Route::post('/contact',                 [ 'as' => $controllerName . '/contact',                  'uses' => $controller . 'contact' ]);
+        Route::post('/contact',                 [ 'as' => $controllerName . '/contacts',                  'uses' => $controller . 'contact' ]);
         Route::get('/map',                 [ 'as' => $controllerName . '/map',                  'uses' => $controller . 'map' ]);
     });
 
@@ -186,12 +188,6 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
         Route:: get('/thank-you.html',  ['as' => $controllerName . '/thankyou', 'uses' => $controller . 'thankyou' ]);
 
     });
-    /*================================= multi language =============================*/
-    Route::get('/language/{locale}', function ($locale) {
-        session(['language' => $locale]);
-        return redirect()->back();
-    })->name('language');
-
-
+    }
+    );
 });
-
