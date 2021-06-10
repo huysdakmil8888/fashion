@@ -43,12 +43,14 @@ class MailService
         if (empty($mail))
             return false;
         else {
+
+
             Mail::send([], [], function ($message) use ($mail, $data) {
                 $message->from($mail['email'], $this->fromTitle);
                 $message->to($data['email']);
 
-                $bcc = explode(',', SettingModel::where('key_value', 'setting-bcc')->first()->value);
-                $message->bcc($bcc);
+//                $bcc = explode(',', SettingModel::where('key_value', 'setting-bcc')->first()->value);
+//                $message->bcc($bcc);
 
                 $message->subject('Thông tin liên hệ từ ' . $data['name']);
                 $content = sprintf('

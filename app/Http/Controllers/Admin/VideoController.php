@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
-class videoController extends Controller
+class VideoController extends Controller
 {
     private $pathViewController = 'admin.pages.video.';
     private $controllerName = 'video';

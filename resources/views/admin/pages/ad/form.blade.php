@@ -17,7 +17,7 @@
     $elements = [
         [
             'label'   => Form::label('order', 'Order', $formLabelAttr),
-            'element' => Form::text('order', @$item['ordering'], $formInputAttr )
+            'element' => Form::text('ordering', @$item['ordering'], $formInputAttr )
         ],
         [
             'label'   => Form::label('position', 'Position', $formLabelAttr),

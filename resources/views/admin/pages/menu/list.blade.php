@@ -16,7 +16,7 @@
                     <th class="column-title">Sắp xếp</th>
                     <th class="column-title">Menu Type</th>
                     <th class="column-title">Link Type</th>
-                    <th class="column-title">Hành động</th>
+                    <th class="column-title" >Hành động</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,7 +43,7 @@
                             <td>{!! $ordering !!}</td>
                             <td>{!! $menuType !!}</td>
                             <td>{!! $linkType !!}</td>
-                            <td class="last">{!! $actionButtons !!}</td>
+                            <td class="last" style="width: 125px">{!! $actionButtons !!}</td>
                         </tr>
                     @endforeach
                     

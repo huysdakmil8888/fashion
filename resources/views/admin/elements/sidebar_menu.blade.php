@@ -50,6 +50,14 @@
                     <li id="subscribe"><a href="{{ route('subscribe') }}"> Subscriber</a></li>
                 </ul>
             </li>
+            <li>
+                <a><i class="fa fa-envelope-o"></i>Menu & Liên hệ <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li id="menu"><a href="{{ route('menu') }}"> Menu</a></li>
+                    <li id="contact"><a href="{{ route('contact') }}"> Liên hệ</a></li>
+
+                </ul>
+            </li>
 
 
             <li>
@@ -76,19 +84,11 @@
 
                 </ul>
             </li>
-            <li>
-                <a><i class="fa fa-envelope-o"></i>Menu & Liên hệ <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                    <li id="menu"><a href="{{ route('menu') }}"> Menu</a></li>
-                    <li id="contact"><a href="{{ route('contact') }}"> Liên hệ</a></li>
 
-                </ul>
-            </li>
             <li class="none">
                 <a href="{{ route('user/change-logged-password') }}"><i class="fa fa-sliders"></i> Change Password</a>
             </li>
 
-            @role('admin')
 
             <li>
                 <a><i class="fa fa-user"></i> Quản lý thành viên <span class="fa fa-chevron-down"></span></a>
@@ -111,7 +111,6 @@
                     <li id="logs"><a href="{{ route('logs') }}">Log error</a></li>
                 </ul>
             </li>
-            @endrole
 
 
         </ul>

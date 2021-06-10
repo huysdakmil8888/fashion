@@ -22,7 +22,7 @@ class DashboardController extends AdminController
 
     public function index(Request $request)
     {
-        $itemSliderCount   = SliderModel::countItemsDashboad(); 
+        $itemSliderCount   = SliderModel::countItemsDashboad();
         $itemUserCount     = UserModel::countItemsDashboad(); 
         $itemCategoryCount = CategoryModel::countItemsDashboad(); 
         $itemArticleCount  = ArticleModel::countItemsDashboad(); 

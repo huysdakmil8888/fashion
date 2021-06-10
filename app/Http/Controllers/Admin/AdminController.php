@@ -18,9 +18,9 @@ class AdminController extends Controller
 
         $this->params["pagination"]["totalItemsPerPage"] = 10;
         view()->share('controllerName', $this->controllerName);
-        $this -> middleware('can:thay đổi trạng thái')->only('status');
-        $this -> middleware('can:trang form')->only('form');
-        $this -> middleware('can:Xóa bài')->only('delete');
+//        $this -> middleware('can:thay đổi trạng thái')->only('status');
+//        $this -> middleware('can:trang form')->only('form');
+//        $this -> middleware('can:Xóa bài')->only('delete');
 
     }
 

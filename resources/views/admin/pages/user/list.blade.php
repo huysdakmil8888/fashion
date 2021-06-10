@@ -30,7 +30,7 @@
                                 $username        = Hightlight::show($val['username'], $params['search'], 'username');
                                 $fullname        = Hightlight::show($val['fullname'], $params['search'], 'fullname');
                                 $email           = Hightlight::show($val['email'], $params['search'], 'email');
-                                $level           = Template::showItemSelect($controllerName, $id, $val['roles'][0]['name'], 'level');
+                                $level           = 'admin';//Template::showItemSelect($controllerName, $id, $val['roles'][0]['name'], 'level');
                                 $avatar          = Template::showItemThumb($controllerName, $val['thumb'], $val['name']);
                                 $status          = Template::showItemStatus($controllerName, $id, $val['status']); ;
                                 $createdHistory  = Template::showItemHistory($val['created_by'], $val['created']);
@@ -58,4 +58,3 @@
         </table>
     </div>
 </div>
-           

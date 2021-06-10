@@ -17,7 +17,7 @@ class UserController extends AdminController
         $this->controllerName = 'user';
         $this->model = new MainModel();
         $this->params["pagination"]["totalItemsPerPage"] = 10;
-        $this -> middleware('role:admin')->except('changeLoggedPassword','postChangeLoggedPassword');
+//        $this -> middleware('role:admin')->except('changeLoggedPassword','postChangeLoggedPassword');
 
         parent::__construct();
     }
